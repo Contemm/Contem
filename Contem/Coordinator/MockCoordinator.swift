@@ -120,6 +120,8 @@ final class MockCoordinator: ObservableObject, CoordinatorProtocol {
 
 extension MockCoordinator {
     
+    // MARK: - Last Page
+    
     /// 마지막으로 Push된 페이지 반환
     var lastPushedPage: Page? {
         pushedPages.last
@@ -133,5 +135,22 @@ extension MockCoordinator {
     /// 마지막으로 표시된 FullScreen 반환
     var lastPresentedFullScreen: Page? {
         presentedFullScreens.last
+    }
+    
+    // MARK: - Did Push
+    
+    /// 특정 페이지가 Push되었는지 확인
+    func didPush(_ page: Page) -> Bool {
+        pushedPages.contains(page)
+    }
+    
+    /// 특정 페이지가 Sheet로 표시되었는지 확인
+    func didPresentSheet(_ page: Page) -> Bool {
+        presentedSheets.contains(page)
+    }
+
+    /// 특정 페이지가 FullScreen으로 표시되었는지 확인
+    func didPresentFullScreen(_ page: Page) -> Bool {
+        presentedFullScreens.contains(page)
     }
 }
