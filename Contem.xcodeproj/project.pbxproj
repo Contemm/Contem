@@ -15,9 +15,22 @@
 		F8A803C22EC0C71C006006BD /* Contem.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Contem.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		79B32F112EC323620026CB2F /* Exceptions for "Contem" folder in "Contem" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = F8A803C12EC0C71C006006BD /* Contem */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		F8A803C42EC0C71C006006BD /* Contem */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				79B32F112EC323620026CB2F /* Exceptions for "Contem" folder in "Contem" target */,
+			);
 			path = Contem;
 			sourceTree = "<group>";
 		};
@@ -263,6 +276,7 @@
 				DEVELOPMENT_TEAM = VA3J8597P8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Contem/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -299,6 +313,7 @@
 				DEVELOPMENT_TEAM = VA3J8597P8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Contem/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
