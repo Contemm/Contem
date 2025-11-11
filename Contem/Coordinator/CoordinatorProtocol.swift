@@ -34,4 +34,12 @@ protocol CoordinatorProtocol: AnyObject {
     
     /// Sheet 닫기
     func dismissSheet()
+    
+    // MARK: - FullScreenCover
+    
+    /// FullScreenCover로 페이지 표시
+    func presentFullScreen(_ page: Page)
+    
+    /// FullScreenCover 닫기
+    func dismissFullScreen()
 }
