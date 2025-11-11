@@ -115,3 +115,23 @@ final class MockCoordinator: ObservableObject, CoordinatorProtocol {
         print("[MockCoordinator] Dismiss FullScreen")
     }
 }
+
+// MARK: - Test Helpers
+
+extension MockCoordinator {
+    
+    /// 마지막으로 Push된 페이지 반환
+    var lastPushedPage: Page? {
+        pushedPages.last
+    }
+
+    /// 마지막으로 표시된 Sheet 반환
+    var lastPresentedSheet: Page? {
+        presentedSheets.last
+    }
+
+    /// 마지막으로 표시된 FullScreen 반환
+    var lastPresentedFullScreen: Page? {
+        presentedFullScreens.last
+    }
+}
