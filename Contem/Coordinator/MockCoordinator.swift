@@ -59,4 +59,29 @@ final class MockCoordinator: ObservableObject, CoordinatorProtocol {
 
         print("[MockCoordinator] 모든 추적 데이터 초기화")
     }
+    
+    // MARK: - Push
+
+    func push(_ page: Page) {
+        pushedPages.append(page)
+        path.append(page)
+        pushCallCount += 1
+        print("[MockCoordinator] Push: \(page)")
+    }
+
+    func pop() {
+        guard !path.isEmpty else {
+            print("[MockCoordinator] Pop 시도 실패: Path가 비어있음")
+            return
+        }
+        path.removeLast()
+        popCallCount += 1
+        print("[MockCoordinator] Pop")
+    }
+
+    func popToRoot() {
+        path = NavigationPath()
+        popToRootCallCount += 1
+        print("[MockCoordinator] Pop to Root")
+    }
 }
