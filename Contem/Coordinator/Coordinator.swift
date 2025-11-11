@@ -34,4 +34,16 @@ final class Coordinator: ObservableObject, CoordinatorProtocol {
     func popToRoot() {
         path = NavigationPath()
     }
+    
+    // MARK: - Sheet
+    
+    /// Sheet로 페이지 표시
+    func presentSheet(_ page: Page) {
+        sheet = page
+    }
+
+    /// Sheet 닫기
+    func dismissSheet() {
+        sheet = nil
+    }
 }
