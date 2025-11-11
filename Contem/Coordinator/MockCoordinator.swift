@@ -84,4 +84,19 @@ final class MockCoordinator: ObservableObject, CoordinatorProtocol {
         popToRootCallCount += 1
         print("[MockCoordinator] Pop to Root")
     }
+    
+    // MARK: - Sheet
+    
+    func presentSheet(_ page: Page) {
+        presentedSheets.append(page)
+        sheet = page
+        presentSheetCallCount += 1
+        print("[MockCoordinator] Present Sheet: \(page)")
+    }
+
+    func dismissSheet() {
+        sheet = nil
+        dismissSheetCallCount += 1
+        print("[MockCoordinator] Dismiss Sheet")
+    }
 }
