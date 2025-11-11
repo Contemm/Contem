@@ -38,8 +38,8 @@ protocol CoordinatorProtocol: AnyObject {
     // MARK: - FullScreenCover
     
     /// FullScreenCover로 페이지 표시
-    func presentFullScreen(_ page: Page)
+    func presentFullScreenCover(_ page: Page)
     
     /// FullScreenCover 닫기
-    func dismissFullScreen()
+    func dismissFullScreenCover()
 }

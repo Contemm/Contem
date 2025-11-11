@@ -46,4 +46,16 @@ final class Coordinator: ObservableObject, CoordinatorProtocol {
     func dismissSheet() {
         sheet = nil
     }
+    
+    // MARK: - FullScreenCover
+    
+    /// FullScreenCover로 페이지 표시
+    func presentFullScreenCover(_ page: Page) {
+        fullScreenCover = page
+    }
+
+    /// FullScreenCover 닫기
+    func dismissFullScreenCover() {
+        fullScreenCover = nil
+    }
 }
