@@ -36,4 +36,27 @@ final class MockCoordinator: ObservableObject, CoordinatorProtocol {
     var dismissSheetCallCount = 0
     var presentFullScreenCallCount = 0
     var dismissFullScreenCallCount = 0
+    
+    // MARK: - Reset
+
+    /// 모든 추적 데이터 초기화
+    func reset() {
+        pushedPages.removeAll()
+        presentedSheets.removeAll()
+        presentedFullScreens.removeAll()
+        
+        pushCallCount = 0
+        popCallCount = 0
+        popToRootCallCount = 0
+        presentSheetCallCount = 0
+        dismissSheetCallCount = 0
+        presentFullScreenCallCount = 0
+        dismissFullScreenCallCount = 0
+
+        path = NavigationPath()
+        sheet = nil
+        fullScreenCover = nil
+
+        print("[MockCoordinator] 모든 추적 데이터 초기화")
+    }
 }
