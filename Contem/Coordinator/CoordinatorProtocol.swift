@@ -10,4 +10,7 @@ import SwiftUI
 @MainActor
 protocol CoordinatorProtocol: AnyObject {
     
+    var path: NavigationPath { get set }
+    var sheet: Page? { get set }
+    var fullScreenCover: Page? { get set }
 }
