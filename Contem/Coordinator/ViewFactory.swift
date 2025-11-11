@@ -29,7 +29,7 @@ final class ViewFactory {
     @ViewBuilder
     func makeView(for page: Page) -> some View {
         switch page {
-        case .main:
+        case .tabView:
             MainTabView()
         }
     }

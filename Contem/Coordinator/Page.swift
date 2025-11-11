@@ -14,7 +14,7 @@ enum Page: Hashable, Identifiable {
     
     // MARK: - Page
     
-    case main
+    case tabView
     
     // MARK: - ID
     
