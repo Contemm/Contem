@@ -26,4 +26,12 @@ protocol CoordinatorProtocol: AnyObject {
 
     /// 루트 화면으로 돌아가기
     func popToRoot()
+    
+    // MARK: - Sheet
+    
+    /// Sheet로 페이지 표시
+    func presentSheet(_ page: Page)
+    
+    /// Sheet 닫기
+    func dismissSheet()
 }
