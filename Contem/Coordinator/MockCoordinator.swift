@@ -99,4 +99,19 @@ final class MockCoordinator: ObservableObject, CoordinatorProtocol {
         dismissSheetCallCount += 1
         print("[MockCoordinator] Dismiss Sheet")
     }
+    
+    // MARK: - FullScreenCover
+    
+    func presentFullScreenCover(_ page: Page) {
+        presentedFullScreens.append(page)
+        fullScreenCover = page
+        presentFullScreenCallCount += 1
+        print("[MockCoordinator] Present FullScreen: \(page)")
+    }
+
+    func dismissFullScreenCover() {
+        fullScreenCover = nil
+        dismissFullScreenCallCount += 1
+        print("[MockCoordinator] Dismiss FullScreen")
+    }
 }
