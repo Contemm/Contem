@@ -23,4 +23,14 @@ final class ViewFactory {
     init(coordinator: CoordinatorProtocol) {
         self.coordinator = coordinator
     }
+    
+    // MARK: - View Builder
+    
+    @ViewBuilder
+    func makeView(for page: Page) -> some View {
+        switch page {
+        case .main:
+            MainTabView()
+        }
+    }
 }
