@@ -15,13 +15,17 @@ final class ViewFactory {
     /// 네비게이션을 담당하는 Coordinator
     private let coordinator: CoordinatorProtocol
     
-//    /// API Container
-//    private let apiContainer: APIContainerProtocol
+    /// API Container (모든 API 관리)
+    private let apiContainer: APIContainerProtocol
     
     // MARK: - Init
     
-    init(coordinator: CoordinatorProtocol) {
+    init(
+        coordinator: CoordinatorProtocol,
+        apiContainer: APIContainerProtocol = APIContainer.shared
+    ) {
         self.coordinator = coordinator
+        self.apiContainer = apiContainer
     }
     
     // MARK: - View Builder
