@@ -11,8 +11,8 @@ struct FeedCardView: View {
     
     // MARK: - Properties
     
-    private let feed: FeedModel
-    private let cardWidth: CGFloat
+    let feed: FeedModel
+    let cardWidth: CGFloat
     
     // MARK: - Body
     
