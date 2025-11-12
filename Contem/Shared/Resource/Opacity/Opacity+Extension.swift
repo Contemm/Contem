@@ -2,7 +2,7 @@
 //  Opacity+Extension.swift
 //  Contem
 //
-//  Created by Design System Team
+//  Created by 송재훈 on 11/11/25.
 //
 
 import SwiftUI
