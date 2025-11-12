@@ -18,8 +18,8 @@ struct FeedTitleView: View {
         }
         return title + " " + hashTags.joined(separator: " ")
     }
-    private let title: String
-    private let hashTags: [String]
+    let title: String
+    let hashTags: [String]
 
     // MARK: - Body
     
