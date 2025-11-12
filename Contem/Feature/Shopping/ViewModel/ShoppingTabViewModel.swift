@@ -13,6 +13,8 @@ final class ShoppingTabViewModel:ViewModelType {
   @Published
   var output = Output()
   
+    private let coordinator: CoordinatorProtocol
+    
   struct Input {
     let onAppear = PassthroughSubject<Void, Never>()
     let selectMainCategory = CurrentValueSubject<TabCategory, Never>(.outer)
@@ -26,8 +28,9 @@ final class ShoppingTabViewModel:ViewModelType {
     var currentSubCategory: SubCategory = OuterSubCategory.padding
   }
   
-  init() {
-    transform()
+  init(coordinator: CoordinatorProtocol) {
+      self.coordinator = coordinator
+      transform()
   }
   
   func transform() {
