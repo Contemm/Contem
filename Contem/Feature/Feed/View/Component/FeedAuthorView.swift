@@ -30,7 +30,8 @@ struct FeedAuthorView: View {
             .clipShape(Circle())
 
             Text(author.nickname)
-                .font(.captionLarge)
+                .font(.captionRegular)
+                .foregroundStyle(.gray900)
 
             Spacer()
 
