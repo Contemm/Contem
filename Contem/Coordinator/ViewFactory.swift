@@ -30,7 +30,24 @@ final class ViewFactory {
     func makeView(for page: Page) -> some View {
         switch page {
         case .tabView:
-            MainTabView(coordinator: coordinator)
+            MainTabView(viewFactory: self)
+        case .feed:
+            makeFeedView()
+        case .shopping:
+            makeShoppingView()
         }
+    }
+
+    // MARK: - Private View Builders
+
+    /// FeedView 생성
+    private func makeFeedView() -> FeedView {
+        let viewModel = FeedViewModel(coordinator: coordinator)
+        return FeedView(viewModel: viewModel)
+    }
+
+    /// ShoppingView 생성
+    private func makeShoppingView() -> ShoppingView {
+        return ShoppingView()
     }
 }
