@@ -39,7 +39,6 @@ struct AppCoordinatorView: View {
                     viewFactory.makeView(for: page)
                 }
         }
-        .environmentObject(coordinator)
     }
 }
 

@@ -30,7 +30,7 @@ final class ViewFactory {
     func makeView(for page: Page) -> some View {
         switch page {
         case .tabView:
-            MainTabView()
+            MainTabView(coordinator: coordinator)
         }
     }
 }

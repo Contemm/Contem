@@ -8,6 +8,19 @@
 import SwiftUI
 
 struct MainTabView: View {
+    
+    // MARK: - Properties
+    
+    private let coordinator: CoordinatorProtocol
+    
+    // MARK: - Init
+    
+    init(coordinator: CoordinatorProtocol) {
+        self.coordinator = coordinator
+    }
+    
+    // MARK: - Body
+    
     var body: some View {
         TabView {
             ShoppingView()
@@ -21,8 +34,4 @@ struct MainTabView: View {
         }
         .tint(.blue)
     }
-}
-
-#Preview {
-    MainTabView()
 }
