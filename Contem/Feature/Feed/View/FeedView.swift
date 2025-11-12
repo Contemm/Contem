@@ -6,15 +6,37 @@
 //
 
 import SwiftUI
+import Combine
 
 struct FeedView: View {
+    
+    // MARK: - ViewModel
+    
+    @ObservedObject private var viewModel: FeedViewModel
+
+    // MARK: - Init
+
+    init(viewModel: FeedViewModel) {
+        self.viewModel = viewModel
+    }
+
+    // MARK: - Body
+
     var body: some View {
-        NavigationStack{
-            Text("FeedView")
+        Group {
+            if viewModel.output.isLoading {
+                // TODO: 로딩뷰 추가
+            } else {
+                MasonryLayout(
+                    feeds: viewModel.output.feeds
+//                    tapPublisher: viewModel.input.cardTapped
+                ) {
+                    viewModel.input.refreshTrigger.send(())
+                }
+            }
+        }
+        .task {
+            viewModel.input.viewOnTask.send(())
         }
     }
-}
-
-#Preview {
-    FeedView()
 }
