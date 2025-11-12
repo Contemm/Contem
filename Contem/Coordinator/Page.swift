@@ -15,7 +15,9 @@ enum Page: Hashable, Identifiable {
     // MARK: - Page
     
     case tabView
-    
+    case feed
+    case shopping
+
     // MARK: - ID
     
     var id: Self { self }
