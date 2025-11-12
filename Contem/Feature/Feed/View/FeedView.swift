@@ -25,18 +25,19 @@ struct FeedView: View {
     var body: some View {
         Group {
             if viewModel.output.isLoading {
-                // TODO: 로딩뷰 추가
+                ProgressView()
             } else {
-                MasonryLayout(
-                    feeds: viewModel.output.feeds
-//                    tapPublisher: viewModel.input.cardTapped
-                ) {
-                    viewModel.input.refreshTrigger.send(())
-                }
+                MasonryLayout(feeds: viewModel.output.feeds)
             }
         }
         .task {
             viewModel.input.viewOnTask.send(())
         }
     }
+
+    // MARK: - Methods
+
+//    private func refresh() async {
+//        viewModel.input.refreshTrigger.send(())
+//    }
 }
