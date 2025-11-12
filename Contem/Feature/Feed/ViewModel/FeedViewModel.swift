@@ -57,13 +57,13 @@ final class FeedViewModel: ViewModelType {
             }
             .store(in: &cancellables)
 
-        // 피드 새로고침
-        input.refreshTrigger
-            .withUnretained(self)
-            .sink { owner, _ in
-                owner.refreshFeeds()
-            }
-            .store(in: &cancellables)
+//        // 피드 새로고침
+//        input.refreshTrigger
+//            .withUnretained(self)
+//            .sink { owner, _ in
+//                owner.refreshFeeds()
+//            }
+//            .store(in: &cancellables)
 
         // CardView 탭
         input.cardTapped
@@ -91,15 +91,17 @@ extension FeedViewModel {
         }
     }
 
-    // 새로고침
-    private func refreshFeeds() {
-        output.isLoading = true
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
-            guard let self = self else { return }
-
-            self.output.feeds = FeedModel.dummyData
-            self.output.isLoading = false
-        }
-    }
+    // TODO: 새로고침 기능 추가
+    
+//    // 새로고침
+//    private func refreshFeeds() {
+//        output.isLoading = true
+//
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+//            guard let self = self else { return }
+//
+//            self.output.feeds = FeedModel.dummyData
+//            self.output.isLoading = false
+//        }
+//    }
 }
