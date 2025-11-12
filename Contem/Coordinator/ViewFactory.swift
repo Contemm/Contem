@@ -48,6 +48,7 @@ final class ViewFactory {
 
     /// ShoppingView 생성
     private func makeShoppingView() -> ShoppingView {
-        return ShoppingView()
+        let viewModel = ShoppingTabViewModel(coordinator: coordinator)
+        return ShoppingView(viewModel: viewModel)
     }
 }

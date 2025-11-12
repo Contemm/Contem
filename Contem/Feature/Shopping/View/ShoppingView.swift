@@ -381,7 +381,3 @@ struct ProductCard: View {
     .padding(.leading, 8)
   }
 }
-
-#Preview {
-  ShoppingView()
-}
