@@ -1,5 +1,5 @@
-# Created by https://www.toptal.com/developers/gitignore/api/swift
-# Edit at https://www.toptal.com/developers/gitignore?templates=swift
+Secret/APIKey.swift
+
 
 ### Swift ###
 # Xcode
@@ -91,5 +91,3 @@ iOSInjectionProject/
 # API Key, URL 등의 추적을 제외
 **/Secret/*.swift
 **/Secret/*.plist
-
-# End of https://www.toptal.com/developers/gitignore/api/swift
