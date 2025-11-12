@@ -2,7 +2,7 @@
 //  FeedView.swift
 //  Contem
 //
-//  Created by 이상민 on 11/11/25.
+//  Created by HyoTaek on 11/11/25.
 //
 
 import SwiftUI
