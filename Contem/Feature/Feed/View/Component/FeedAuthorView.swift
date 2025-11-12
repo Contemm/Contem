@@ -41,7 +41,7 @@ struct FeedAuthorView: View {
                 Text("\(likeCount)")
                     .font(.caption2)
             }
-            .foregroundColor(.gray100)
+            .foregroundColor(.gray500)
         }
     }
 }
