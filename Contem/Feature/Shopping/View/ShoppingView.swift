@@ -2,8 +2,8 @@ import SwiftUI
 import Combine
 
 struct ShoppingView: View {
-  @StateObject private var viewModel = ShoppingTabViewModel()
-  
+  @ObservedObject private var viewModel: ShoppingTabViewModel
+    
   let tabs = TabCategory.allCases
   
   var currentSubCategories: [String] {
@@ -43,6 +43,10 @@ struct ShoppingView: View {
     return Array(repeating: GridItem(.flexible(), spacing: 8), count: columnCount)
   }
   
+  init(viewModel: ShoppingTabViewModel) {
+    self.viewModel = viewModel
+  }
+    
   var body: some View {
     VStack(spacing: 0) {
       // 메인 탭 영역

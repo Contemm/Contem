@@ -13,7 +13,7 @@ final class ShoppingTabViewModel:ViewModelType {
   @Published
   var output = Output()
   
-    private let coordinator: CoordinatorProtocol
+  private let coordinator: CoordinatorProtocol
     
   struct Input {
     let onAppear = PassthroughSubject<Void, Never>()
