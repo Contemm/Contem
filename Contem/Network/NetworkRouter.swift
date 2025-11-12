@@ -15,3 +15,25 @@ enum HTTPMethod: String {
     case delete = "DELETE"
     case patch = "PATCH"
 }
+
+// MARK: - Network Router
+
+protocol NetworkRouter {
+
+    /// Base URL
+    var baseURL: String { get }
+    
+    /// API 경로
+    var path: String { get }
+    
+    /// HTTP 메서드
+    var method: HTTPMethod { get }
+    
+    /// 요청 헤더
+    var headers: [String: String]? { get }
+    
+    /// 요청 파라미터
+    var parameters: [String: Any]? { get }
+}
+
+// TODO: - Multipart/Form-data 추가 예정
