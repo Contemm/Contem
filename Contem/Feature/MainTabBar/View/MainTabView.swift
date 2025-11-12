@@ -35,7 +35,3 @@ struct MainTabView: View {
         .tint(.blue)
     }
 }
-
-#Preview {
-    MainTabView()
-}
