@@ -10,7 +10,7 @@ import Foundation
 // MARK: - APIContainerProtocol
 
 protocol APIContainerProtocol {
-//    var profileAPI: ProfileAPIProtocol { get }
+    var profileAPI: ProfileAPIProtocol { get }
 }
 
 // MARK: - APIContainer
@@ -54,9 +54,9 @@ final class APIContainer: APIContainerProtocol {
     // MARK: - APIs
     
     /// Profile API
-//    lazy var profileAPI: ProfileAPIProtocol = {
-//        return ProfileAPI(networkLayer: networkLayer)
-//    }()
+    lazy var profileAPI: ProfileAPIProtocol = {
+        return ProfileAPI(networkLayer: networkLayer)
+    }()
 
     // MARK: - Init
     
