@@ -47,9 +47,7 @@ struct ShoppingView: View {
         VStack(spacing: 0) {
             // 메인 탭 영역
             mainTabBar
-            
             Divider()
-            
             ScrollView {
                 VStack(spacing: 0) {
                     Spacer().frame(height: 20)
@@ -74,33 +72,29 @@ struct ShoppingView: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 24) {
                 ForEach(tabs, id: \.self) { tab in
-                    mainTabItem(tab)
+                    VStack(spacing: 8) {
+                        HStack(spacing: 4) {
+                            Text(tab.rawValue)
+                                .font(.system(size: 16, weight: viewModel.output.currentCategory == tab ? .semibold : .regular))
+                                .foregroundColor(viewModel.output.currentCategory == tab ? .black : .gray)
+                        }
+                        
+                        if viewModel.output.currentCategory == tab {
+                            Rectangle()
+                                .fill(Color.black)
+                                .frame(height: 2)
+                        } else {
+                            Rectangle()
+                                .fill(Color.clear)
+                                .frame(height: 2)
+                        }
+                    }
+                    .onTapGesture {
+                        viewModel.input.selectMainCategory.send(tab)
+                    }
                 }
             }
             .padding(.horizontal, 20)
-        }
-    }
-    
-    private func mainTabItem(_ tab: TabCategory) -> some View {
-        VStack(spacing: 8) {
-            HStack(spacing: 4) {
-                Text(tab.rawValue)
-                    .font(.system(size: 16, weight: viewModel.output.currentCategory == tab ? .semibold : .regular))
-                    .foregroundColor(viewModel.output.currentCategory == tab ? .black : .gray)
-            }
-            
-            if viewModel.output.currentCategory == tab {
-                Rectangle()
-                    .fill(Color.black)
-                    .frame(height: 2)
-            } else {
-                Rectangle()
-                    .fill(Color.clear)
-                    .frame(height: 2)
-            }
-        }
-        .onTapGesture {
-            viewModel.input.selectMainCategory.send(tab)
         }
     }
     
@@ -308,6 +302,12 @@ struct ShoppingView: View {
     }
 }
 
+
+
+
+
+
+// MARK: - 상품 카드
 struct ProductCard: View {
     let product: ShoppingProduct
     @State private var isLiked: Bool = false
