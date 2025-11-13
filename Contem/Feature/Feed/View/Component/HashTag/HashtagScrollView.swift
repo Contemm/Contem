@@ -58,18 +58,3 @@ struct HashtagCell: View {
         .frame(width: 80)
     }
 }
-
-// MARK: - Preview with Dummy Data
-
-// 더미 데이터 생성 함수
-private func createDummyHashtagItems() -> [HashtagItem] {
-    // FeedModel.dummyData에서 첫 5개의 해시태그와 이미지를 사용
-    let feeds = FeedModel.dummyData.prefix(5)
-
-    return feeds.enumerated().map { index, feed in
-        HashtagItem(
-            imageName: feed.author.profileImage,
-            hashtag: feed.hashTags.first ?? "#패션"
-        )
-    }
-}
