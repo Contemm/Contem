@@ -16,7 +16,7 @@ struct HashTagCellView: View {
     // MARK: - Body
     
     var body: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: .spacing8) {
             // 썸네일 이미지
             Image(item.imageName)
                 .resizable()
@@ -26,7 +26,7 @@ struct HashTagCellView: View {
 
             // 해시태그 텍스트
             Text(item.hashtag)
-                .font(.system(size: 14))
+                .font(.captionSmall)
                 .foregroundColor(.black)
                 .lineLimit(1)
         }
