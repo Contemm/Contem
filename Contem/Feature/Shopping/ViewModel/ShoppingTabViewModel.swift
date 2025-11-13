@@ -1,7 +1,6 @@
 import Foundation
 import Combine
 
-
 @MainActor
 final class ShoppingTabViewModel:ViewModelType {
     
@@ -21,9 +20,18 @@ final class ShoppingTabViewModel:ViewModelType {
     
     struct Output {
         var banners: [Banner] = []
+        var currentBannerIndex: Int = 1
+        var infiniteBanners: [Banner] {
+            guard let first = banners.first, let last = banners.last else { return banners }
+            return [last] + banners + [first]
+        }
         var products: [ShoppingProduct] = []
         var currentCategory = TabCategory.outer
         var currentSubCategory: SubCategory = OuterSubCategory.padding
+        var currentSubCategories: [String] {
+            currentCategory.subCategories.map { $0.displayName }
+        }
+        
     }
     
     init() {
