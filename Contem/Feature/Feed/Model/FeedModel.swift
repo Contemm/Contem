@@ -34,7 +34,9 @@ extension FeedModel {
     static let dummyData: [FeedModel] = [
         FeedModel(
             thumbnailImages: [
-                "banner_1"
+                "banner_1",
+                "banner_3",
+                "banner_5"
             ],
             author: Author(profileImage: "https://i.pravatar.cc/150?img=1", nickname: "패션러버"),
             likeCount: 1234,
@@ -54,7 +56,8 @@ extension FeedModel {
         ),
         FeedModel(
             thumbnailImages: [
-                "banner_3"
+                "banner_3",
+                "banner_1"
             ],
             author: Author(profileImage: "https://i.pravatar.cc/150?img=3", nickname: "스타일리스트"),
             likeCount: 2156,
@@ -64,7 +67,10 @@ extension FeedModel {
         ),
         FeedModel(
             thumbnailImages: [
-                "banner_4"
+                "banner_4",
+                "banner_2",
+                "banner_5",
+                "banner_1"
             ],
             author: Author(profileImage: "https://i.pravatar.cc/150?img=4", nickname: "패션피플"),
             likeCount: 3421,
@@ -84,7 +90,9 @@ extension FeedModel {
         ),
         FeedModel(
             thumbnailImages: [
-                "banner_1"
+                "banner_1",
+                "banner_4",
+                "banner_3"
             ],
             author: Author(profileImage: "https://i.pravatar.cc/150?img=6", nickname: "옷장정리의달인"),
             likeCount: 4532,
@@ -94,7 +102,8 @@ extension FeedModel {
         ),
         FeedModel(
             thumbnailImages: [
-                "banner_2"
+                "banner_2",
+                "banner_5"
             ],
             author: Author(profileImage: "https://i.pravatar.cc/150?img=7", nickname: "패션블로거"),
             likeCount: 1876,
@@ -114,7 +123,11 @@ extension FeedModel {
         ),
         FeedModel(
             thumbnailImages: [
-                "banner_4"
+                "banner_4",
+                "banner_1",
+                "banner_2",
+                "banner_5",
+                "banner_3"
             ],
             author: Author(profileImage: "https://i.pravatar.cc/150?img=9", nickname: "룩북메이커"),
             likeCount: 5678,
@@ -124,7 +137,8 @@ extension FeedModel {
         ),
         FeedModel(
             thumbnailImages: [
-                "banner_5"
+                "banner_5",
+                "banner_3"
             ],
             author: Author(profileImage: "https://i.pravatar.cc/150?img=10", nickname: "패션마니아"),
             likeCount: 987,
@@ -144,7 +158,9 @@ extension FeedModel {
         ),
         FeedModel(
             thumbnailImages: [
-                "banner_2"
+                "banner_2",
+                "banner_4",
+                "banner_1"
             ],
             author: Author(profileImage: "https://i.pravatar.cc/150?img=12", nickname: "트렌드세터"),
             likeCount: 6543,
@@ -154,7 +170,8 @@ extension FeedModel {
         ),
         FeedModel(
             thumbnailImages: [
-                "banner_3"
+                "banner_3",
+                "banner_5"
             ],
             author: Author(profileImage: "https://i.pravatar.cc/150?img=13", nickname: "패셔니스타"),
             likeCount: 1456,
@@ -174,7 +191,9 @@ extension FeedModel {
         ),
         FeedModel(
             thumbnailImages: [
-                "banner_5"
+                "banner_5",
+                "banner_2",
+                "banner_4"
             ],
             author: Author(profileImage: "https://i.pravatar.cc/150?img=15", nickname: "스타일아이콘"),
             likeCount: 4321,
@@ -184,7 +203,8 @@ extension FeedModel {
         ),
         FeedModel(
             thumbnailImages: [
-                "banner_1"
+                "banner_1",
+                "banner_3"
             ],
             author: Author(profileImage: "https://i.pravatar.cc/150?img=16", nickname: "패션인플루언서"),
             likeCount: 876,
@@ -204,7 +224,10 @@ extension FeedModel {
         ),
         FeedModel(
             thumbnailImages: [
-                "banner_3"
+                "banner_3",
+                "banner_1",
+                "banner_4",
+                "banner_5"
             ],
             author: Author(profileImage: "https://i.pravatar.cc/150?img=18", nickname: "코디네이터"),
             likeCount: 7890,
@@ -214,7 +237,8 @@ extension FeedModel {
         ),
         FeedModel(
             thumbnailImages: [
-                "banner_4"
+                "banner_4",
+                "banner_2"
             ],
             author: Author(profileImage: "https://i.pravatar.cc/150?img=19", nickname: "패션크리에이터"),
             likeCount: 2134,
@@ -224,7 +248,9 @@ extension FeedModel {
         ),
         FeedModel(
             thumbnailImages: [
-                "banner_5"
+                "banner_5",
+                "banner_1",
+                "banner_3"
             ],
             author: Author(profileImage: "https://i.pravatar.cc/150?img=20", nickname: "룩킹굿"),
             likeCount: 1567,
