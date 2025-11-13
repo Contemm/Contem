@@ -24,7 +24,7 @@ struct FeedView: View {
 
     var body: some View {
         VStack(spacing: 16) {
-            SearchBar()
+            FeedSearchBarView()
 
             HashtagScrollView(items: viewModel.output.hashtagItems)
 
@@ -46,27 +46,4 @@ struct FeedView: View {
 //    private func refresh() async {
 //        viewModel.input.refreshTrigger.send(())
 //    }
-}
-
-// MARK: - SearchBar Component
-
-struct SearchBar: View {
-    @State private var searchText = ""
-
-    var body: some View {
-        HStack {
-            TextField("", text: $searchText, prompt: Text("브랜드, 상품, 프로필, 태그 등")
-                .font(.bodyRegular)
-                .foregroundColor(.gray300)
-            )
-            .font(.bodyRegular)
-            
-            Spacer()
-        }
-        .padding(.horizontal(16))
-        .padding(.vertical(12))
-        .background(.gray50)
-        .cornerRadiusSmall()
-        .padding(.horizontal(16))
-    }
 }
