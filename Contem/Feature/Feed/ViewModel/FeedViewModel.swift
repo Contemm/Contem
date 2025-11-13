@@ -33,6 +33,7 @@ final class FeedViewModel: ViewModelType {
 
     struct Output {
         var feeds: [FeedModel] = []
+        var hashtagItems: [HashtagItem] = []
         var isLoading: Bool = false
         var errorMessage: String? = nil
     }
@@ -54,6 +55,7 @@ final class FeedViewModel: ViewModelType {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.loadFeeds()
+                owner.loadHashtags()
             }
             .store(in: &cancellables)
 
@@ -88,6 +90,18 @@ extension FeedViewModel {
 
             self.output.feeds = FeedModel.dummyData
             self.output.isLoading = false
+        }
+    }
+
+    // 해시태그 아이템 로드
+    private func loadHashtags() {
+        let feeds = FeedModel.dummyData.prefix(5)
+
+        output.hashtagItems = feeds.map { feed in
+            HashtagItem(
+                imageName: feed.author.profileImage,
+                hashtag: feed.hashTags.first ?? "#패션"
+            )
         }
     }
 
