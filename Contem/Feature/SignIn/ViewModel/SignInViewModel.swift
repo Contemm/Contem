@@ -23,8 +23,6 @@ final class SignInViewModel: ViewModelType {
     // MARK: - Input
 
     struct Input {
-        let emailPublisher = PassthroughSubject<String, Never>()
-        let passwordPublisher = PassthroughSubject<String, Never>()
         let loginButtonTapped = PassthroughSubject<Void, Never>()
     }
 
@@ -49,22 +47,6 @@ final class SignInViewModel: ViewModelType {
     // MARK: - Transform
 
     func transform() {
-        // 이메일 입력 처리
-        input.emailPublisher
-            .withUnretained(self)
-            .sink { owner, email in
-                owner.output.email = email
-            }
-            .store(in: &cancellables)
-
-        // 비밀번호 입력 처리
-        input.passwordPublisher
-            .withUnretained(self)
-            .sink { owner, password in
-                owner.output.password = password
-            }
-            .store(in: &cancellables)
-
         // 로그인 버튼 탭 처리
         input.loginButtonTapped
             .withUnretained(self)
