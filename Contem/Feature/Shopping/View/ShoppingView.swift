@@ -170,7 +170,16 @@ private struct BannerSection: View {
                                    dragOffset = value.translation.width
                                }
                                .onEnded { value in
-                                   handleBannerDragEnd(value: value, cardWidth: cardWidth, proxy: proxy)
+                                   let newIndex = viewModel.calculateNewBannerIndex(
+                                    dragTranslation: value.translation.width,
+                                    cardWidth: cardWidth
+                                   )
+                                   dragOffset = 0
+                                   
+                                   withAnimation(.easeInOut(duration: 0.3)) {
+                                       viewModel.updateBannerIndex(to: newIndex)
+                                       proxy.scrollTo(newIndex, anchor: .center)
+                                   }
                                }
                        )
                    }
@@ -179,7 +188,16 @@ private struct BannerSection: View {
                        proxy.scrollTo(1, anchor: .center)
                    }
                    .onChange(of: viewModel.output.currentBannerIndex) { newValue in
-                       handleBannerIndexChange(newValue: newValue, proxy: proxy)
+                       if let newIndex = viewModel.shouldPerformInfiniteScroll(for: newValue) {
+                           Task {
+                               try await Task.sleep(for: .milliseconds(200))
+                               withAnimation(.none) {
+                        
+                                   viewModel.updateBannerIndex(to: newIndex)
+                                   proxy.scrollTo(newIndex, anchor: .center)
+                               }
+                           }
+                       }
                    }
                }
             }
@@ -190,9 +208,7 @@ private struct BannerSection: View {
                 HStack {
                     Spacer()
                     HStack(spacing: 6) {
-                        let displayIndex = calculateDisplayIndex()
-                        
-                        Text("\(displayIndex) / \(viewModel.output.banners.count)")
+                        Text("\(viewModel.output.displayBannerIndex) / \(viewModel.output.banners.count)")
                             .font(.system(size: 12, weight: .medium))
                             .foregroundColor(.black)
                     }
@@ -206,56 +222,6 @@ private struct BannerSection: View {
             }
         }
         .frame(maxWidth: .infinity)
-    }
-    
-    private func calculateDisplayIndex() -> Int {
-        if viewModel.output.currentBannerIndex == 0 {
-            return viewModel.output.banners.count
-        } else if viewModel.output.currentBannerIndex == viewModel.output.infiniteBanners.count - 1 {
-            return 1
-        } else {
-            return viewModel.output.currentBannerIndex
-        }
-    }
-    
-    private func handleBannerDragEnd(value: DragGesture.Value, cardWidth: CGFloat, proxy: ScrollViewProxy) {
-        let threshold: CGFloat = cardWidth * 0.25
-        var newIndex = viewModel.output.currentBannerIndex
-        
-        if value.translation.width < -threshold {
-            if viewModel.output.currentBannerIndex < viewModel.output.infiniteBanners.count - 1 {
-                newIndex = viewModel.output.currentBannerIndex + 1
-            }
-        } else if value.translation.width > threshold {
-            if viewModel.output.currentBannerIndex > 0 {
-                newIndex = viewModel.output.currentBannerIndex - 1
-            }
-        }
-        
-        dragOffset = 0
-        
-        withAnimation(.easeInOut(duration: 0.3)) {
-            viewModel.output.currentBannerIndex = newIndex
-            proxy.scrollTo(newIndex, anchor: .center)
-        }
-    }
-    
-    private func handleBannerIndexChange(newValue: Int, proxy: ScrollViewProxy) {
-        Task {
-            try await Task.sleep(for: .milliseconds(200))
-            if newValue == 0 && viewModel.output.currentBannerIndex == 0 {
-                withAnimation(.none) {
-                    viewModel.output.currentBannerIndex = viewModel.output.banners.count
-                    proxy.scrollTo(viewModel.output.banners.count, anchor: .center)
-                }
-            }
-            else if newValue == viewModel.output.infiniteBanners.count - 1 && viewModel.output.currentBannerIndex == viewModel.output.infiniteBanners.count - 1 {
-                withAnimation(.none) {
-                    viewModel.output.currentBannerIndex = 1
-                    proxy.scrollTo(1, anchor: .center)
-                }
-            }
-        }
     }
 }
 

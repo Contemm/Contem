@@ -21,17 +21,13 @@ final class ShoppingTabViewModel:ViewModelType {
     struct Output {
         var banners: [Banner] = []
         var currentBannerIndex: Int = 1
-        var infiniteBanners: [Banner] {
-            guard let first = banners.first, let last = banners.last else { return banners }
-            return [last] + banners + [first]
-        }
+        var infiniteBanners: [Banner] = []
+        var displayBannerIndex: Int = 1
+        var currentSubCategories: [String] = []
+        
         var products: [ShoppingProduct] = []
         var currentCategory = TabCategory.outer
         var currentSubCategory: SubCategory = OuterSubCategory.padding
-        var currentSubCategories: [String] {
-            currentCategory.subCategories.map { $0.displayName }
-        }
-        
     }
     
     init() {
@@ -53,6 +49,9 @@ final class ShoppingTabViewModel:ViewModelType {
                 // 초기 배너 로드
                 let banners = loadBanners(for: initMainCategory)
                 output.banners = banners
+                output.infiniteBanners = calculateInfiniteBanners(from: banners)
+                output.currentSubCategories = initMainCategory.subCategories.map { $0.displayName }
+                output.displayBannerIndex = calculateDisplayIndex()
                 
                 // 초기 상품 로드
                 let products = self.loadProducts(
@@ -68,18 +67,18 @@ final class ShoppingTabViewModel:ViewModelType {
             .sink { [weak self] selectedTab in
                 guard let self = self else { return }
                 
-                // 첫 번째 서브 카테고리 자동 선택
                 let firstSubCategory = selectedTab.subCategories[0]
                 
-                // 카테고리 업데이트
                 output.currentCategory = selectedTab
                 output.currentSubCategory = firstSubCategory
                 
-                // 배너 로드
                 let banners = self.loadBanners(for: selectedTab)
                 output.banners = banners
+                output.infiniteBanners = calculateInfiniteBanners(from: banners)
+                output.currentSubCategories = selectedTab.subCategories.map { $0.displayName }
+                output.currentBannerIndex = 1
+                output.displayBannerIndex = 1
                 
-                // 상품 로드
                 let products = self.loadProducts(
                     tabCategory: selectedTab,
                     subCategory: firstSubCategory
@@ -88,7 +87,6 @@ final class ShoppingTabViewModel:ViewModelType {
                 
             }.store(in: &cancellables)
         
-        
         // 서브 탭
         input.selectSubCategory
             .sink { [weak self] selectedSub in
@@ -96,10 +94,8 @@ final class ShoppingTabViewModel:ViewModelType {
                 
                 let currentTab = output.currentCategory
                 
-                // 서브 카테고리 업데이트
                 output.currentSubCategory = selectedSub
                 
-                // 현재 탭 + 선택된 서브 카테고리로 상품 필터링
                 let products = self.loadProducts(
                     tabCategory: currentTab,
                     subCategory: selectedSub
@@ -109,6 +105,61 @@ final class ShoppingTabViewModel:ViewModelType {
             }.store(in: &cancellables)
     }
     
+}
+
+
+// MARK: - Banner Logic
+extension ShoppingTabViewModel {
+    private func calculateInfiniteBanners(from banners: [Banner]) -> [Banner] {
+        guard let first = banners.first, let last = banners.last else { return banners }
+        return [last] + banners + [first]
+    }
+    
+    private func calculateDisplayIndex() -> Int {
+        if output.currentBannerIndex == 0 {
+            return output.banners.count
+        } else if output.currentBannerIndex == output.infiniteBanners.count - 1 {
+            return 1
+        } else {
+            return output.currentBannerIndex
+        }
+    }
+    
+    // ✅ 추가: 배너 인덱스 업데이트 메서드
+    func updateBannerIndex(to newIndex: Int) {
+        output.currentBannerIndex = newIndex
+        output.displayBannerIndex = calculateDisplayIndex()
+    }
+    
+    func calculateNewBannerIndex(
+        dragTranslation: CGFloat,
+        cardWidth: CGFloat
+    ) -> Int {
+        let threshold = cardWidth * 0.25
+        var newIndex = output.currentBannerIndex
+        
+        if dragTranslation < -threshold {
+            if output.currentBannerIndex < output.infiniteBanners.count - 1 {
+                newIndex = output.currentBannerIndex + 1
+            }
+        } else if dragTranslation > threshold {
+            if output.currentBannerIndex > 0 {
+                newIndex = output.currentBannerIndex - 1
+            }
+        }
+        
+        return newIndex
+    }
+    
+    func shouldPerformInfiniteScroll(for index: Int) -> Int? {
+        if index == 0 && output.currentBannerIndex == 0 {
+            return output.banners.count
+        } else if index == output.infiniteBanners.count - 1 &&
+                    output.currentBannerIndex == output.infiniteBanners.count - 1 {
+            return 1
+        }
+        return nil
+    }
 }
 
 
