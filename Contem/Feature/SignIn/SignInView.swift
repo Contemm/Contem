@@ -24,7 +24,6 @@ struct SignInView: View {
                     RoundedRectangle(cornerRadius: .spacing16)
                         .stroke(.gray300, lineWidth: 1)
                 )
-                .padding(.horizontal, .spacing16)
             
             TextField("비밀번호를 입력해주세요", text: $password)
                 .padding()
@@ -32,7 +31,18 @@ struct SignInView: View {
                     RoundedRectangle(cornerRadius: .spacing16)
                         .stroke(.gray300, lineWidth: 1)
                 )
-                .padding(.horizontal, .spacing16)
+
+            Button(action: {
+                // TODO: 로그인 로직 구현
+            }) {
+                Text("로그인")
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.black)
+                    .cornerRadius(.spacing16)
+            }
         }
+        .padding(.horizontal, .spacing16)
     }
 }
