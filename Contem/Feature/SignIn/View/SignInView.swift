@@ -6,26 +6,32 @@
 //
 
 import SwiftUI
+import Combine
 
 struct SignInView: View {
     
     // MARK: - Property
     
-    @State private var email = ""
-    @State private var password = ""
+    @ObservedObject private var viewModel: SignInViewModel
+    
+    // MARK: - Init
+    
+    init(viewModel: SignInViewModel) {
+        self.viewModel = viewModel
+    }
     
     // MARK: - Body
     
     var body: some View {
         VStack(spacing: .spacing16) {
-            TextField("이메일을 입력해주세요", text: $email)
+            TextField("이메일을 입력해주세요", text: $viewModel.output.email)
                 .padding()
                 .overlay(
                     RoundedRectangle(cornerRadius: .spacing16)
                         .stroke(.gray300, lineWidth: 1)
                 )
-            
-            SecureField("비밀번호를 입력해주세요", text: $password)
+
+            SecureField("비밀번호를 입력해주세요", text: $viewModel.output.password)
                 .padding()
                 .overlay(
                     RoundedRectangle(cornerRadius: .spacing16)
@@ -33,7 +39,7 @@ struct SignInView: View {
                 )
 
             Button(action: {
-                // TODO: 로그인 로직 구현
+                viewModel.input.loginButtonTapped.send()
             }) {
                 Text("로그인")
                     .foregroundColor(.white)
