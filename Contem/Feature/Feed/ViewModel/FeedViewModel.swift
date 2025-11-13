@@ -33,7 +33,7 @@ final class FeedViewModel: ViewModelType {
 
     struct Output {
         var feeds: [FeedModel] = []
-        var hashtagItems: [HashtagItem] = []
+        var hashtagItems: [HashtagModel] = []
         var isLoading: Bool = false
         var errorMessage: String? = nil
     }
@@ -98,7 +98,7 @@ extension FeedViewModel {
         let feeds = FeedModel.dummyData.prefix(5)
 
         output.hashtagItems = feeds.map { feed in
-            HashtagItem(
+            HashtagModel(
                 imageName: feed.author.profileImage,
                 hashtag: feed.hashTags.first ?? "#패션"
             )

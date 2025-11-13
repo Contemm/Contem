@@ -23,6 +23,12 @@ struct Author: Identifiable, Hashable {
     let nickname: String
 }
 
+struct HashtagModel: Identifiable {
+    let id = UUID()
+    let imageName: String
+    let hashtag: String
+}
+
 // MARK: - Dummy Data
 extension FeedModel {
     static let dummyData: [FeedModel] = [

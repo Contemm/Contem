@@ -7,15 +7,14 @@
 
 import SwiftUI
 
-struct HashtagItem: Identifiable {
-    let id = UUID()
-    let imageName: String
-    let hashtag: String
-}
-
 struct HashtagScrollView: View {
-    let items: [HashtagItem]
+    
+    // MARK: - Properties
+    
+    let items: [HashtagModel]
 
+    // MARK: - Body
+    
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 16) {
@@ -29,8 +28,13 @@ struct HashtagScrollView: View {
 }
 
 struct HashtagCell: View {
-    let item: HashtagItem
+    
+    // MARK: - Properties
+    
+    let item: HashtagModel
 
+    // MARK: - Body
+    
     var body: some View {
         VStack(spacing: 8) {
             // 원형 이미지
