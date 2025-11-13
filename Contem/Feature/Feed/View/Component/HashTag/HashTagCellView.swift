@@ -17,11 +17,11 @@ struct HashTagCellView: View {
     
     var body: some View {
         VStack(spacing: 8) {
-            // 원형 이미지
+            // 썸네일 이미지
             Image(item.imageName)
                 .resizable()
                 .scaledToFill()
-                .frame(width: 80, height: 80)
+                .frame(width: 60, height: 60)
                 .clipShape(Circle())
 
             // 해시태그 텍스트
@@ -30,6 +30,6 @@ struct HashTagCellView: View {
                 .foregroundColor(.black)
                 .lineLimit(1)
         }
-        .frame(width: 80)
+        .frame(width: 60)
     }
 }

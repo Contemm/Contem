@@ -95,7 +95,7 @@ extension FeedViewModel {
 
     // 해시태그 아이템 로드
     private func loadHashtags() {
-        let feeds = FeedModel.dummyData.prefix(5)
+        let feeds = FeedModel.dummyData.prefix(8)
 
         output.hashtagItems = feeds.map { feed in
             HashtagModel(
