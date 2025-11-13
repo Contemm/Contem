@@ -10,7 +10,6 @@ struct SignInDTO: Codable {
     let userID: String
     let email: String
     let nickname: String
-    let profileImage: String
     let accessToken: String
     let refreshToken: String
     
@@ -18,7 +17,6 @@ struct SignInDTO: Codable {
         case userID = "user_id"
         case email
         case nickname = "nick"
-        case profileImage
         case accessToken
         case refreshToken
     }
