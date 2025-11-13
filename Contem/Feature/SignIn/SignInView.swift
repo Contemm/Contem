@@ -25,7 +25,7 @@ struct SignInView: View {
                         .stroke(.gray300, lineWidth: 1)
                 )
             
-            TextField("비밀번호를 입력해주세요", text: $password)
+            SecureField("비밀번호를 입력해주세요", text: $password)
                 .padding()
                 .overlay(
                     RoundedRectangle(cornerRadius: .spacing16)
