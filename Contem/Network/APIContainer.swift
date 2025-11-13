@@ -11,6 +11,7 @@ import Foundation
 
 protocol APIContainerProtocol {
     var profileAPI: ProfileAPIProtocol { get }
+    var signInAPI: SignInAPIProtocol { get }
 }
 
 // MARK: - APIContainer
@@ -56,6 +57,11 @@ final class APIContainer: APIContainerProtocol {
     /// Profile API
     lazy var profileAPI: ProfileAPIProtocol = {
         return ProfileAPI(networkLayer: networkLayer)
+    }()
+    
+    /// SignIn API
+    lazy var signInAPI: SignInAPIProtocol = {
+        return SignInAPI(networkLayer: networkLayer)
     }()
 
     // MARK: - Init
