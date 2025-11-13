@@ -23,10 +23,17 @@ struct FeedView: View {
     // MARK: - Body
 
     var body: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: .zero) {
             FeedSearchBarView()
+                .padding(.bottom, .spacing16)
+
+            Rectangle()
+                .fill(.gray100)
+                .frame(height: 1)
+                .padding(.bottom, .spacing8)
 
             HashtagScrollView(items: viewModel.output.hashtagItems)
+                .padding(.bottom, .spacing16)
 
             Group {
                 if viewModel.output.isLoading {
