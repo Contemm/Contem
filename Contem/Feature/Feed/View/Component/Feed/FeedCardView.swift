@@ -24,6 +24,22 @@ struct FeedCardView: View {
                     .frame(width: cardWidth)
                     .clipped()
                     .cornerRadius(.radiusSmall)
+                    .overlay(
+                        // 썸네일 이미지가 2개 이상일 때 스택 아이콘 표시
+                        Group {
+                            if feed.thumbnailImages.count > 1 {
+                                Image(systemName: "rectangle.stack.fill")
+                                    .font(.system(size: 14))
+                                    .foregroundColor(.white)
+                                    .padding(.spacing8)
+                                    .frame(
+                                        maxWidth: .infinity,
+                                        maxHeight: .infinity,
+                                        alignment: .topTrailing
+                                    )
+                            }
+                        }
+                    )
             }
 
             // 하단 정보 영역
