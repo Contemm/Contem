@@ -26,6 +26,8 @@ struct FeedView: View {
         VStack(spacing: 16) {
             SearchBar()
             
+            HashtagScrollView(items: createHashtagItems())
+            
             Group {
                 if viewModel.output.isLoading {
                     ProgressView()
@@ -40,6 +42,18 @@ struct FeedView: View {
     }
 
     // MARK: - Methods
+
+    private func createHashtagItems() -> [HashtagItem] {
+        // FeedModel.dummyData에서 첫 5개의 해시태그와 프로필 이미지를 사용
+        let feeds = FeedModel.dummyData.prefix(5)
+
+        return feeds.enumerated().map { index, feed in
+            HashtagItem(
+                imageName: feed.author.profileImage,
+                hashtag: feed.hashTags.first ?? "#패션"
+            )
+        }
+    }
 
 //    private func refresh() async {
 //        viewModel.input.refreshTrigger.send(())
