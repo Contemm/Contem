@@ -25,6 +25,9 @@ struct SignInView: View {
     var body: some View {
         VStack(spacing: .spacing16) {
             TextField("이메일을 입력해주세요", text: $viewModel.output.email)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled(true)
+                .keyboardType(.emailAddress)
                 .padding()
                 .overlay(
                     RoundedRectangle(cornerRadius: .spacing16)
@@ -32,6 +35,8 @@ struct SignInView: View {
                 )
 
             SecureField("비밀번호를 입력해주세요", text: $viewModel.output.password)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled(true)
                 .padding()
                 .overlay(
                     RoundedRectangle(cornerRadius: .spacing16)
