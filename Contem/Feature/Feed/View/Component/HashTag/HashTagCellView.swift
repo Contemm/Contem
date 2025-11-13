@@ -18,16 +18,11 @@ struct HashTagCellView: View {
     var body: some View {
         VStack(spacing: 8) {
             // 원형 이미지
-            AsyncImage(url: URL(string: item.imageName)) { image in
-                image
-                    .resizable()
-                    .scaledToFill()
-            } placeholder: {
-                Circle()
-                    .fill(Color.gray.opacity(0.3))
-            }
-            .frame(width: 80, height: 80)
-            .clipShape(Circle())
+            Image(item.imageName)
+                .resizable()
+                .scaledToFill()
+                .frame(width: 80, height: 80)
+                .clipShape(Circle())
 
             // 해시태그 텍스트
             Text(item.hashtag)

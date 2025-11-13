@@ -99,7 +99,7 @@ extension FeedViewModel {
 
         output.hashtagItems = feeds.map { feed in
             HashtagModel(
-                imageName: feed.author.profileImage,
+                imageName: feed.thumbnailImages.first ?? "",
                 hashtag: feed.hashTags.first ?? "#패션"
             )
         }
