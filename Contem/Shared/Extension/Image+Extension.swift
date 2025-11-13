@@ -19,7 +19,7 @@ enum ImageAsset {
 
     // MARK: - System Images
     
-    case rectangleStackFill
+    case filledStack
 
     // MARK: - Asset Name
     
@@ -35,7 +35,7 @@ enum ImageAsset {
             return "banner_4"
         case .banner5:
             return "banner_5"
-        case .rectangleStackFill:
+        case .filledStack:
             return nil
         }
     }
@@ -46,7 +46,7 @@ enum ImageAsset {
         switch self {
         case .banner1, .banner2, .banner3, .banner4, .banner5:
             return nil
-        case .rectangleStackFill:
+        case .filledStack:
             return "rectangle.stack.fill"
         }
     }

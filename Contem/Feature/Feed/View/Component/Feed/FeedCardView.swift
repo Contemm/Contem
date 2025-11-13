@@ -28,7 +28,7 @@ struct FeedCardView: View {
                         // 썸네일 이미지가 2개 이상일 때 스택 아이콘 표시
                         Group {
                             if feed.thumbnailImages.count > 1 {
-                                Image(systemName: "rectangle.stack.fill")
+                                Image(asset: .filledStack)
                                     .font(.system(size: 14))
                                     .foregroundColor(.white)
                                     .padding(.spacing8)
