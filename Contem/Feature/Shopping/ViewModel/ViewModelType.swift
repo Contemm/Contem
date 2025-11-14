@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 
+@MainActor
 protocol ViewModelType: AnyObject, ObservableObject {
     associatedtype Input
     associatedtype Output

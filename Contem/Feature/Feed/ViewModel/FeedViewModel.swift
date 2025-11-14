@@ -8,7 +8,6 @@
 import SwiftUI
 import Combine
 
-@MainActor
 final class FeedViewModel: ViewModelType {
 
     // MARK: - MVVM

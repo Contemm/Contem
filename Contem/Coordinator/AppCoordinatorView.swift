@@ -15,29 +15,40 @@ struct AppCoordinatorView: View {
     /// Protocol을 채택한 Coordinator
     @StateObject private var coordinator = Coordinator()
 
+    /// 앱의 전역 상태를 관리하는 AppState
+    @ObservedObject var appState: AppState
+    
     /// View 생성을 담당하는 Factory
     private var viewFactory: ViewFactory {
-        ViewFactory(coordinator: coordinator)
+        ViewFactory(coordinator: coordinator, appState: appState)
     }
 
     // MARK: - Body
 
     var body: some View {
         NavigationStack(path: $coordinator.path) {
-            // 초기 화면은 tabView
-            viewFactory.makeView(for: .tabView)
-                // push
-                .navigationDestination(for: Page.self) { page in
-                    viewFactory.makeView(for: page)
+            // 로그인 상태에 따라 초기 화면 분기
+            Group {
+                if appState.isAuthenticated {
+                    viewFactory.makeView(for: .tabView)
+                        .transition(.move(edge: .trailing))
+                } else {
+                    viewFactory.makeView(for: .signIn)
+                        .transition(.move(edge: .leading))
                 }
-                // sheet
-                .sheet(item: $coordinator.sheet) { page in
-                    viewFactory.makeView(for: page)
-                }
-                // fullScreen
-                .fullScreenCover(item: $coordinator.fullScreenCover) { page in
-                    viewFactory.makeView(for: page)
-                }
+            }
+            // push
+            .navigationDestination(for: Page.self) { page in
+                viewFactory.makeView(for: page)
+            }
+            // sheet
+            .sheet(item: $coordinator.sheet) { page in
+                viewFactory.makeView(for: page)
+            }
+            // fullScreen
+            .fullScreenCover(item: $coordinator.fullScreenCover) { page in
+                viewFactory.makeView(for: page)
+            }
         }
     }
 }
@@ -45,5 +56,5 @@ struct AppCoordinatorView: View {
 // MARK: - Preview
 
 #Preview {
-    AppCoordinatorView()
+    AppCoordinatorView(appState: AppState())
 }

@@ -15,6 +15,7 @@ enum Page: Hashable, Identifiable {
     // MARK: - Page
     
     case tabView
+    case signIn
     case feed
     case shopping
 
