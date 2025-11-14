@@ -21,6 +21,7 @@ enum KeychainError: Error {
 
 protocol KeychainManagerProtocol {
     func save(token: String, for type: TokenType) throws
+    func saveAllTokens(accessToken: String, refreshToken: String) throws
     func read(for type: TokenType) throws -> String
     func delete(for type: TokenType) throws
 }
@@ -31,7 +32,7 @@ final class KeychainManager: KeychainManagerProtocol {
 
     private init() {}
     
-    // MARK: - Create
+    // MARK: - Save
     
     func save(token: String, for type: TokenType) throws {
         guard let data = token.data(using: .utf8) else {
@@ -52,6 +53,11 @@ final class KeychainManager: KeychainManagerProtocol {
         guard status == errSecSuccess else {
             throw KeychainError.unexpectedStatus(status)
         }
+    }
+    
+    func saveAllTokens(accessToken: String, refreshToken: String) throws {
+        try save(token: accessToken, for: .accessToken)
+        try save(token: refreshToken, for: .refreshToken)
     }
     
     // MARK: - Read

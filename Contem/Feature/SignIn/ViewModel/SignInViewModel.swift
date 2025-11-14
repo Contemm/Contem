@@ -86,8 +86,7 @@ extension SignInViewModel {
             
             // Keychain에 토큰 저장
             do {
-                try KeychainManager.shared.save(token: accessToken, for: .accessToken)
-                try KeychainManager.shared.save(token: refreshToken, for: .refreshToken)
+                try KeychainManager.shared.saveAllTokens(accessToken: accessToken, refreshToken: refreshToken)
             } catch {
                 // Keychain 저장 실패 시 에러 처리
                 print("Keychain 저장 실패: \(error.localizedDescription)")
