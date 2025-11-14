@@ -55,13 +55,8 @@ final class SignInViewModel: ViewModelType {
         input.loginButtonTapped
             .withUnretained(self)
             .sink { owner, _ in
-                let body = [
-                    "email": owner.output.email,
-                    "password": owner.output.password
-                ]
-                
                 Task {
-                    await owner.signIn(body: body)
+                    await owner.signIn(body: owner.signInBody)
                 }
             }
             .store(in: &cancellables)
@@ -71,7 +66,15 @@ final class SignInViewModel: ViewModelType {
 // MARK: - Method
 
 extension SignInViewModel {
-    
+
+    // 로그인 요청 body
+    private var signInBody: [String: String] {
+        return [
+            "email": output.email,
+            "password": output.password
+        ]
+    }
+
     // 로그인 API 호출
     private func signIn(body: [String: String]) async {
         do {
