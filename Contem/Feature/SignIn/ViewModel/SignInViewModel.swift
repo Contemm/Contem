@@ -19,6 +19,7 @@ final class SignInViewModel: ViewModelType {
     // MARK: - Dependencies
 
 //    private let coordinator: CoordinatorProtocol
+    private let signInAPI: SignInAPIProtocol
 
     // MARK: - Input
 
@@ -31,6 +32,8 @@ final class SignInViewModel: ViewModelType {
     struct Output {
         var email = ""
         var password = ""
+        var shouldShowAlert = false
+        var alertMessage = ""
     }
 
     // MARK: - Init
@@ -40,7 +43,8 @@ final class SignInViewModel: ViewModelType {
 //        transform()
 //    }
     
-    init() {
+    init(signInAPI: SignInAPIProtocol) {
+        self.signInAPI = signInAPI
         transform()
     }
 
@@ -51,11 +55,69 @@ final class SignInViewModel: ViewModelType {
         input.loginButtonTapped
             .withUnretained(self)
             .sink { owner, _ in
-                print("=== 로그인 정보 ===")
-                print("이메일: \(owner.output.email)")
-                print("비밀번호: \(owner.output.password)")
-                print("==================")
+                let body = [
+                    "email": owner.output.email,
+                    "password": owner.output.password
+                ]
+                
+                Task {
+                    await owner.signIn(body: body)
+                }
             }
             .store(in: &cancellables)
+    }
+}
+
+// MARK: - Method
+
+extension SignInViewModel {
+    
+    // 로그인 API 호출
+    private func signIn(body: [String: String]) async {
+        do {
+            let loginResponse = try await signInAPI.signIn(body: body)
+            // TODO: - Token 저장
+
+        } catch let error as NetworkError {
+            switch error {
+            case .badRequest:
+                output.shouldShowAlert = true
+                output.alertMessage = "필수 값을 채워주세요"
+                
+            case .unauthorized:
+                output.shouldShowAlert = true
+                output.alertMessage = "이메일 또는 비밀번호가 일치하지 않습니다"
+                
+            case .networkFailure(let underlyingError):
+                output.shouldShowAlert = true
+                output.alertMessage = "네트워크 연결을 확인해주세요"
+
+            case .timeout:
+                output.shouldShowAlert = true
+                output.alertMessage = "네트워크 연결을 확인해주세요"
+
+            case .serverError:
+                output.shouldShowAlert = true
+                output.alertMessage = "서버에 일시적인 문제가 발생했습니다. 잠시 후 다시 시도해주세요"
+
+            case .invalidURL:
+                print("잘못된 URL 형식 에러: \(error.localizedDescription)")
+            case .invalidResponse:
+                print("응답이 HTTPURLResponse가 아닌 경우 에러: \(error.localizedDescription)")
+            case .forbidden:
+                print("403 에러: \(error.localizedDescription)")
+            case .notFound:
+                print("404 에러: \(error.localizedDescription)")
+            case .decodingFailed:
+                print("디코딩 에러: \(error.localizedDescription)")
+            case .unknownError:
+                print("알 수 없는 에러: \(error.localizedDescription)")
+            }
+
+        } catch {
+            // 기타 에러
+            output.shouldShowAlert = true
+            output.alertMessage = "알 수 없는 오류가 발생했습니다"
+        }
     }
 }
