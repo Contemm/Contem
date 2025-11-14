@@ -22,6 +22,7 @@ enum KeychainError: Error {
 protocol KeychainManagerProtocol {
     func create(token: String, for type: TokenType) throws
     func read(for type: TokenType) throws -> String
+    func delete(for type: TokenType) throws
 }
 
 final class KeychainManager: KeychainManagerProtocol {
@@ -79,5 +80,20 @@ final class KeychainManager: KeychainManagerProtocol {
         }
         
         return token
+    }
+    
+    // MARK: - Delete
+    
+    func delete(for type: TokenType) throws {
+        let query = [
+            kSecClass: kSecClassGenericPassword,
+            kSecAttrAccount: type.rawValue
+        ] as CFDictionary
+        
+        let status = SecItemDelete(query)
+        
+        guard status == errSecSuccess || status == errSecItemNotFound else {
+            throw KeychainError.unexpectedStatus(status)
+        }
     }
 }
