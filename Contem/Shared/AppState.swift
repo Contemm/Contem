@@ -19,13 +19,17 @@ final class AppState: ObservableObject {
     
     // MARK: - Methods
 
-    /// 로그인 처리
+    /// 로그인 처리 (UIKit push 애니메이션 효과)
     func signIn() {
-        isAuthenticated = true
+        withAnimation(.defaultTransition) {
+            isAuthenticated = true
+        }
     }
     
-    /// 로그아웃 처리
+    /// 로그아웃 처리 (UIKit pop 애니메이션 효과)
     func signOut() {
-        isAuthenticated = false
+        withAnimation(.defaultTransition) {
+            isAuthenticated = false
+        }
     }
 }
