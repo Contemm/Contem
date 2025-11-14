@@ -24,6 +24,7 @@ protocol KeychainManagerProtocol {
     func saveAllTokens(accessToken: String, refreshToken: String) throws
     func read(for type: TokenType) throws -> String
     func delete(for type: TokenType) throws
+    func deleteAllTokens() throws
 }
 
 final class KeychainManager: KeychainManagerProtocol {
@@ -101,5 +102,10 @@ final class KeychainManager: KeychainManagerProtocol {
         guard status == errSecSuccess || status == errSecItemNotFound else {
             throw KeychainError.unexpectedStatus(status)
         }
+    }
+    
+    func deleteAllTokens() throws {
+        try delete(for: .accessToken)
+        try delete(for: .refreshToken)
     }
 }
