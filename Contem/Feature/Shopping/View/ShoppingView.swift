@@ -2,7 +2,12 @@ import SwiftUI
 import Combine
 
 struct ShoppingView: View {
-    @StateObject private var viewModel = ShoppingTabViewModel()
+    @ObservedObject private var viewModel: ShoppingTabViewModel
+    
+    init(viewModel: ShoppingTabViewModel) {
+        self.viewModel = viewModel
+    }
+    
     
     private var columns: [GridItem] {
         let columnCount: Int
@@ -297,10 +302,7 @@ struct ProductCard: View {
         .padding(.leading, 8)
     }
 }
-<<<<<<< HEAD
 
-#Preview {
-    ShoppingView()
-}
-=======
->>>>>>> main
+//#Preview {
+//    ShoppingView()
+//}

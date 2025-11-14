@@ -3,7 +3,8 @@ import Combine
 
 @MainActor
 final class ShoppingTabViewModel:ViewModelType {
-    
+    private let coordinator: CoordinatorProtocol
+
     // disposeBag
     var cancellables = Set<AnyCancellable>()
     
@@ -30,7 +31,9 @@ final class ShoppingTabViewModel:ViewModelType {
         var currentSubCategory: SubCategory = OuterSubCategory.padding
     }
     
-    init() {
+    init(coordinator: CoordinatorProtocol) {
+        self.coordinator = coordinator
+        
         transform()
     }
     
