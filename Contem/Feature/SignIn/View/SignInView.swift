@@ -55,5 +55,10 @@ struct SignInView: View {
             }
         }
         .padding(.horizontal, .spacing16)
+        .alert("알림", isPresented: $viewModel.output.shouldShowAlert) {
+            Button("확인", role: .cancel) { }
+        } message: {
+            Text(viewModel.output.alertMessage)
+        }
     }
 }
