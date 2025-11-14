@@ -17,6 +17,13 @@ final class AppState: ObservableObject {
     /// 로그인 여부
     @Published var isAuthenticated = false
     
+    // MARK: - Init
+    
+    init() {
+        // 앱 시작 시 토큰 보유 여부 확인
+        self.isAuthenticated = KeychainManager.shared.hasToken
+    }
+    
     // MARK: - Methods
 
     /// 로그인 처리 (UIKit push 애니메이션 효과)

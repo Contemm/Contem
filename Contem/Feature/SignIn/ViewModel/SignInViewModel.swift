@@ -81,7 +81,19 @@ extension SignInViewModel {
     private func signIn(body: [String: String]) async {
         do {
             let loginResponse = try await signInAPI.signIn(body: body)
-            // TODO: - Token 저장
+            let accessToken = loginResponse.accessToken
+            let refreshToken = loginResponse.refreshToken
+            
+            // Keychain에 토큰 저장
+            do {
+                try KeychainManager.shared.saveAllTokens(accessToken: accessToken, refreshToken: refreshToken)
+            } catch {
+                // Keychain 저장 실패 시 에러 처리
+                print("Keychain 저장 실패: \(error.localizedDescription)")
+                output.shouldShowAlert = true
+                output.alertMessage = "로그인 정보 저장에 실패했습니다.\n앱을 재시작하면 다시 로그인해야 할 수 있습니다."
+                return
+            }
             
             // MainTabView로 화면 전환
             appState.signIn()
