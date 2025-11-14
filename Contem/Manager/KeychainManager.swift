@@ -20,7 +20,7 @@ enum KeychainError: Error {
 }
 
 protocol KeychainManagerProtocol {
-    func create(token: String, for type: TokenType) throws
+    func save(token: String, for type: TokenType) throws
     func read(for type: TokenType) throws -> String
     func delete(for type: TokenType) throws
 }
@@ -33,7 +33,7 @@ final class KeychainManager: KeychainManagerProtocol {
     
     // MARK: - Create
     
-    func create(token: String, for type: TokenType) throws {
+    func save(token: String, for type: TokenType) throws {
         guard let data = token.data(using: .utf8) else {
             throw KeychainError.encodingFailed
         }
