@@ -20,7 +20,8 @@ final class SignInViewModel: ViewModelType {
 
 //    private let coordinator: CoordinatorProtocol
     private let signInAPI: SignInAPIProtocol
-
+    private let appState: AppState
+    
     // MARK: - Input
 
     struct Input {
@@ -43,8 +44,9 @@ final class SignInViewModel: ViewModelType {
 //        transform()
 //    }
     
-    init(signInAPI: SignInAPIProtocol) {
+    init(signInAPI: SignInAPIProtocol, appState: AppState) {
         self.signInAPI = signInAPI
+        self.appState = appState
         transform()
     }
 
@@ -80,7 +82,10 @@ extension SignInViewModel {
         do {
             let loginResponse = try await signInAPI.signIn(body: body)
             // TODO: - Token 저장
-
+            
+            // MainTabView로 화면 전환
+            appState.signIn()
+            
         } catch let error as NetworkError {
             switch error {
             case .badRequest:
