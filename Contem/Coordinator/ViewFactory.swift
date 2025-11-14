@@ -18,14 +18,19 @@ final class ViewFactory {
     /// API Container (모든 API 관리)
     private let apiContainer: APIContainerProtocol
     
+    /// 앱의 전역 상태를 관리하는 AppState
+    private let appState: AppState
+    
     // MARK: - Init
     
     init(
         coordinator: CoordinatorProtocol,
-        apiContainer: APIContainerProtocol = APIContainer.shared
+        apiContainer: APIContainerProtocol = APIContainer.shared,
+        appState: AppState
     ) {
         self.coordinator = coordinator
         self.apiContainer = apiContainer
+        self.appState = appState
     }
     
     // MARK: - View Builder

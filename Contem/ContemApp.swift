@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct ContemApp: App {
+    
+    @StateObject private var appState = AppState()
+    
     var body: some Scene {
         WindowGroup {
-            AppCoordinatorView()
+            AppCoordinatorView(appState: appState)
         }
     }
 }
