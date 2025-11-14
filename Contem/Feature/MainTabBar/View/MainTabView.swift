@@ -11,26 +11,30 @@ struct MainTabView: View {
     
     // MARK: - Properties
     
-    private let coordinator: CoordinatorProtocol
+    @State private var selectedTab: Page = .shopping
+    private let viewFactory: ViewFactory
     
     // MARK: - Init
     
-    init(coordinator: CoordinatorProtocol) {
-        self.coordinator = coordinator
+    init(viewFactory: ViewFactory) {
+        self.viewFactory = viewFactory
     }
     
     // MARK: - Body
     
     var body: some View {
-        TabView {
-            ShoppingView()
+        TabView(selection: $selectedTab) {
+            viewFactory.makeView(for: .shopping)
                 .tabItem {
                     Label("쇼핑", systemImage: "cart")
                 }
-            FeedView()
+                .tag(Page.shopping)
+            
+            viewFactory.makeView(for: .feed)
                 .tabItem {
                     Label("피드", systemImage: "plus.square")
                 }
+                .tag(Page.feed)
         }
         .tint(.blue)
     }

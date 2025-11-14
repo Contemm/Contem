@@ -1,23 +1,23 @@
 //
-//  ProfileRouter.swift
+//  SignInRouter.swift
 //  Contem
 //
-//  Created by HyoTaek on 11/12/25.
+//  Created by HyoTaek on 11/13/25.
 //
 
-enum ProfileRouter: NetworkRouter {
+enum SignInRouter: NetworkRouter {
     
     // MARK: - Case
-    
-    /// 본인 프로필 조회
-    case getMyProfile
+
+    /// 로그인
+    case signIn(body: [String: String])
     
     // MARK: - Path
     
     var path: String {
         switch self {
-        case .getMyProfile:
-            return "users/me/profile"
+        case .signIn:
+            return "users/login"
         }
     }
     
@@ -25,8 +25,8 @@ enum ProfileRouter: NetworkRouter {
     
     var method: HTTPMethod {
         switch self {
-        case .getMyProfile:
-            return .get
+        case .signIn:
+            return .post
         }
     }
     
@@ -34,7 +34,6 @@ enum ProfileRouter: NetworkRouter {
     
     var headers: [String : String]? {
         return [
-            "Authorization": "로그인 응답 후 Keychain 혹은 UserDefaults에 저장된 accessToken값",
             "SeSACKey": APIConfig.sesacKey,
             "ProductId": APIConfig.productID
         ]
@@ -44,8 +43,8 @@ enum ProfileRouter: NetworkRouter {
     
     var parameters: [String : Any]? {
         switch self {
-        case .getMyProfile:
-            nil
+        case .signIn(let body):
+            return body
         }
     }
 }

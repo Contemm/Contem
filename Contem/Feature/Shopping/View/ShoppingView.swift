@@ -297,7 +297,10 @@ struct ProductCard: View {
         .padding(.leading, 8)
     }
 }
+<<<<<<< HEAD
 
 #Preview {
     ShoppingView()
 }
+=======
+>>>>>>> main
