@@ -25,6 +25,7 @@ protocol KeychainManagerProtocol {
     func read(for type: TokenType) throws -> String
     func delete(for type: TokenType) throws
     func deleteAllTokens() throws
+    var hasToken: Bool { get }
 }
 
 final class KeychainManager: KeychainManagerProtocol {
@@ -107,5 +108,16 @@ final class KeychainManager: KeychainManagerProtocol {
     func deleteAllTokens() throws {
         try delete(for: .accessToken)
         try delete(for: .refreshToken)
+    }
+    
+    // MARK: - 토큰 보유 여부 판별
+    
+    var hasToken: Bool {
+        do {
+            _ = try read(for: .accessToken)
+            return true
+        } catch {
+            return false
+        }
     }
 }
