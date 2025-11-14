@@ -28,19 +28,27 @@ struct AppCoordinatorView: View {
     var body: some View {
         NavigationStack(path: $coordinator.path) {
             // 로그인 상태에 따라 초기 화면 분기
-            viewFactory.makeView(for: appState.isAuthenticated ? .tabView : .signIn)
-                // push
-                .navigationDestination(for: Page.self) { page in
-                    viewFactory.makeView(for: page)
+            Group {
+                if appState.isAuthenticated {
+                    viewFactory.makeView(for: .tabView)
+                        .transition(.move(edge: .trailing))
+                } else {
+                    viewFactory.makeView(for: .signIn)
+                        .transition(.move(edge: .leading))
                 }
-                // sheet
-                .sheet(item: $coordinator.sheet) { page in
-                    viewFactory.makeView(for: page)
-                }
-                // fullScreen
-                .fullScreenCover(item: $coordinator.fullScreenCover) { page in
-                    viewFactory.makeView(for: page)
-                }
+            }
+            // push
+            .navigationDestination(for: Page.self) { page in
+                viewFactory.makeView(for: page)
+            }
+            // sheet
+            .sheet(item: $coordinator.sheet) { page in
+                viewFactory.makeView(for: page)
+            }
+            // fullScreen
+            .fullScreenCover(item: $coordinator.fullScreenCover) { page in
+                viewFactory.makeView(for: page)
+            }
         }
     }
 }
