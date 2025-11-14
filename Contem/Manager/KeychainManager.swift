@@ -14,11 +14,14 @@ enum TokenType: String {
 
 enum KeychainError: Error {
     case encodingFailed
+    case decodingFailed
+    case itemNotFound
     case unexpectedStatus(OSStatus)
 }
 
 protocol KeychainManagerProtocol {
     func create(token: String, for type: TokenType) throws
+    func read(for type: TokenType) throws -> String
 }
 
 final class KeychainManager: KeychainManagerProtocol {
@@ -48,5 +51,33 @@ final class KeychainManager: KeychainManagerProtocol {
         guard status == errSecSuccess else {
             throw KeychainError.unexpectedStatus(status)
         }
+    }
+    
+    // MARK: - Read
+    
+    func read(for type: TokenType) throws -> String {
+        let query = [
+            kSecClass: kSecClassGenericPassword,
+            kSecAttrAccount: type.rawValue,
+            kSecReturnData: true,
+            kSecMatchLimit: kSecMatchLimitOne
+        ] as CFDictionary
+        
+        var item: CFTypeRef?
+        let status = SecItemCopyMatching(query, &item)
+        
+        guard status == errSecSuccess else {
+            if status == errSecItemNotFound {
+                throw KeychainError.itemNotFound
+            }
+            throw KeychainError.unexpectedStatus(status)
+        }
+        
+        guard let data = item as? Data,
+              let token = String(data: data, encoding: .utf8) else {
+            throw KeychainError.decodingFailed
+        }
+        
+        return token
     }
 }
