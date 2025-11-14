@@ -35,6 +35,8 @@ final class ViewFactory {
         switch page {
         case .tabView:
             MainTabView(viewFactory: self)
+        case .signIn:
+            makeSignInView()
         case .feed:
             makeFeedView()
         case .shopping:
@@ -43,6 +45,15 @@ final class ViewFactory {
     }
 
     // MARK: - Private View Builders
+    
+    /// SignInView 생성
+    private func makeSignInView() -> SignInView {
+        let viewModel = SignInViewModel(
+            signInAPI: apiContainer.signInAPI,
+            appState: appState
+        )
+        return SignInView(viewModel: viewModel)
+    }
 
     /// FeedView 생성
     private func makeFeedView() -> FeedView {
