@@ -157,9 +157,13 @@ private struct BannerSection: View {
                                    .cornerRadius(16)
                                    
                                    VStack(alignment: .leading, spacing: 6) {
-                                       Text("\(banner.title)\n\(banner.subtitle)")
-                                           .font(.system(size: 24, weight: .bold))
+                                       Text("\(banner.title)")
+                                           .font(.titleLarge)
+                                           .bold()
                                            .foregroundColor(.white)
+                                       
+                                       Text("\(banner.subtitle)")
+                                           .font(.captionRegular)
                                    }
                                    .padding(.leading, 20)
                                    .padding(.bottom, 20)
@@ -236,7 +240,6 @@ struct ProductCard: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
-//            productImageSection
             ZStack(alignment: .bottomTrailing) {
                 GeometryReader { geometry in
                     Image(product.imageName)

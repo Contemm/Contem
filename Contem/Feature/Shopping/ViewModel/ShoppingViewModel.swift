@@ -4,6 +4,7 @@ import Combine
 @MainActor
 final class ShoppingViewModel:ViewModelType {
     private let coordinator: CoordinatorProtocol
+    private let shoppingAPI: ShoppingAPIProtocol
 
     // disposeBag
     var cancellables = Set<AnyCancellable>()
@@ -31,15 +32,21 @@ final class ShoppingViewModel:ViewModelType {
         var currentSubCategory: SubCategory = OuterSubCategory.padding
     }
     
-    init(coordinator: CoordinatorProtocol) {
+    init(coordinator: CoordinatorProtocol,
+         shoppingAPI: ShoppingAPIProtocol) {
         self.coordinator = coordinator
+        self.shoppingAPI = shoppingAPI
         transform()
     }
     
     func transform() {
         input.onAppear
-            .sink { [weak self] _ in
+            .sink { [weak self] owner in
                 guard let self = self else { return }
+                
+                Task {
+                    await self.fetchBanner(body: ["category" : "banner_outer"])
+                }
                 
                 let initMainCategory = TabCategory.outer
                 let initSubCategory = initMainCategory.subCategories[0]
@@ -74,14 +81,14 @@ final class ShoppingViewModel:ViewModelType {
                 output.currentCategory = selectedTab
                 output.currentSubCategory = firstSubCategory
                 
-                let banners = self.loadBanners(for: selectedTab)
+                let banners = loadBanners(for: selectedTab)
                 output.banners = banners
                 output.infiniteBanners = calculateInfiniteBanners(from: banners)
                 output.currentSubCategories = selectedTab.subCategories.map { $0.displayName }
                 output.currentBannerIndex = 1
                 output.displayBannerIndex = 1
                 
-                let products = self.loadProducts(
+                let products = loadProducts(
                     tabCategory: selectedTab,
                     subCategory: firstSubCategory
                 )
@@ -98,7 +105,7 @@ final class ShoppingViewModel:ViewModelType {
                 
                 output.currentSubCategory = selectedSub
                 
-                let products = self.loadProducts(
+                let products = loadProducts(
                     tabCategory: currentTab,
                     subCategory: selectedSub
                 )
@@ -127,7 +134,6 @@ extension ShoppingViewModel {
         }
     }
     
-    // ✅ 추가: 배너 인덱스 업데이트 메서드
     func updateBannerIndex(to newIndex: Int) {
         output.currentBannerIndex = newIndex
         output.displayBannerIndex = calculateDisplayIndex()
@@ -166,61 +172,76 @@ extension ShoppingViewModel {
 
 
 extension ShoppingViewModel {
+    
+    private func fetchBanner(body: [String: String]) async {
+        do {
+            let result = try await shoppingAPI.getBannerList(body: body)
+            let bannerList = BannerList(from: result)
+            output.banners = bannerList.banners
+            output.infiniteBanners = calculateInfiniteBanners(from: bannerList.banners)
+            
+        } catch {
+            print("에러 발생 \(error)")
+        }
+    }
+    
+    
+    
     /// 카테고리별 배너 로드
     private func loadBanners(for category: TabCategory) -> [Banner] {
         switch category {
         case .outer:
             return [
-                Banner(title: "특별한 세일", subtitle: "놓치지 마세요", thumbnail: "banner_1"),
-                Banner(title: "신상품 입고", subtitle: "지금 확인해보세요", thumbnail: "banner_2"),
-                Banner(title: "시즌 오프", subtitle: "최대 50% 할인", thumbnail: "banner_3"),
-                Banner(title: "베스트 아이템", subtitle: "인기 상품", thumbnail: "banner_4"),
-                Banner(title: "특별한 혜택", subtitle: "회원 전용", thumbnail: "banner_5"),
+//                Banner(from: PostDTO, title: "특별한 세일", subtitle: "놓치지 마세요", thumbnail: "banner_1"),
+//                Banner(title: "신상품 입고", subtitle: "지금 확인해보세요", thumbnail: "banner_2"),
+//                Banner(title: "시즌 오프", subtitle: "최대 50% 할인", thumbnail: "banner_3"),
+//                Banner(title: "베스트 아이템", subtitle: "인기 상품", thumbnail: "banner_4"),
+//                Banner(title: "특별한 혜택", subtitle: "회원 전용", thumbnail: "banner_5"),
             ]
             
         case .top:
             return [
-                Banner(title: "특별한 세일", subtitle: "놓치지 마세요", thumbnail: "banner_1"),
-                Banner(title: "신상품 입고", subtitle: "지금 확인해보세요", thumbnail: "banner_2"),
-                Banner(title: "시즌 오프", subtitle: "최대 50% 할인", thumbnail: "banner_3"),
-                Banner(title: "베스트 아이템", subtitle: "인기 상품", thumbnail: "banner_4"),
-                Banner(title: "특별한 혜택", subtitle: "회원 전용", thumbnail: "banner_5"),
+//                Banner(title: "특별한 세일", subtitle: "놓치지 마세요", thumbnail: "banner_1"),
+//                Banner(title: "신상품 입고", subtitle: "지금 확인해보세요", thumbnail: "banner_2"),
+//                Banner(title: "시즌 오프", subtitle: "최대 50% 할인", thumbnail: "banner_3"),
+//                Banner(title: "베스트 아이템", subtitle: "인기 상품", thumbnail: "banner_4"),
+//                Banner(title: "특별한 혜택", subtitle: "회원 전용", thumbnail: "banner_5"),
             ]
             
         case .bottom:
             return [
-                Banner(title: "특별한 세일", subtitle: "놓치지 마세요", thumbnail: "banner_1"),
-                Banner(title: "신상품 입고", subtitle: "지금 확인해보세요", thumbnail: "banner_2"),
-                Banner(title: "시즌 오프", subtitle: "최대 50% 할인", thumbnail: "banner_3"),
-                Banner(title: "베스트 아이템", subtitle: "인기 상품", thumbnail: "banner_4"),
-                Banner(title: "특별한 혜택", subtitle: "회원 전용", thumbnail: "banner_5"),
+//                Banner(title: "특별한 세일", subtitle: "놓치지 마세요", thumbnail: "banner_1"),
+//                Banner(title: "신상품 입고", subtitle: "지금 확인해보세요", thumbnail: "banner_2"),
+//                Banner(title: "시즌 오프", subtitle: "최대 50% 할인", thumbnail: "banner_3"),
+//                Banner(title: "베스트 아이템", subtitle: "인기 상품", thumbnail: "banner_4"),
+//                Banner(title: "특별한 혜택", subtitle: "회원 전용", thumbnail: "banner_5"),
             ]
             
         case .beauty:
             return [
-                Banner(title: "특별한 세일", subtitle: "놓치지 마세요", thumbnail: "banner_1"),
-                Banner(title: "신상품 입고", subtitle: "지금 확인해보세요", thumbnail: "banner_2"),
-                Banner(title: "시즌 오프", subtitle: "최대 50% 할인", thumbnail: "banner_3"),
-                Banner(title: "베스트 아이템", subtitle: "인기 상품", thumbnail: "banner_4"),
-                Banner(title: "특별한 혜택", subtitle: "회원 전용", thumbnail: "banner_5"),
+//                Banner(title: "특별한 세일", subtitle: "놓치지 마세요", thumbnail: "banner_1"),
+//                Banner(title: "신상품 입고", subtitle: "지금 확인해보세요", thumbnail: "banner_2"),
+//                Banner(title: "시즌 오프", subtitle: "최대 50% 할인", thumbnail: "banner_3"),
+//                Banner(title: "베스트 아이템", subtitle: "인기 상품", thumbnail: "banner_4"),
+//                Banner(title: "특별한 혜택", subtitle: "회원 전용", thumbnail: "banner_5"),
             ]
             
         case .shoes:
             return [
-                Banner(title: "특별한 세일", subtitle: "놓치지 마세요", thumbnail: "banner_1"),
-                Banner(title: "신상품 입고", subtitle: "지금 확인해보세요", thumbnail: "banner_2"),
-                Banner(title: "시즌 오프", subtitle: "최대 50% 할인", thumbnail: "banner_3"),
-                Banner(title: "베스트 아이템", subtitle: "인기 상품", thumbnail: "banner_4"),
-                Banner(title: "특별한 혜택", subtitle: "회원 전용", thumbnail: "banner_5"),
+//                Banner(title: "특별한 세일", subtitle: "놓치지 마세요", thumbnail: "banner_1"),
+//                Banner(title: "신상품 입고", subtitle: "지금 확인해보세요", thumbnail: "banner_2"),
+//                Banner(title: "시즌 오프", subtitle: "최대 50% 할인", thumbnail: "banner_3"),
+//                Banner(title: "베스트 아이템", subtitle: "인기 상품", thumbnail: "banner_4"),
+//                Banner(title: "특별한 혜택", subtitle: "회원 전용", thumbnail: "banner_5"),
             ]
             
         case .accessory:
             return [
-                Banner(title: "특별한 세일", subtitle: "놓치지 마세요", thumbnail: "banner_1"),
-                Banner(title: "신상품 입고", subtitle: "지금 확인해보세요", thumbnail: "banner_2"),
-                Banner(title: "시즌 오프", subtitle: "최대 50% 할인", thumbnail: "banner_3"),
-                Banner(title: "베스트 아이템", subtitle: "인기 상품", thumbnail: "banner_4"),
-                Banner(title: "특별한 혜택", subtitle: "회원 전용", thumbnail: "banner_5"),
+//                Banner(title: "특별한 세일", subtitle: "놓치지 마세요", thumbnail: "banner_1"),
+//                Banner(title: "신상품 입고", subtitle: "지금 확인해보세요", thumbnail: "banner_2"),
+//                Banner(title: "시즌 오프", subtitle: "최대 50% 할인", thumbnail: "banner_3"),
+//                Banner(title: "베스트 아이템", subtitle: "인기 상품", thumbnail: "banner_4"),
+//                Banner(title: "특별한 혜택", subtitle: "회원 전용", thumbnail: "banner_5"),
             ]
         }
     }
