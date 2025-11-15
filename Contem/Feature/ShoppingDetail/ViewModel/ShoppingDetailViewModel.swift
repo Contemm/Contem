@@ -8,9 +8,23 @@
 import SwiftUI
 import Combine
 
-final class ShoppingDetailViewModel: ObservableObject {
+@MainActor
+final class ShoppingDetailViewModel: ViewModelType {
+
+    // MARK: - MVVM
+
+    var cancellables = Set<AnyCancellable>()
+    var input = Input()
+    @Published var output = Output()
+
+    // MARK: - Dependencies
+
+    private let coordinator: CoordinatorProtocol
+    private let shoppingDetailAPI: ShoppingDetailAPIProtocol
+    private let postId: String
 
     // MARK: - Input
+
     struct Input {
         let viewDidLoad = PassthroughSubject<Void, Never>()
         let likeButtonTapped = PassthroughSubject<Void, Never>()
@@ -23,41 +37,21 @@ final class ShoppingDetailViewModel: ObservableObject {
     }
 
     // MARK: - Output
+
     struct Output {
-        let detailInfo: AnyPublisher<ShoppingDetailInfo?, Never>
-        let isLoading: AnyPublisher<Bool, Never>
-        let errorMessage: AnyPublisher<String?, Never>
-        let isLiked: AnyPublisher<Bool, Never>
-        let isFollowing: AnyPublisher<Bool, Never>
-        let selectedSize: AnyPublisher<String?, Never>
-        let showSizeSheet: AnyPublisher<Bool, Never>
-        let showPurchaseAlert: AnyPublisher<Bool, Never>
-        let showShareAlert: AnyPublisher<Bool, Never>
+        var detailInfo: ShoppingDetailInfo?
+        var isLoading = false
+        var errorMessage: String?
+        var isLiked = false
+        var isFollowing = false
+        var selectedSize: String?
+        var showSizeSheet = false
+        var showPurchaseAlert = false
+        var showShareAlert = false
     }
 
-    // MARK: - Properties
-    let input = Input()
-    let output: Output
-
-    private var cancellables = Set<AnyCancellable>()
-
-    // MARK: - State
-    private let detailInfoSubject = CurrentValueSubject<ShoppingDetailInfo?, Never>(nil)
-    private let isLoadingSubject = CurrentValueSubject<Bool, Never>(false)
-    private let errorMessageSubject = CurrentValueSubject<String?, Never>(nil)
-    private let isLikedSubject = CurrentValueSubject<Bool, Never>(false)
-    private let isFollowingSubject = CurrentValueSubject<Bool, Never>(false)
-    private let selectedSizeSubject = CurrentValueSubject<String?, Never>(nil)
-    private let showSizeSheetSubject = CurrentValueSubject<Bool, Never>(false)
-    private let showPurchaseAlertSubject = CurrentValueSubject<Bool, Never>(false)
-    private let showShareAlertSubject = CurrentValueSubject<Bool, Never>(false)
-
-    // MARK: - Dependencies
-    private let coordinator: CoordinatorProtocol
-    private let shoppingDetailAPI: ShoppingDetailAPIProtocol
-    private let postId: String
-
     // MARK: - Initialization
+
     init(
         postId: String,
         coordinator: CoordinatorProtocol,
@@ -67,23 +61,12 @@ final class ShoppingDetailViewModel: ObservableObject {
         self.coordinator = coordinator
         self.shoppingDetailAPI = shoppingDetailAPI
 
-        self.output = Output(
-            detailInfo: detailInfoSubject.eraseToAnyPublisher(),
-            isLoading: isLoadingSubject.eraseToAnyPublisher(),
-            errorMessage: errorMessageSubject.eraseToAnyPublisher(),
-            isLiked: isLikedSubject.eraseToAnyPublisher(),
-            isFollowing: isFollowingSubject.eraseToAnyPublisher(),
-            selectedSize: selectedSizeSubject.eraseToAnyPublisher(),
-            showSizeSheet: showSizeSheetSubject.eraseToAnyPublisher(),
-            showPurchaseAlert: showPurchaseAlertSubject.eraseToAnyPublisher(),
-            showShareAlert: showShareAlertSubject.eraseToAnyPublisher()
-        )
-
-        bind()
+        transform()
     }
 
-    // MARK: - Bind
-    private func bind() {
+    // MARK: - Transform
+
+    func transform() {
         // View Did Load - API 호출
         input.viewDidLoad
             .sink { [weak self] in
@@ -95,35 +78,35 @@ final class ShoppingDetailViewModel: ObservableObject {
         input.likeButtonTapped
             .sink { [weak self] in
                 guard let self = self else { return }
-                self.isLikedSubject.send(!self.isLikedSubject.value)
+                self.output.isLiked.toggle()
             }
             .store(in: &cancellables)
 
         // Share Button
         input.shareButtonTapped
             .sink { [weak self] in
-                self?.showShareAlertSubject.send(true)
+                self?.output.showShareAlert = true
             }
             .store(in: &cancellables)
 
         // Size Selection
         input.sizeSelectionTapped
             .sink { [weak self] in
-                self?.showSizeSheetSubject.send(true)
+                self?.output.showSizeSheet = true
             }
             .store(in: &cancellables)
 
         input.sizeSelected
             .sink { [weak self] size in
-                self?.selectedSizeSubject.send(size)
-                self?.showSizeSheetSubject.send(false)
+                self?.output.selectedSize = size
+                self?.output.showSizeSheet = false
             }
             .store(in: &cancellables)
 
         // Purchase Button
         input.purchaseButtonTapped
             .sink { [weak self] in
-                self?.showPurchaseAlertSubject.send(true)
+                self?.output.showPurchaseAlert = true
             }
             .store(in: &cancellables)
 
@@ -131,7 +114,7 @@ final class ShoppingDetailViewModel: ObservableObject {
         input.followButtonTapped
             .sink { [weak self] in
                 guard let self = self else { return }
-                self.isFollowingSubject.send(!self.isFollowingSubject.value)
+                self.output.isFollowing.toggle()
             }
             .store(in: &cancellables)
 
@@ -144,9 +127,10 @@ final class ShoppingDetailViewModel: ObservableObject {
     }
 
     // MARK: - API Methods
+
     private func fetchDetail() {
-        isLoadingSubject.send(true)
-        errorMessageSubject.send(nil)
+        output.isLoading = true
+        output.errorMessage = nil
 
         Task { [weak self] in
             guard let self = self else { return }
@@ -154,28 +138,29 @@ final class ShoppingDetailViewModel: ObservableObject {
             do {
                 let detailInfo = try await self.shoppingDetailAPI.fetchDetail(postId: self.postId)
                 await MainActor.run {
-                    self.detailInfoSubject.send(detailInfo)
-                    self.isLoadingSubject.send(false)
+                    self.output.detailInfo = detailInfo
+                    self.output.isLoading = false
                 }
             } catch {
                 await MainActor.run {
-                    self.errorMessageSubject.send(error.localizedDescription)
-                    self.isLoadingSubject.send(false)
+                    self.output.errorMessage = error.localizedDescription
+                    self.output.isLoading = false
                 }
             }
         }
     }
 
     // MARK: - Helper Methods
+
     func closeSizeSheet() {
-        showSizeSheetSubject.send(false)
+        output.showSizeSheet = false
     }
 
     func closePurchaseAlert() {
-        showPurchaseAlertSubject.send(false)
+        output.showPurchaseAlert = false
     }
 
     func closeShareAlert() {
-        showShareAlertSubject.send(false)
+        output.showShareAlert = false
     }
 }

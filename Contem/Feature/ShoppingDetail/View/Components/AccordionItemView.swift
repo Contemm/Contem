@@ -28,37 +28,37 @@ struct AccordionItemView: View {
             } label: {
                 HStack {
                     Text(title)
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundColor(.black)
+                        .font(.titleSmall)
+                        .foregroundColor(.primary100)
 
                     Spacer()
 
                     Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
-                        .font(.system(size: 14))
-                        .foregroundColor(.gray)
+                        .font(.bodyRegular)
+                        .foregroundColor(.gray500)
                 }
-                .padding(.horizontal, 20)
-                .padding(.vertical, 16)
+                .padding(.horizontal, .spacing20)
+                .padding(.vertical, .spacing16)
             }
 
             // 컨텐츠
             if isExpanded {
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: .spacing8) {
                     Text(content)
-                        .font(.system(size: 14))
-                        .foregroundColor(.gray)
-                        .lineSpacing(4)
+                        .font(.bodyRegular)
+                        .foregroundColor(.gray500)
+                        .lineSpacing(.spacing4)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 20)
-                .padding(.vertical, 16)
-                .background(Color(.systemGray6))
+                .padding(.horizontal, .spacing20)
+                .padding(.vertical, .spacing16)
+                .background(.gray50)
                 .transition(.opacity.combined(with: .move(edge: .top)))
             }
 
             // 구분선
             Divider()
-                .background(Color(.systemGray5))
+                .background(.gray100)
         }
     }
 }

@@ -18,27 +18,27 @@ struct ShoppingDetailBrandView: View {
     // MARK: - Body
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            HStack(spacing: 12) {
+        VStack(alignment: .leading, spacing: .spacing16) {
+            HStack(spacing: .spacing12) {
                 Image(brandInfo.profileImage)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 60, height: 60)
-                    .background(Color.white)
+                    .background(.primary0)
                     .clipShape(Circle())
                     .overlay(
                         Circle()
-                            .stroke(Color.gray.opacity(0.2), lineWidth: 1)
+                            .stroke(.gray100, lineWidth: 1)
                     )
 
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: .spacing4) {
                     Text(brandInfo.nick)
-                        .font(.system(size: 16, weight: .bold))
-                        .foregroundColor(.black)
+                        .font(.titleSmall)
+                        .foregroundColor(.primary100)
 
                     Text("브랜드 공식몰")
-                        .font(.system(size: 13))
-                        .foregroundColor(.gray)
+                        .font(.captionLarge)
+                        .foregroundColor(.gray500)
                 }
 
                 Spacer()
@@ -48,29 +48,29 @@ struct ShoppingDetailBrandView: View {
                         onFollowTapped()
                     }
                 }) {
-                    HStack(spacing: 4) {
+                    HStack(spacing: .spacing4) {
                         Image(systemName: isFollowing ? "checkmark" : "plus")
-                            .font(.system(size: 12, weight: .semibold))
+                            .font(.captionLarge)
 
                         Text(isFollowing ? "팔로잉" : "팔로우")
-                            .font(.system(size: 13, weight: .semibold))
+                            .font(.captionLarge)
                     }
-                    .foregroundColor(isFollowing ? .black : .white)
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 8)
-                    .background(isFollowing ? Color.white : Color.black)
+                    .foregroundColor(isFollowing ? .primary100 : .primary0)
+                    .padding(.horizontal, .spacing16)
+                    .padding(.vertical, .spacing8)
+                    .background(isFollowing ? .primary0 : .primary100)
                     .overlay(
-                        RoundedRectangle(cornerRadius: 20)
-                            .stroke(Color.black, lineWidth: isFollowing ? 1 : 0)
+                        RoundedRectangle(cornerRadius: .radiusXLarge)
+                            .stroke(.primary100, lineWidth: isFollowing ? 1 : 0)
                     )
-                    .cornerRadius(20)
+                    .cornerRadius(.radiusXLarge)
                 }
                 .scaleEffect(isFollowing ? 1.05 : 1.0)
             }
-            .padding(.horizontal, 20)
+            .padding(.horizontal, .spacing20)
         }
-        .padding(.vertical, 16)
-        .background(Color.gray.opacity(0.05))
+        .padding(.vertical, .spacing16)
+        .background(.gray25)
     }
 }
 

@@ -32,14 +32,14 @@ struct ImageCarouselView: View {
             .frame(height: 400)
 
             // 페이지 인디케이터
-            HStack(spacing: 8) {
+            HStack(spacing: .spacing8) {
                 ForEach(0..<imageNames.count, id: \.self) { index in
                     Circle()
-                        .fill(currentIndex == index ? Color.black : Color.gray.opacity(0.3))
+                        .fill(currentIndex == index ? .primary100 : .gray100)
                         .frame(width: 8, height: 8)
                 }
             }
-            .padding(.vertical, 12)
+            .padding(.vertical, .spacing12)
         }
     }
 }

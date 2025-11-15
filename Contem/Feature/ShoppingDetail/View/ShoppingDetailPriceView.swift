@@ -16,40 +16,40 @@ struct ShoppingDetailPriceView: View {
     // MARK: - Body
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack(spacing: 8) {
+        VStack(alignment: .leading, spacing: .spacing12) {
+            HStack(spacing: .spacing8) {
                 Text("원가")
-                    .font(.system(size: 14))
-                    .foregroundColor(.gray)
+                    .font(.bodyRegular)
+                    .foregroundColor(.gray500)
 
                 Text("\(detailInfo.price.formatted())원")
-                    .font(.system(size: 14))
-                    .foregroundColor(.gray)
+                    .font(.bodyRegular)
+                    .foregroundColor(.gray500)
                     .strikethrough()
 
                 if detailInfo.discountRate > 0 {
                     Text("\(Int(detailInfo.discountRate))%")
-                        .font(.system(size: 12, weight: .bold))
-                        .foregroundColor(.white)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
+                        .font(.captionLarge)
+                        .foregroundColor(.primary0)
+                        .padding(.horizontal, .spacing8)
+                        .padding(.vertical, .spacing4)
                         .background(Color.red)
-                        .cornerRadius(4)
+                        .cornerRadius(.spacing4)
                 }
             }
 
             if let discountedPrice = detailInfo.discountedPrice {
                 Text("\(discountedPrice.formatted())원")
-                    .font(.system(size: 26, weight: .bold))
-                    .foregroundColor(.black)
+                    .font(.titleLarge)
+                    .foregroundColor(.primary100)
             }
 
             Text(detailInfo.title)
-                .font(.system(size: 16, weight: .semibold))
-                .foregroundColor(.black)
+                .font(.titleSmall)
+                .foregroundColor(.primary100)
         }
-        .padding(.horizontal, 20)
-        .padding(.vertical, 16)
+        .padding(.horizontal, .spacing20)
+        .padding(.vertical, .spacing16)
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 }

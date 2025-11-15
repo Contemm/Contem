@@ -48,18 +48,18 @@ struct ShoppingDetailSizeSheet: View {
             // Header
             HStack {
                 Text("사이즈 선택")
-                    .font(.system(size: 18, weight: .bold))
-                    .foregroundColor(.black)
+                    .font(.titleMedium)
+                    .foregroundColor(.primary100)
 
                 Spacer()
 
                 Button(action: onDismiss) {
                     Image(systemName: "xmark")
-                        .foregroundColor(.black)
-                        .font(.system(size: 16))
+                        .foregroundColor(.primary100)
+                        .font(.bodyLarge)
                 }
             }
-            .padding(20)
+            .padding(.spacing20)
 
             Divider()
 
@@ -98,20 +98,20 @@ struct ShoppingDetailSizeRow: View {
         Button(action: action) {
             HStack {
                 Text(size)
-                    .font(.system(size: 16, weight: isSelected ? .bold : .regular))
-                    .foregroundColor(.black)
+                    .font(isSelected ? .titleSmall : .bodyLarge)
+                    .foregroundColor(.primary100)
 
                 Spacer()
 
                 if isSelected {
                     Image(systemName: "checkmark")
-                        .foregroundColor(.black)
-                        .font(.system(size: 16, weight: .bold))
+                        .foregroundColor(.primary100)
+                        .font(.titleSmall)
                 }
             }
-            .padding(.horizontal, 20)
-            .padding(.vertical, 16)
-            .background(isSelected ? Color.gray.opacity(0.1) : Color.white)
+            .padding(.horizontal, .spacing20)
+            .padding(.vertical, .spacing16)
+            .background(isSelected ? .gray25 : .primary0)
         }
 
         Divider()

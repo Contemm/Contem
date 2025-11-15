@@ -14,18 +14,6 @@ struct ShoppingDetailView: View {
 
     @ObservedObject private var viewModel: ShoppingDetailViewModel
 
-    // MARK: - Properties
-
-    @State private var detailInfo: ShoppingDetailInfo?
-    @State private var isLoading = false
-    @State private var errorMessage: String?
-    @State private var isLiked = false
-    @State private var isFollowing = false
-    @State private var selectedSize: String?
-    @State private var showSizeSheet = false
-    @State private var showPurchaseAlert = false
-    @State private var showShareAlert = false
-
     // MARK: - Initialization
 
     init(viewModel: ShoppingDetailViewModel) {
@@ -36,29 +24,29 @@ struct ShoppingDetailView: View {
 
     var body: some View {
         ZStack {
-            if isLoading {
+            if viewModel.output.isLoading {
                 // 로딩 인디케이터
                 ProgressView()
                     .scaleEffect(1.5)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else if let errorMessage = errorMessage {
+            } else if let errorMessage = viewModel.output.errorMessage {
                 // 에러 메시지
-                VStack(spacing: 16) {
+                VStack(spacing: .spacing16) {
                     Image(systemName: "exclamationmark.triangle")
-                        .font(.system(size: 50))
+                        .font(.largeTitle)
                         .foregroundColor(.red)
 
                     Text("오류가 발생했습니다")
-                        .font(.system(size: 18, weight: .bold))
+                        .font(.titleMedium)
 
                     Text(errorMessage)
-                        .font(.system(size: 14))
-                        .foregroundColor(.gray)
+                        .font(.bodyRegular)
+                        .foregroundColor(.gray500)
                         .multilineTextAlignment(.center)
-                        .padding(.horizontal, 40)
+                        .padding(.horizontal, .spacing32)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else if let detailInfo = detailInfo {
+            } else if let detailInfo = viewModel.output.detailInfo {
                 // 데이터 로드 성공
                 contentView(detailInfo: detailInfo)
             }
@@ -70,8 +58,8 @@ struct ShoppingDetailView: View {
                     viewModel.input.backButtonTapped.send()
                 }) {
                     Image(systemName: "chevron.left")
-                        .font(.system(size: 18, weight: .semibold))
-                        .foregroundColor(.black)
+                        .font(.titleSmall)
+                        .foregroundColor(.primary100)
                 }
             }
 
@@ -80,15 +68,15 @@ struct ShoppingDetailView: View {
                     viewModel.input.shareButtonTapped.send()
                 }) {
                     Image(systemName: "square.and.arrow.up")
-                        .font(.system(size: 18))
-                        .foregroundColor(.black)
+                        .font(.titleSmall)
+                        .foregroundColor(.primary100)
                 }
             }
         }
-        .sheet(isPresented: $showSizeSheet) {
+        .sheet(isPresented: $viewModel.output.showSizeSheet) {
             ShoppingDetailSizeSheet(
-                detailInfo: detailInfo,
-                selectedSize: selectedSize,
+                detailInfo: viewModel.output.detailInfo,
+                selectedSize: viewModel.output.selectedSize,
                 onSizeSelected: { size in
                     viewModel.input.sizeSelected.send(size)
                 },
@@ -97,14 +85,14 @@ struct ShoppingDetailView: View {
                 }
             )
         }
-        .alert("공유하기", isPresented: $showShareAlert) {
+        .alert("공유하기", isPresented: $viewModel.output.showShareAlert) {
             Button("확인", role: .cancel) {
                 viewModel.closeShareAlert()
             }
         } message: {
             Text("공유 기능은 준비 중입니다")
         }
-        .alert("구매하기", isPresented: $showPurchaseAlert) {
+        .alert("구매하기", isPresented: $viewModel.output.showPurchaseAlert) {
             Button("확인", role: .cancel) {
                 viewModel.closePurchaseAlert()
             }
@@ -114,15 +102,6 @@ struct ShoppingDetailView: View {
         .onAppear {
             viewModel.input.viewDidLoad.send()
         }
-        .onReceive(viewModel.output.detailInfo) { detailInfo = $0 }
-        .onReceive(viewModel.output.isLoading) { isLoading = $0 }
-        .onReceive(viewModel.output.errorMessage) { errorMessage = $0 }
-        .onReceive(viewModel.output.isLiked) { isLiked = $0 }
-        .onReceive(viewModel.output.isFollowing) { isFollowing = $0 }
-        .onReceive(viewModel.output.selectedSize) { selectedSize = $0 }
-        .onReceive(viewModel.output.showSizeSheet) { showSizeSheet = $0 }
-        .onReceive(viewModel.output.showPurchaseAlert) { showPurchaseAlert = $0 }
-        .onReceive(viewModel.output.showShareAlert) { showShareAlert = $0 }
     }
 
     // MARK: - UI Components
@@ -139,7 +118,7 @@ struct ShoppingDetailView: View {
                     ShoppingDetailPriceView(detailInfo: detailInfo)
 
                     Divider()
-                        .padding(.vertical, 16)
+                        .padding(.vertical, .spacing16)
 
                     // Accordion Sections (간소화 버전)
                     VStack(spacing: 0) {
@@ -160,25 +139,25 @@ struct ShoppingDetailView: View {
                     }
 
                     Divider()
-                        .padding(.vertical, 24)
+                        .padding(.vertical, .spacing24)
 
                     // Brand Section
                     ShoppingDetailBrandView(
                         brandInfo: detailInfo.creator,
-                        isFollowing: isFollowing,
+                        isFollowing: viewModel.output.isFollowing,
                         onFollowTapped: {
                             viewModel.input.followButtonTapped.send()
                         }
                     )
                 }
-                .padding(.bottom, 80)
+                .padding(.bottom, 84)
             }
 
             // Bottom Action Bar
             ShoppingDetailBottomBar(
                 detailInfo: detailInfo,
-                isLiked: isLiked,
-                selectedSize: selectedSize,
+                isLiked: viewModel.output.isLiked,
+                selectedSize: viewModel.output.selectedSize,
                 onLikeTapped: {
                     viewModel.input.likeButtonTapped.send()
                 },
@@ -202,8 +181,9 @@ struct ShoppingDetailView: View {
     NavigationStack {
         ShoppingDetailView(
             viewModel: ShoppingDetailViewModel(
-                postId: "sample_post_001",
-                coordinator: MockCoordinator()
+                postId: "1",
+                coordinator: MockCoordinator(),
+                shoppingDetailAPI: MockShoppingDetailAPI()
             )
         )
     }
