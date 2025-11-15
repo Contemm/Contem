@@ -2,12 +2,11 @@ import SwiftUI
 import Combine
 
 struct ShoppingView: View {
-    @ObservedObject private var viewModel: ShoppingTabViewModel
+    @ObservedObject private var viewModel: ShoppingViewModel
     
-    init(viewModel: ShoppingTabViewModel) {
+    init(viewModel: ShoppingViewModel) {
         self.viewModel = viewModel
     }
-    
     
     private var columns: [GridItem] {
         let columnCount: Int
@@ -126,7 +125,7 @@ struct ShoppingView: View {
 
 // MARK: 베너
 private struct BannerSection: View {
-    @EnvironmentObject private var viewModel: ShoppingTabViewModel
+    @EnvironmentObject private var viewModel: ShoppingViewModel
     
     @State private var dragOffset: CGFloat = 0
     
@@ -230,8 +229,6 @@ private struct BannerSection: View {
     }
 }
 
-
-
 // MARK: - 상품 카드
 struct ProductCard: View {
     let product: ShoppingProduct
@@ -239,32 +236,65 @@ struct ProductCard: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
-            productImageSection
+//            productImageSection
+            ZStack(alignment: .bottomTrailing) {
+                GeometryReader { geometry in
+                    Image(product.imageName)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: geometry.size.width, height: geometry.size.width)
+                        .clipped()
+                }
+                .aspectRatio(1, contentMode: .fit)
+                .cornerRadius(12)
+                .background(
+                    Rectangle()
+                        .fill(Color.gray.opacity(0.15))
+                        .cornerRadius(12)
+                )
+                
+                likeButton
+            }
             
-            productInfoSection
+            VStack(alignment: .leading) {
+                Text(product.brand)
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundColor(.black)
+                
+                Text(product.name)
+                    .font(.system(size: 12))
+                    .foregroundColor(.gray)
+                    .lineLimit(1)
+                
+                Text("\(product.price.formatted())원")
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundColor(.black)
+            }
+            .padding(.top, 8)
+            .padding(.leading, 8)
         }
     }
     
-    private var productImageSection: some View {
-        ZStack(alignment: .bottomTrailing) {
-            GeometryReader { geometry in
-                Image(product.imageName)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: geometry.size.width, height: geometry.size.width)
-                    .clipped()
-            }
-            .aspectRatio(1, contentMode: .fit)
-            .cornerRadius(12)
-            .background(
-                Rectangle()
-                    .fill(Color.gray.opacity(0.15))
-                    .cornerRadius(12)
-            )
-            
-            likeButton
-        }
-    }
+//    private var productImageSection: some View {
+//        ZStack(alignment: .bottomTrailing) {
+//            GeometryReader { geometry in
+//                Image(product.imageName)
+//                    .resizable()
+//                    .scaledToFill()
+//                    .frame(width: geometry.size.width, height: geometry.size.width)
+//                    .clipped()
+//            }
+//            .aspectRatio(1, contentMode: .fit)
+//            .cornerRadius(12)
+//            .background(
+//                Rectangle()
+//                    .fill(Color.gray.opacity(0.15))
+//                    .cornerRadius(12)
+//            )
+//            
+//            likeButton
+//        }
+//    }
     
     private var likeButton: some View {
         Button(action: {
@@ -283,26 +313,23 @@ struct ProductCard: View {
         .padding(8)
     }
     
-    private var productInfoSection: some View {
-        VStack(alignment: .leading) {
-            Text(product.brand)
-                .font(.system(size: 13, weight: .semibold))
-                .foregroundColor(.black)
-            
-            Text(product.name)
-                .font(.system(size: 12))
-                .foregroundColor(.gray)
-                .lineLimit(1)
-            
-            Text("\(product.price.formatted())원")
-                .font(.system(size: 14, weight: .bold))
-                .foregroundColor(.black)
-        }
-        .padding(.top, 8)
-        .padding(.leading, 8)
-    }
+//    private var productInfoSection: some View {
+//        VStack(alignment: .leading) {
+//            Text(product.brand)
+//                .font(.system(size: 13, weight: .semibold))
+//                .foregroundColor(.black)
+//            
+//            Text(product.name)
+//                .font(.system(size: 12))
+//                .foregroundColor(.gray)
+//                .lineLimit(1)
+//            
+//            Text("\(product.price.formatted())원")
+//                .font(.system(size: 14, weight: .bold))
+//                .foregroundColor(.black)
+//        }
+//        .padding(.top, 8)
+//        .padding(.leading, 8)
+//    }
 }
 
-//#Preview {
-//    ShoppingView()
-//}

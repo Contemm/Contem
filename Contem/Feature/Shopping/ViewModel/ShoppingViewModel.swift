@@ -2,7 +2,7 @@ import Foundation
 import Combine
 
 @MainActor
-final class ShoppingTabViewModel:ViewModelType {
+final class ShoppingViewModel:ViewModelType {
     private let coordinator: CoordinatorProtocol
 
     // disposeBag
@@ -33,7 +33,6 @@ final class ShoppingTabViewModel:ViewModelType {
     
     init(coordinator: CoordinatorProtocol) {
         self.coordinator = coordinator
-        
         transform()
     }
     
@@ -112,7 +111,7 @@ final class ShoppingTabViewModel:ViewModelType {
 
 
 // MARK: - Banner Logic
-extension ShoppingTabViewModel {
+extension ShoppingViewModel {
     private func calculateInfiniteBanners(from banners: [Banner]) -> [Banner] {
         guard let first = banners.first, let last = banners.last else { return banners }
         return [last] + banners + [first]
@@ -166,7 +165,7 @@ extension ShoppingTabViewModel {
 }
 
 
-extension ShoppingTabViewModel {
+extension ShoppingViewModel {
     /// 카테고리별 배너 로드
     private func loadBanners(for category: TabCategory) -> [Banner] {
         switch category {
