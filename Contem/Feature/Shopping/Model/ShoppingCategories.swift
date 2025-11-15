@@ -12,7 +12,7 @@ enum TabCategory: String, CaseIterable {
   // API 요청용 카테고리 이름
   var apiValue: String {
     switch self {
-    case .outer: return "outer"
+    case .outer: return "banner_outer"
     case .top: return "top"
     case .bottom: return "bottom"
     case .beauty: return "beauty"
