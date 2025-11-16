@@ -13,7 +13,7 @@ enum TabCategory: String, CaseIterable {
   var apiValue: String {
     switch self {
     case .outer: return "banner_outer"
-    case .top: return "top"
+    case .top: return "banner_top"
     case .bottom: return "bottom"
     case .beauty: return "beauty"
     case .shoes: return "shoes"
@@ -49,8 +49,8 @@ protocol SubCategory {
 // 아우터 서브 카테고리
 enum OuterSubCategory: String, CaseIterable, SubCategory {
   case padding = "패딩"
+    case coat = "코트"
   case mustang = "무스탕"
-  case coat = "코트"
   case blouson = "블루종"
   case suitBlazer = "슈트/블레이저 재킷"
 
@@ -59,8 +59,8 @@ enum OuterSubCategory: String, CaseIterable, SubCategory {
   var apiValue: String {
     switch self {
     case .padding: return "outer_padding"
-    case .mustang: return "outer_mustang"
     case .coat: return "outer_coat"
+    case .mustang: return "outer_mustang"
     case .blouson: return "outer_blouson"
     case .suitBlazer: return "outer_suit_blazer"
     }
