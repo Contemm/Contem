@@ -1,5 +1,18 @@
 import SwiftUI
 import Combine
+import Kingfisher
+
+
+struct MyImageDownloadRequestModifier: ImageDownloadRequestModifier {
+    func modified(for request: URLRequest) -> URLRequest? {
+        var modifiedRequest = request
+        guard let accessToken = try? KeychainManager.shared.read(for: .accessToken) else { return nil }
+        modifiedRequest.setValue(accessToken, forHTTPHeaderField: "Authorization")
+        modifiedRequest.setValue(APIConfig.sesacKey, forHTTPHeaderField: "SeSACKey")
+        modifiedRequest.setValue(APIConfig.productID, forHTTPHeaderField: "ProductId")
+        return modifiedRequest
+    }
+}
 
 struct ShoppingView: View {
     @ObservedObject private var viewModel: ShoppingViewModel
@@ -128,6 +141,7 @@ private struct BannerSection: View {
     @EnvironmentObject private var viewModel: ShoppingViewModel
     
     @State private var dragOffset: CGFloat = 0
+
     
     var body: some View {
         ZStack {
@@ -141,7 +155,12 @@ private struct BannerSection: View {
                        HStack(spacing: spacing) {
                            ForEach(Array(viewModel.output.infiniteBanners.enumerated()), id: \.offset) { index, banner in
                                ZStack(alignment: .bottomLeading) {
-                                   Image(banner.thumbnail)
+                                   
+                                   KFImage(banner.imageUrl)
+                                       .requestModifier(MyImageDownloadRequestModifier())
+                                       .placeholder {
+                                           Color.gray.opacity(0.3)
+                                       }
                                        .resizable()
                                        .scaledToFill()
                                        .frame(width: cardWidth, height: cardHeight)
@@ -164,6 +183,7 @@ private struct BannerSection: View {
                                        
                                        Text("\(banner.subtitle)")
                                            .font(.captionRegular)
+                                           .foregroundColor(.gray100)
                                    }
                                    .padding(.leading, 20)
                                    .padding(.bottom, 20)

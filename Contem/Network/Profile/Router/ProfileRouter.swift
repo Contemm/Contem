@@ -17,7 +17,7 @@ enum ProfileRouter: NetworkRouter {
     var path: String {
         switch self {
         case .getMyProfile:
-            return "users/me/profile"
+            return "/users/me/profile"
         }
     }
     

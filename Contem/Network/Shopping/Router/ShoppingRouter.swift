@@ -13,7 +13,7 @@ enum ShoppingRouter: NetworkRouter {
     var path: String {
         switch self {
         case .banner:
-            return "posts"
+            return "/posts"
         }
     }
     

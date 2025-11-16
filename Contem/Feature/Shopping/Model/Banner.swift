@@ -13,6 +13,10 @@ struct Banner {
     let subtitle: String
     let thumbnail: String
     
+    var imageUrl: URL? {
+        let fullUrl = APIConfig.baseURL + thumbnail
+        return URL(string: fullUrl)
+    }
     
     // DTO로 부터 생성
     init(from dto: PostDTO) {
