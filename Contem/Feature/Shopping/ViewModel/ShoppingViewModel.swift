@@ -27,7 +27,7 @@ final class ShoppingViewModel:ViewModelType {
         var displayBannerIndex: Int = 1
         var currentSubCategories: [String] = []
         
-        var products: [ShoppingProduct] = []
+        var products: [ShoppingProductMock] = []
         var currentCategory = TabCategory.outer
         var currentSubCategory: SubCategory = OuterSubCategory.padding
     }
@@ -56,11 +56,6 @@ final class ShoppingViewModel:ViewModelType {
                 output.currentSubCategory = initSubCategory
                 
                 // 초기 배너 로드
-//                let banners = loadBanners(for: initMainCategory)
-//                output.banners = banners
-//                output.infiniteBanners = calculateInfiniteBanners(from: banners)
-//                output.currentSubCategories = initMainCategory.subCategories.map { $0.displayName }
-//                output.displayBannerIndex = calculateDisplayIndex()
                 
                 // 초기 상품 로드
                 let products = self.loadProducts(
@@ -81,9 +76,6 @@ final class ShoppingViewModel:ViewModelType {
                 output.currentCategory = selectedTab
                 output.currentSubCategory = firstSubCategory
                 
-//                let banners = loadBanners(for: selectedTab)
-//                output.banners = banners
-//                output.infiniteBanners = calculateInfiniteBanners(from: banners)
                 output.currentSubCategories = selectedTab.subCategories.map { $0.displayName }
                 output.currentBannerIndex = 1
                 output.displayBannerIndex = 1
@@ -195,6 +187,14 @@ extension ShoppingViewModel {
         }
     }
     
+    private func fetchProducts(body: [String: String]) async {
+        do {
+            
+        } catch {
+            print("에러 발생 \(error)")
+        }
+    }
+    
     
     
     /// 카테고리별 배너 로드
@@ -212,26 +212,26 @@ extension ShoppingViewModel {
     private func loadProducts(
         tabCategory: TabCategory,
         subCategory: SubCategory
-    ) -> [ShoppingProduct] {
+    ) -> [ShoppingProductMock] {
         
         let allProducts = generateMockProducts()
         return allProducts
     }
     
-    private func generateMockProducts() -> [ShoppingProduct] {
+    private func generateMockProducts() -> [ShoppingProductMock] {
         return [
-            ShoppingProduct(brand: "Palace", name: "팔라스 퍼텍스 퀼팅 RS…", price: 930000, imageName: "image_1"),
-            ShoppingProduct(brand: "moif", name: "[더블점핑][FW25] 모…", price: 567000, imageName: "image_2"),
-            ShoppingProduct(brand: "Jordan", name: "조던 1 x 자이언 윌리엄…", price: 210000, imageName: "image_3"),
-            ShoppingProduct(brand: "Polyteru Human In...", name: "폴리테루 휴먼인텍스 츄…", price: 164000, imageName: "image_4"),
-            ShoppingProduct(brand: "Palace", name: "팔라스 퍼텍스 퀼팅 RS…", price: 840000, imageName: "image_5"),
-            ShoppingProduct(brand: "moif", name: "[더블점핑][FW25] 모…", price: 567000, imageName: "image_6"),
-            ShoppingProduct(brand: "IAB Studio", name: "아이앱 스튜디오 아이앱…", price: 166000, imageName: "image_7"),
-            ShoppingProduct(brand: "moif", name: "[더블점핑][FW25] 모…", price: 495000, imageName: "image_1"),
-            ShoppingProduct(brand: "Nike", name: "(W) 나이키 아스트로그…", price: 138000, imageName: "image_2"),
-            ShoppingProduct(brand: "Polyteru", name: "폴리테루 팬츠…", price: 164000, imageName: "image_3"),
-            ShoppingProduct(brand: "Nike", name: "나이키 신발…", price: 200000, imageName: "image_4"),
-            ShoppingProduct(brand: "Palace", name: "팔라스 재킷…", price: 750000, imageName: "image_5")
+            ShoppingProductMock(brand: "Palace", name: "팔라스 퍼텍스 퀼팅 RS…", price: 930000, imageName: "image_1"),
+            ShoppingProductMock(brand: "moif", name: "[더블점핑][FW25] 모…", price: 567000, imageName: "image_2"),
+            ShoppingProductMock(brand: "Jordan", name: "조던 1 x 자이언 윌리엄…", price: 210000, imageName: "image_3"),
+            ShoppingProductMock(brand: "Polyteru Human In...", name: "폴리테루 휴먼인텍스 츄…", price: 164000, imageName: "image_4"),
+            ShoppingProductMock(brand: "Palace", name: "팔라스 퍼텍스 퀼팅 RS…", price: 840000, imageName: "image_5"),
+            ShoppingProductMock(brand: "moif", name: "[더블점핑][FW25] 모…", price: 567000, imageName: "image_6"),
+            ShoppingProductMock(brand: "IAB Studio", name: "아이앱 스튜디오 아이앱…", price: 166000, imageName: "image_7"),
+            ShoppingProductMock(brand: "moif", name: "[더블점핑][FW25] 모…", price: 495000, imageName: "image_1"),
+            ShoppingProductMock(brand: "Nike", name: "(W) 나이키 아스트로그…", price: 138000, imageName: "image_2"),
+            ShoppingProductMock(brand: "Polyteru", name: "폴리테루 팬츠…", price: 164000, imageName: "image_3"),
+            ShoppingProductMock(brand: "Nike", name: "나이키 신발…", price: 200000, imageName: "image_4"),
+            ShoppingProductMock(brand: "Palace", name: "팔라스 재킷…", price: 750000, imageName: "image_5")
         ]
     }
     

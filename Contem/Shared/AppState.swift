@@ -20,6 +20,15 @@ final class AppState: ObservableObject {
     // MARK: - Init
     
     init() {
+        
+        do {
+            let token = try KeychainManager.shared.read(for: .accessToken)
+            print("토큰: >>> \(token)")
+//            try KeychainManager.shared.deleteAllTokens()
+        } catch {
+            
+        }
+        
         // 앱 시작 시 토큰 보유 여부 확인
         self.isAuthenticated = KeychainManager.shared.hasToken
     }

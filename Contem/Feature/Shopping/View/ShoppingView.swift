@@ -244,7 +244,7 @@ private struct BannerSection: View {
 
 // MARK: - 상품 카드
 struct ProductCard: View {
-    let product: ShoppingProduct
+    let product: ShoppingProductMock
     @State private var isLiked: Bool = false
     
     var body: some View {

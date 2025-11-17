@@ -25,4 +25,5 @@ final class ShoppingAPI: ShoppingAPIProtocol {
         return try await networkLayer.networkRequest(router: router, model: PostListDTO.self)
     }
     
+    
 }
