@@ -6,11 +6,13 @@
 //
 
 import SwiftUI
+import Combine
 
 struct StyleDetailView: View {
     
     //MARK: - Properties
     @State private var selectedPage = 0
+    private let viewModel = StyleDetailViewModel()
     
     //MARK: - Body
     var body: some View {
@@ -18,12 +20,25 @@ struct StyleDetailView: View {
             VStack(spacing: .spacing16){
                 //MARK: - 상단 이미지 슬라이더
                 TabView(selection: $selectedPage) {
-                    ForEach(1...3, id: \.self) { index in
-                        Image("look\(index)")
-                            .resizable()
-                            .scaledToFill()
+                    ForEach(viewModel.output.style.files.indices, id: \.self) { index in
+                        GeometryReader { geometry in
+                            ZStack{
+                                
+                                Image(viewModel.output.style.files[index])
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: geometry.size.width, height: geometry.size.height)
+                                
+                                let tags = viewModel.output.tags[index] ?? []
+                                ForEach(tags, id: \.id){ tag in
+                                    StyleTagLabel(text: "item")
+                                        .position(x: geometry.size.width * tag.relX,
+                                                  y: geometry.size.height * tag.relY)
+                                }
+                            }//: ZSTACK
                             .clipped()
-                            .tag(index)
+                        }//: GeometryReader
+                        .tag(index)
                     }//: LOOP
                 }//: TABVIEW
                 .tabViewStyle(.page)
@@ -40,7 +55,7 @@ struct StyleDetailView: View {
                                 Image(systemName: "heart")
                             }
                             
-                            Text("24k")
+                            Text(viewModel.output.style.likeCount)
                                 .foregroundStyle(.primary100)
                         }//: HSTACK
                         
@@ -52,7 +67,7 @@ struct StyleDetailView: View {
                                 Image(systemName: "message")
                             }
                             
-                            Text("248")
+                            Text("\(viewModel.output.style.commentCount)")
                                 .foregroundStyle(.primary100)
                         }//: HSTACK
                     }//: HSTACK
@@ -66,12 +81,12 @@ struct StyleDetailView: View {
                     
                     VStack(alignment: .leading, spacing: .spacing8){
                         //제목
-                        Text("The Bold and The Simple")
+                        Text(viewModel.output.style.title)
                             .foregroundStyle(.primary100)
                             .font(.titleMedium)
                         
                         //내용
-                        Text("Weave them together or wear them separately, it’s your call. Day or night, this is your look.")
+                        Text(viewModel.output.style.content)
                             .foregroundStyle(.gray700)
                             .font(.bodyLarge)
                     }//: VSTACK
@@ -100,8 +115,10 @@ struct StyleDetailView: View {
                         }//: SCROLLVIEW
                         .frame(height: 100)
                     }//: VSTACK
-                    
                 }//: VSTACK
+                .onAppear(perform: {
+                    viewModel.input.appear.send(())
+                })
                 .navigationTitle("LookBook")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
@@ -120,7 +137,7 @@ struct StyleDetailView: View {
                             Image(systemName: "square.and.arrow.up")
                         }
                     }
-                }
+                }//: TOOLBAR
             }//: VSTACK
         }//: NAVIGATIONSTACK
     }
