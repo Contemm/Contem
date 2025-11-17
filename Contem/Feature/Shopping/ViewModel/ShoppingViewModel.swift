@@ -27,7 +27,7 @@ final class ShoppingViewModel:ViewModelType {
         var displayBannerIndex: Int = 1
         var currentSubCategories: [String] = []
         
-        var products: [ShoppingProductMock] = []
+        var products: [ShoppingProduct] = []
         var currentCategory = TabCategory.outer
         var currentSubCategory: SubCategory = OuterSubCategory.padding
     }
@@ -46,7 +46,9 @@ final class ShoppingViewModel:ViewModelType {
                 
                 Task {
                     await self.fetchBanner(body: ["category" : TabCategory.outer.apiValue])
+                    await self.fetchProducts(body: ["category" : OuterSubCategory.padding.apiValue])
                 }
+                
                                 
                 let initMainCategory = TabCategory.outer
                 let initSubCategory = initMainCategory.subCategories[0]
@@ -58,11 +60,11 @@ final class ShoppingViewModel:ViewModelType {
                 // 초기 배너 로드
                 
                 // 초기 상품 로드
-                let products = self.loadProducts(
-                    tabCategory: initMainCategory,
-                    subCategory: initSubCategory
-                )
-                output.products = products
+//                let products = self.loadProducts(
+//                    tabCategory: initMainCategory,
+//                    subCategory: initSubCategory
+//                )
+//                output.products = products
                 
             }.store(in: &cancellables)
         
@@ -90,11 +92,21 @@ final class ShoppingViewModel:ViewModelType {
                     output.infiniteBanners = calculateInfiniteBanners(from: mockBanners)
                 }
                 
-                let products = loadProducts(
-                    tabCategory: selectedTab,
-                    subCategory: firstSubCategory
-                )
-                output.products = products
+//                let products = loadProducts(
+//                    tabCategory: selectedTab,
+//                    subCategory: firstSubCategory
+//                )
+//                output.products = products
+                
+                
+                // 상품 로드 - 첫번째 서브카테고리에 따라 분기
+                if firstSubCategory.apiValue == OuterSubCategory.padding.apiValue {
+                    Task {
+                        await self.fetchProducts(body: ["category": firstSubCategory.apiValue])
+                    }
+                } else {
+                    output.products = generateMockProducts()
+                }
                 
             }.store(in: &cancellables)
         
@@ -103,15 +115,26 @@ final class ShoppingViewModel:ViewModelType {
             .sink { [weak self] selectedSub in
                 guard let self = self else { return }
                 
-                let currentTab = output.currentCategory
+//                let currentTab = output.currentCategory
+//                
+//                output.currentSubCategory = selectedSub
+//                
+//                let products = loadProducts(
+//                    tabCategory: currentTab,
+//                    subCategory: selectedSub
+//                )
+//                output.products = products
                 
                 output.currentSubCategory = selectedSub
                 
-                let products = loadProducts(
-                    tabCategory: currentTab,
-                    subCategory: selectedSub
-                )
-                output.products = products
+                // .padding 카테고리면 서버 데이터, 아니면 Mock 데이터
+                if selectedSub.apiValue == OuterSubCategory.padding.apiValue {
+                    Task {
+                        await self.fetchProducts(body: ["category": selectedSub.apiValue])
+                    }
+                } else {
+                    output.products = generateMockProducts()
+                }
                 
             }.store(in: &cancellables)
     }
@@ -189,7 +212,9 @@ extension ShoppingViewModel {
     
     private func fetchProducts(body: [String: String]) async {
         do {
-            
+            let result = try await shoppingAPI.getBannerList(body: body)
+            let productList = ShoppingProductList(from: result)
+            output.products = productList.products
         } catch {
             print("에러 발생 \(error)")
         }
@@ -212,26 +237,26 @@ extension ShoppingViewModel {
     private func loadProducts(
         tabCategory: TabCategory,
         subCategory: SubCategory
-    ) -> [ShoppingProductMock] {
+    ) -> [ShoppingProduct] {
         
         let allProducts = generateMockProducts()
         return allProducts
     }
     
-    private func generateMockProducts() -> [ShoppingProductMock] {
+    private func generateMockProducts() -> [ShoppingProduct] {
         return [
-            ShoppingProductMock(brand: "Palace", name: "팔라스 퍼텍스 퀼팅 RS…", price: 930000, imageName: "image_1"),
-            ShoppingProductMock(brand: "moif", name: "[더블점핑][FW25] 모…", price: 567000, imageName: "image_2"),
-            ShoppingProductMock(brand: "Jordan", name: "조던 1 x 자이언 윌리엄…", price: 210000, imageName: "image_3"),
-            ShoppingProductMock(brand: "Polyteru Human In...", name: "폴리테루 휴먼인텍스 츄…", price: 164000, imageName: "image_4"),
-            ShoppingProductMock(brand: "Palace", name: "팔라스 퍼텍스 퀼팅 RS…", price: 840000, imageName: "image_5"),
-            ShoppingProductMock(brand: "moif", name: "[더블점핑][FW25] 모…", price: 567000, imageName: "image_6"),
-            ShoppingProductMock(brand: "IAB Studio", name: "아이앱 스튜디오 아이앱…", price: 166000, imageName: "image_7"),
-            ShoppingProductMock(brand: "moif", name: "[더블점핑][FW25] 모…", price: 495000, imageName: "image_1"),
-            ShoppingProductMock(brand: "Nike", name: "(W) 나이키 아스트로그…", price: 138000, imageName: "image_2"),
-            ShoppingProductMock(brand: "Polyteru", name: "폴리테루 팬츠…", price: 164000, imageName: "image_3"),
-            ShoppingProductMock(brand: "Nike", name: "나이키 신발…", price: 200000, imageName: "image_4"),
-            ShoppingProductMock(brand: "Palace", name: "팔라스 재킷…", price: 750000, imageName: "image_5")
+            ShoppingProduct(thumbnailUrl: "image_1", brandName: "Palace", productName: "팔라스 퍼텍스 퀼팅 RS…", price: 930000),
+            ShoppingProduct(thumbnailUrl: "image_2", brandName: "moif", productName: "[더블점핑][FW25] 모…", price: 567000),
+            ShoppingProduct(thumbnailUrl: "image_3", brandName: "Jordan", productName: "조던 1 x 자이언 윌리엄…", price: 210000),
+            ShoppingProduct(thumbnailUrl: "image_4", brandName: "Polyteru Human In...", productName: "폴리테루 휴먼인텍스 츄…", price: 164000),
+            ShoppingProduct(thumbnailUrl: "image_5", brandName: "Palace", productName: "팔라스 퍼텍스 퀼팅 RS…", price: 840000),
+            ShoppingProduct(thumbnailUrl: "image_6", brandName: "moif", productName: "[더블점핑][FW25] 모…", price: 567000),
+            ShoppingProduct(thumbnailUrl: "image_7", brandName: "IAB Studio", productName: "아이앱 스튜디오 아이앱…", price: 166000),
+            ShoppingProduct(thumbnailUrl: "image_1", brandName: "moif", productName: "[더블점핑][FW25] 모…", price: 495000),
+            ShoppingProduct(thumbnailUrl: "image_2", brandName: "Nike", productName: "(W) 나이키 아스트로그…", price: 138000),
+            ShoppingProduct(thumbnailUrl: "image_3", brandName: "Polyteru", productName: "폴리테루 팬츠…", price: 164000),
+            ShoppingProduct(thumbnailUrl: "image_4", brandName: "Nike", productName: "나이키 신발…", price: 200000),
+            ShoppingProduct(thumbnailUrl: "image_5", brandName: "Palace", productName: "팔라스 재킷…", price: 750000)
         ]
     }
     

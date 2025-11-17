@@ -93,37 +93,47 @@ struct ShoppingView: View {
                 .padding(.horizontal, 16)
                 .padding(.bottom, 20)
             } header: {
-                VStack(spacing: 0) {
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 12) {
-                            ForEach(viewModel.output.currentSubCategories, id: \.self) { category in
-                                Text(category)
-                                    .font(.system(size: 14, weight:  viewModel.output.currentSubCategory.displayName == category ? .semibold : .regular))
-                                    .foregroundColor( viewModel.output.currentSubCategory.displayName == category ? .white : .black)
-                                    .padding(.horizontal, 16)
-                                    .padding(.vertical, 8)
-                                    .background(
-                                        Capsule()
-                                            .fill( viewModel.output.currentSubCategory.displayName == category ? Color.black : Color.gray.opacity(0.1))
-                                    )
-                                    .onTapGesture {
-                                        if let subCategory = viewModel.output.currentCategory.subCategories.first(where: { $0.displayName == category }) {
-                                            viewModel.input.selectSubCategory.send(subCategory)
-                                        }
-                                    }
-                            }
-                        }
-                        .padding(.horizontal, 20)
-                    }
-                    .padding(.vertical, 12)
-                    .background(Color.white)
-                    
-                    Divider()
-                }
+                SubCategoryHeader(viewModel: viewModel)
             }
         }
     }
 }
+
+private struct SubCategoryHeader: View {
+    @ObservedObject var viewModel: ShoppingViewModel
+    
+    var body: some View {
+        VStack(spacing: 0) {
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 12) {
+                    ForEach(viewModel.output.currentSubCategories, id: \.self) { category in
+                        Text(category)
+                            .font(.system(size: 14, weight:  viewModel.output.currentSubCategory.displayName == category ? .semibold : .regular))
+                            .foregroundColor( viewModel.output.currentSubCategory.displayName == category ? .white : .black)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 8)
+                            .background(
+                                Capsule()
+                                    .fill( viewModel.output.currentSubCategory.displayName == category ? Color.black : Color.gray.opacity(0.1))
+                            )
+                            .onTapGesture {
+                                if let subCategory = viewModel.output.currentCategory.subCategories.first(where: { $0.displayName == category }) {
+                                    viewModel.input.selectSubCategory.send(subCategory)
+                                }
+                            }
+                    }
+                }
+                .padding(.horizontal, 20)
+            }
+            .padding(.vertical, 12)
+            .background(Color.white)
+            
+            Divider()
+        }
+    }
+    
+}
+
 
 // MARK: 베너
 private struct BannerSection: View {
@@ -244,18 +254,26 @@ private struct BannerSection: View {
 
 // MARK: - 상품 카드
 struct ProductCard: View {
-    let product: ShoppingProductMock
+    let product: ShoppingProduct
     @State private var isLiked: Bool = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
             ZStack(alignment: .bottomTrailing) {
                 GeometryReader { geometry in
-                    Image(product.imageName)
+                    
+                    KFImage(product.imageUrl)
+                        .requestModifier(MyImageDownloadRequestModifier())
                         .resizable()
                         .scaledToFill()
                         .frame(width: geometry.size.width, height: geometry.size.width)
                         .clipped()
+                    
+//                    Image(product.thumbnailUrl)
+//                        .resizable()
+//                        .scaledToFill()
+//                        .frame(width: geometry.size.width, height: geometry.size.width)
+//                        .clipped()
                 }
                 .aspectRatio(1, contentMode: .fit)
                 .cornerRadius(12)
@@ -269,11 +287,11 @@ struct ProductCard: View {
             }
             
             VStack(alignment: .leading) {
-                Text(product.brand)
+                Text(product.brandName)
                     .font(.system(size: 13, weight: .semibold))
                     .foregroundColor(.black)
                 
-                Text(product.name)
+                Text(product.productName)
                     .font(.system(size: 12))
                     .foregroundColor(.gray)
                     .lineLimit(1)

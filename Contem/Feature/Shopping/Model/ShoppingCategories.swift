@@ -58,7 +58,7 @@ enum OuterSubCategory: String, CaseIterable, SubCategory {
 
   var apiValue: String {
     switch self {
-    case .padding: return "outer_padding"
+    case .padding: return "product_padding"
     case .coat: return "outer_coat"
     case .mustang: return "outer_mustang"
     case .blouson: return "outer_blouson"

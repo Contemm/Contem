@@ -1,19 +1,24 @@
 import Foundation
 
-struct ShoppingProducts {
-    let banners: [ShoppingProduct]
+struct ShoppingProductList {
+    let products: [ShoppingProduct]
     
     init(from dto: PostListDTO) {
-        self.banners = dto.data.map { ShoppingProduct(from: $0) }
+        self.products = dto.data.map { ShoppingProduct(from: $0) }
     }
 }
 
-struct ShoppingProduct {
+struct ShoppingProduct: Identifiable {
     let id: String
     let thumbnailUrl: String
     let brandName: String
     let productName: String
     let price: Int
+    
+    var imageUrl: URL? {
+        let fullUrl = APIConfig.baseURL + thumbnailUrl
+        return URL(string: fullUrl)
+    }
     
     init(from dto: PostDTO) {
         self.id = dto.postID
@@ -21,6 +26,16 @@ struct ShoppingProduct {
         self.brandName = dto.title ?? ""
         self.productName = dto.content ?? ""
         self.price = dto.price ?? 0
+    }
+    
+    
+    
+    init(thumbnailUrl: String, brandName: String, productName: String, price: Int) {
+        self.id = UUID().uuidString
+        self.thumbnailUrl = thumbnailUrl
+        self.brandName = brandName
+        self.productName = productName
+        self.price = price
     }
 }
 
