@@ -16,31 +16,24 @@ final class StyleDetailViewModel: ViewModelType{
     var input = Input()
     @Published var output: Output = Output()
     
-    private var tagsCache: [Int: [StyleTag]] = [:]
-    
     struct Input{
         let appear = PassthroughSubject<Void, Never>()
-        let changePage = PassthroughSubject<Int, Never>()
     }
     
     struct Output{
         var style: StyleEntity = MockStyle.sample
-        var tags: [StyleTag] = []
+        var tags: [Int: [StyleTag]] = [:]
     }
-    
+
+    init() {
+        transform()
+    }
+
     func transform() {
         input.appear
             .sink { [weak self] _ in
                 guard let self else { return }
                 self.preParseAllTags()
-                self.updateTags(for: 0)
-            }
-            .store(in: &cancellables)
-        
-        input.changePage
-            .sink { [weak self] newIndex in
-                guard let self else { return }
-                self.updateTags(for: newIndex)
             }
             .store(in: &cancellables)
     }
@@ -54,16 +47,16 @@ final class StyleDetailViewModel: ViewModelType{
             output.style.value4,
             output.style.value5
         ]
-        
-        for (index, raw) in values.enumerated() {
-            tagsCache[index] = parseTagString(raw)
+
+        var dict: [Int: [StyleTag]] = [:]
+
+        for (idx, raw) in values.enumerated() {
+            dict[idx] = parseTagString(raw)
         }
+
+        output.tags = dict
     }
-    
-    private func updateTags(for index: Int) {
-        output.tags = tagsCache[index] ?? []
-    }
-    
+
     // Tag Parser
     func parseTagString(_ raw: String) -> [StyleTag] {
         let parts = raw.split(separator: ":")
@@ -84,5 +77,4 @@ final class StyleDetailViewModel: ViewModelType{
         
         return result
     }
-    
 }
