@@ -41,10 +41,10 @@ struct ShoppingProduct: Identifiable {
 
 
 
-struct ShoppingProductMock: Identifiable {
-  let id = UUID()
-  let brand: String
-  let name: String
-  let price: Int
-  let imageName: String
-}
+//struct ShoppingProductMock: Identifiable {
+//  let id = UUID()
+//  let brand: String
+//  let name: String
+//  let price: Int
+//  let imageName: String
+//}
