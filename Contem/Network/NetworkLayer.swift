@@ -95,19 +95,14 @@ final class NetworkLayer: NetworkLayerProtocol {
             // 실패할 경우 상태코드에 따른 분기처리
         case 400:
             throw NetworkError.badRequest
-            
         case 401:
             throw NetworkError.unauthorized
-
         case 403:
             throw NetworkError.forbidden
-
         case 404:
             throw NetworkError.notFound
-            
         case 500..<600:
             throw NetworkError.serverError
-
         default:
             throw NetworkError.unknownError
         }
