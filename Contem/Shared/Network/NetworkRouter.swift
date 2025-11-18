@@ -8,13 +8,13 @@
 import Foundation
 
 /// HTTP 메서드 정의
-enum HTTPMethod: String {
-    case get = "GET"
-    case post = "POST"
-    case put = "PUT"
-    case delete = "DELETE"
-    case patch = "PATCH"
-}
+//enum HTTPMethod: String {
+//    case get = "GET"
+//    case post = "POST"
+//    case put = "PUT"
+//    case delete = "DELETE"
+//    case patch = "PATCH"
+//}
 
 // MARK: - Network Router
 
@@ -76,7 +76,7 @@ extension NetworkRouter {
                 }
             }
 
-        case .post, .put, .patch, .delete:
+        case .post, .put, .delete:
             // POST/PUT/PATCH/DELETE: parameters는 httpBody로 설정 (아래에서 처리)
             break
         }
@@ -98,7 +98,7 @@ extension NetworkRouter {
         
         // HTTP 메서드별 Request Body 처리
         switch method {
-        case .post, .put, .patch, .delete:
+        case .post, .put, .delete:
             // POST/PUT/PATCH/DELETE: parameters를 JSON으로 인코딩하여 httpBody 설정
             if let parameters = parameters {
                 request.setValue("application/json", forHTTPHeaderField: "Content-Type")
