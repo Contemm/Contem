@@ -10,17 +10,11 @@ import Combine
 
 struct SignInView: View {
     
-    // MARK: - Property
-    
     @ObservedObject private var viewModel: SignInViewModel
-    
-    // MARK: - Init
     
     init(viewModel: SignInViewModel) {
         self.viewModel = viewModel
     }
-    
-    // MARK: - Body
     
     var body: some View {
         VStack(spacing: .spacing16) {

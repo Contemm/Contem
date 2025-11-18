@@ -11,30 +11,39 @@ struct MainTabView: View {
     
     // MARK: - Properties
     
-    @State private var selectedTab: Page = .shopping
-    private let viewFactory: ViewFactory
+//    @State private var selectedTab: Page = .shopping
+    
+//    private let viewFactory: ViewFactory
+    
+    @State private var selectedTab: AppCoordinator.Route = .shopping
+    
+    private weak var coordinator: AppCoordinator?
     
     // MARK: - Init
     
-    init(viewFactory: ViewFactory) {
-        self.viewFactory = viewFactory
+    init(coordinator: AppCoordinator) {
+        self.coordinator = coordinator
     }
+    
+//    init(viewFactory: ViewFactory) {
+//        self.viewFactory = viewFactory
+//    }
     
     // MARK: - Body
     
     var body: some View {
         TabView(selection: $selectedTab) {
-            viewFactory.makeView(for: .shopping)
+            coordinator?.build(route: .shopping)
                 .tabItem {
                     Label("쇼핑", systemImage: "cart")
                 }
-                .tag(Page.shopping)
-            
-            viewFactory.makeView(for: .feed)
+                .tag("shopping")
+
+            coordinator?.build(route: .style)
                 .tabItem {
                     Label("피드", systemImage: "plus.square")
                 }
-                .tag(Page.feed)
+                .tag("feed")
         }
         .tint(.blue)
     }
