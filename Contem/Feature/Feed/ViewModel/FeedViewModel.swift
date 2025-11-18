@@ -18,7 +18,7 @@ final class FeedViewModel: ViewModelType {
 
     // MARK: - Dependencies
 
-    private let coordinator: CoordinatorProtocol
+//     private let coordinator: CoordinatorProtocol
 
     // MARK: - Input
 
@@ -39,8 +39,10 @@ final class FeedViewModel: ViewModelType {
 
     // MARK: - Init
 
-    init(coordinator: CoordinatorProtocol) {
-        self.coordinator = coordinator
+    init(
+//        coordinator: CoordinatorProtocol
+    ) {
+//        self.coordinator = coordinator
         
         transform()
     }

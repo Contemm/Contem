@@ -3,8 +3,10 @@ import Combine
 
 @MainActor
 final class ShoppingViewModel:ViewModelType {
-    private let coordinator: CoordinatorProtocol
+//    private let coordinator: CoordinatorProtocol
     private let shoppingAPI: ShoppingAPIProtocol
+    
+    private weak var coordinator: AppCoordinator?
 
     // disposeBag
     var cancellables = Set<AnyCancellable>()
@@ -32,7 +34,9 @@ final class ShoppingViewModel:ViewModelType {
         var currentSubCategory: SubCategory = OuterSubCategory.padding
     }
     
-    init(coordinator: CoordinatorProtocol,
+    init(
+        coordinator: AppCoordinator,
+//        coordinator: CoordinatorProtocol,
          shoppingAPI: ShoppingAPIProtocol) {
         self.coordinator = coordinator
         self.shoppingAPI = shoppingAPI
