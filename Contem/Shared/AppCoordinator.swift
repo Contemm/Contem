@@ -17,7 +17,7 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
     
     init() {
         
-        self.rootRoute = .signin
+        self.rootRoute = .tabView
 //        if hasAccessToken() {
 //            self.rootRoute = .tabView
 //        } else {
