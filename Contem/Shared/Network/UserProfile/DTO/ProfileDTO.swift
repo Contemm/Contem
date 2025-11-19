@@ -9,8 +9,9 @@
 struct ProfileDTO: Codable {
     let userID: String
     let email: String
-    let nickname: String
-    let phoneNumber: String
+    let nick: String
+    let profileImage: String?
+    let phoneNum: String
     let gender: String
     let birthDay: String
     let info1: String
@@ -18,15 +19,16 @@ struct ProfileDTO: Codable {
     let info3: String
     let info4: String
     let info5: String
-    let followers: [String]
-    let following: [String]
+    let followers: [User]
+    let following: [User]
     let posts: [String]
     
     enum CodingKeys: String, CodingKey {
         case userID = "user_id"
         case email
-        case nickname = "nick"
-        case phoneNumber = "phoneNum"
+        case nick
+        case profileImage
+        case phoneNum
         case gender
         case birthDay
         case info1
@@ -37,5 +39,17 @@ struct ProfileDTO: Codable {
         case followers
         case following
         case posts
+    }
+}
+
+struct User: Codable{
+    let userId: String
+    let nick: String
+    let profileImage: String
+    
+    enum CodingKeys: String, CodingKey {
+        case userId = "user_id"
+        case nick
+        case profileImage
     }
 }

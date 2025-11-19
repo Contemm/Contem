@@ -10,9 +10,9 @@ import Foundation
 // MARK: - APIContainerProtocol
 
 protocol APIContainerProtocol {
-    var profileAPI: ProfileAPIProtocol { get }
-    var signInAPI: SignInAPIProtocol { get }
-    var shoppingAPI: ShoppingAPIProtocol { get }
+//    var profileAPI: ProfileAPIProtocol { get }
+//    var signInAPI: SignInAPIProtocol { get }
+//    var shoppingAPI: ShoppingAPIProtocol { get }
 }
 
 // MARK: - APIContainer
@@ -56,19 +56,19 @@ final class APIContainer: APIContainerProtocol {
     // MARK: - APIs
     
     /// Profile API
-    lazy var profileAPI: ProfileAPIProtocol = {
-        return ProfileAPI(networkLayer: networkLayer)
-    }()
+//    lazy var profileAPI: ProfileAPIProtocol = {
+//        return ProfileAPI(networkLayer: networkLayer)
+//    }()
     
     /// SignIn API
-    lazy var signInAPI: SignInAPIProtocol = {
-        return SignInAPI(networkLayer: networkLayer)
-    }()
-    
-    /// ShoppingAPI
-    lazy var shoppingAPI: ShoppingAPIProtocol = {
-        return ShoppingAPI(networkLayer: networkLayer)
-    }()
+//    lazy var signInAPI: SignInAPIProtocol = {
+//        return SignInAPI(networkLayer: networkLayer)
+//    }()
+//    
+//    /// ShoppingAPI
+//    lazy var shoppingAPI: ShoppingAPIProtocol = {
+//        return ShoppingAPI(networkLayer: networkLayer)
+//    }()
 
     // MARK: - Init
     
