@@ -32,8 +32,8 @@ struct PostDTO: Codable {
     let buyers: [String]
     let hashTags: [String]
     let commentCount: Int
-    let geolocation: Geolocation?
-    let distance: Float?
+    let geolocation: Geolocation
+    let distance: Double?
     
     enum CodingKeys: String, CodingKey {
         case postID = "post_id"
@@ -48,6 +48,6 @@ struct PostDTO: Codable {
 }
 
 struct Geolocation: Codable {
-    let longitude: Float
-    let latitude: Float
+    let longitude: Double
+    let latitude: Double
 }
