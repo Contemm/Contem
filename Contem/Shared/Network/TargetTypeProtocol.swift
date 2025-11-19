@@ -53,9 +53,25 @@ extension TargetTypeProtocol{
         
         //GET -> Query
         if method == .get {
-            components.queryItems = parameters.map{
-                URLQueryItem(name: $0.key, value: "\($0.value)")
+            var items: [URLQueryItem] = []
+            
+            for (key, value) in parameters{
+                if let array = value as? [String]{
+                    array.forEach {
+                        items.append(URLQueryItem(name: key, value: $0))
+                    }
+                    continue
+                }
+                
+                let stringValue = "\(value)"
+                if stringValue.isEmpty{
+                    continue
+                }
+                
+                items.append(URLQueryItem(name: key, value: stringValue))
             }
+            
+            components.queryItems = items
         }
         
         var request = URLRequest(url: components.url!)
@@ -81,7 +97,7 @@ extension TargetTypeProtocol{
             
             return request
         }
-            
+        
         if method == .post || method == .put || method == .delete{
             if parameters.isEmpty == false{
                 request.setValue("application/json", forHTTPHeaderField: "Content-Type")
