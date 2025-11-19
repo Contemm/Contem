@@ -40,7 +40,7 @@ final class SignInViewModel: ViewModelType {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.coordinator?.login()
-                owner.coordinator?.push(.shoppingDetail)
+//                owner.coordinator?.push(.shoppingDetail)
 //                Task {
 //                    await owner.signIn(body: owner.signInBody)
 //                }
