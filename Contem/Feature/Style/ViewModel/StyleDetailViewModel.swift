@@ -24,8 +24,11 @@ final class StyleDetailViewModel: ViewModelType{
         var style: StyleEntity = MockStyle.sample
         var tags: [Int: [StyleTag]] = [:]
     }
+    
+    private weak var coordinator: AppCoordinator?
 
-    init() {
+    init(coordinator: AppCoordinator) {
+        self.coordinator = coordinator
         transform()
     }
 

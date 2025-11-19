@@ -49,8 +49,8 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
             TestCView()
 //            FeedView()
         case .styleDetail:
-            TestDView()
-//            StyleDetailView()
+            let vm = StyleDetailViewModel(coordinator: self)
+            StyleDetailView(viewModel: vm)
         }
     }
     
