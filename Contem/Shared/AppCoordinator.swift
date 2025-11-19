@@ -39,9 +39,9 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
             let vm = SignInViewModel(coordinator: self)
             SignInView(viewModel: vm)
         case .shopping:
-            TestAView()
-//            let vm = ShoppingViewModel(coordinator: self, shoppingAPI: )
-//            ShoppingView(viewModel: )
+//            TestAView()
+            let vm = ShoppingViewModel(coordinator: self)
+            ShoppingView(viewModel: vm)
         case .shoppingDetail:
             TestBView()
 //            ShoppingDetailView()
@@ -64,8 +64,6 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
         rootRoute = .signin
         
     }
-
-    
     
     func push(_ route: Route) {
         navigationPath.append(route)
