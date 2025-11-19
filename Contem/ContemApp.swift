@@ -9,8 +9,6 @@ import SwiftUI
 
 @main
 struct ContemApp: App {
-    
-//    @StateObject private var appState = AppState()
     @StateObject private var coordinator = AppCoordinator()
     
     var body: some Scene {
@@ -21,7 +19,6 @@ struct ContemApp: App {
                         coordinator.build(route: route)
                     }
             }
-//            AppCoordinatorView(appState: appState)
         }
     }
 }
