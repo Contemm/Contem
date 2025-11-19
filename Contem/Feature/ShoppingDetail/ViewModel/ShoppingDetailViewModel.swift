@@ -19,7 +19,7 @@ final class ShoppingDetailViewModel: ViewModelType {
 
     // MARK: - Dependencies
 
-    private let coordinator: CoordinatorProtocol
+//    private let coordinator: CoordinatorProtocol
     private let shoppingDetailAPI: ShoppingDetailAPIProtocol
     private let postId: String
 
@@ -54,11 +54,11 @@ final class ShoppingDetailViewModel: ViewModelType {
 
     init(
         postId: String,
-        coordinator: CoordinatorProtocol,
+//        coordinator: CoordinatorProtocol,
         shoppingDetailAPI: ShoppingDetailAPIProtocol = ShoppingDetailAPI()
     ) {
         self.postId = postId
-        self.coordinator = coordinator
+//        self.coordinator = coordinator
         self.shoppingDetailAPI = shoppingDetailAPI
 
         transform()
@@ -121,7 +121,7 @@ final class ShoppingDetailViewModel: ViewModelType {
         // Back Button - Coordinator 사용
         input.backButtonTapped
             .sink { [weak self] in
-                self?.coordinator.pop()
+//                self?.coordinator.pop()
             }
             .store(in: &cancellables)
     }

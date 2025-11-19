@@ -9,12 +9,16 @@ import SwiftUI
 
 @main
 struct ContemApp: App {
-    
-    @StateObject private var appState = AppState()
+    @StateObject private var coordinator = AppCoordinator()
     
     var body: some Scene {
         WindowGroup {
-            AppCoordinatorView(appState: appState)
+            NavigationStack(path: $coordinator.navigationPath) {
+                coordinator.build(route: coordinator.rootRoute)
+                    .navigationDestination(for: AppCoordinator.Route.self) { route in
+                        coordinator.build(route: route)
+                    }
+            }
         }
     }
 }

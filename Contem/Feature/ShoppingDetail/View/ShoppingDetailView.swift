@@ -177,14 +177,14 @@ struct ShoppingDetailView: View {
 
 // MARK: - Preview
 
-#Preview {
-    NavigationStack {
-        ShoppingDetailView(
-            viewModel: ShoppingDetailViewModel(
-                postId: "1",
-                coordinator: MockCoordinator(),
-                shoppingDetailAPI: MockShoppingDetailAPI()
-            )
-        )
-    }
-}
+//#Preview {
+//    NavigationStack {
+//        ShoppingDetailView(
+//            viewModel: ShoppingDetailViewModel(
+//                postId: "1",
+//                coordinator: MockCoordinator(),
+//                shoppingDetailAPI: MockShoppingDetailAPI()
+//            )
+//        )
+//    }
+//}

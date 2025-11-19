@@ -3,8 +3,10 @@ import Combine
 
 @MainActor
 final class ShoppingViewModel:ViewModelType {
-    private let coordinator: CoordinatorProtocol
-    private let shoppingAPI: ShoppingAPIProtocol
+//    private let coordinator: CoordinatorProtocol
+//    private let shoppingAPI: ShoppingAPIProtocol
+    
+    private weak var coordinator: AppCoordinator?
 
     // disposeBag
     var cancellables = Set<AnyCancellable>()
@@ -32,10 +34,13 @@ final class ShoppingViewModel:ViewModelType {
         var currentSubCategory: SubCategory = OuterSubCategory.padding
     }
     
-    init(coordinator: CoordinatorProtocol,
-         shoppingAPI: ShoppingAPIProtocol) {
+    init(
+        coordinator: AppCoordinator,
+//        coordinator: CoordinatorProtocol,
+//         shoppingAPI: ShoppingAPIProtocol
+    ) {
         self.coordinator = coordinator
-        self.shoppingAPI = shoppingAPI
+//        self.shoppingAPI = shoppingAPI
         transform()
     }
     
@@ -199,25 +204,25 @@ extension ShoppingViewModel {
 extension ShoppingViewModel {
     
     private func fetchBanner(body: [String: String]) async {
-        do {
-            let result = try await shoppingAPI.getBannerList(body: body)
-            let bannerList = BannerList(from: result)
-            output.banners = bannerList.banners
-            output.infiniteBanners = calculateInfiniteBanners(from: bannerList.banners)
-            
-        } catch {
-            print("에러 발생 \(error)")
-        }
+//        do {
+//            let result = try await shoppingAPI.getBannerList(body: body)
+//            let bannerList = BannerList(from: result)
+//            output.banners = bannerList.banners
+//            output.infiniteBanners = calculateInfiniteBanners(from: bannerList.banners)
+//            
+//        } catch {
+//            print("에러 발생 \(error)")
+//        }
     }
     
     private func fetchProducts(body: [String: String]) async {
-        do {
-            let result = try await shoppingAPI.getBannerList(body: body)
-            let productList = ShoppingProductList(from: result)
-            output.products = productList.products
-        } catch {
-            print("에러 발생 \(error)")
-        }
+//        do {
+//            let result = try await shoppingAPI.getBannerList(body: body)
+//            let productList = ShoppingProductList(from: result)
+//            output.products = productList.products
+//        } catch {
+//            print("에러 발생 \(error)")
+//        }
     }
     
     
