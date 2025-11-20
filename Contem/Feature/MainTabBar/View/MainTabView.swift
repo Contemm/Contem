@@ -9,27 +9,13 @@ import SwiftUI
 
 struct MainTabView: View {
     
-    // MARK: - Properties
-    
-//    @State private var selectedTab: Page = .shopping
-    
-//    private let viewFactory: ViewFactory
+    weak var coordinator: AppCoordinator?
     
     @State private var selectedTab: AppCoordinator.Route = .shopping
-    
-    private weak var coordinator: AppCoordinator?
-    
-    // MARK: - Init
     
     init(coordinator: AppCoordinator) {
         self.coordinator = coordinator
     }
-    
-//    init(viewFactory: ViewFactory) {
-//        self.viewFactory = viewFactory
-//    }
-    
-    // MARK: - Body
     
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -37,13 +23,13 @@ struct MainTabView: View {
                 .tabItem {
                     Label("쇼핑", systemImage: "cart")
                 }
-                .tag("shopping")
+                .tag(AppCoordinator.Route.shopping)
 
             coordinator?.build(route: .style)
                 .tabItem {
                     Label("피드", systemImage: "plus.square")
                 }
-                .tag("feed")
+                .tag(AppCoordinator.Route.style)
         }
         .tint(.blue)
     }

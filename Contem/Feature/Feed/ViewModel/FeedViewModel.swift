@@ -10,17 +10,18 @@ import Combine
 
 final class FeedViewModel: ViewModelType {
 
-    // MARK: - MVVM
+    
+    
 
     var cancellables = Set<AnyCancellable>()
+    
     var input = Input()
+    
     @Published var output = Output()
-
-    // MARK: - Dependencies
-
-//     private let coordinator: CoordinatorProtocol
-
-    // MARK: - Input
+    
+    private weak var coordinator: AppCoordinator?
+    
+    
 
     struct Input {
         let viewOnTask = PassthroughSubject<Void, Never>()
@@ -39,10 +40,8 @@ final class FeedViewModel: ViewModelType {
 
     // MARK: - Init
 
-    init(
-//        coordinator: CoordinatorProtocol
-    ) {
-//        self.coordinator = coordinator
+    init(coordinator: AppCoordinator) {
+        self.coordinator = coordinator
         
         transform()
     }
@@ -72,7 +71,7 @@ final class FeedViewModel: ViewModelType {
         input.cardTapped
             .withUnretained(self)
             .sink { owner, feed in
-//                owner.coordinator.push(.feedDetail(feed))
+                owner.coordinator?.push(.styleDetail)
             }
             .store(in: &cancellables)
     }

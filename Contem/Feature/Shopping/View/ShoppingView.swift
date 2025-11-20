@@ -87,7 +87,11 @@ struct ShoppingView: View {
                 
                 LazyVGrid(columns: columns, spacing: 20) {
                     ForEach(viewModel.output.products) { product in
+                        
                         ProductCard(product: product)
+                            .onTapGesture {
+                                viewModel.input.onTappedProduct.send(product.id)
+                            }
                     }
                 }
                 .padding(.horizontal, 16)
@@ -269,11 +273,6 @@ struct ProductCard: View {
                         .frame(width: geometry.size.width, height: geometry.size.width)
                         .clipped()
                     
-//                    Image(product.thumbnailUrl)
-//                        .resizable()
-//                        .scaledToFill()
-//                        .frame(width: geometry.size.width, height: geometry.size.width)
-//                        .clipped()
                 }
                 .aspectRatio(1, contentMode: .fit)
                 .cornerRadius(12)
@@ -305,27 +304,6 @@ struct ProductCard: View {
         }
     }
     
-//    private var productImageSection: some View {
-//        ZStack(alignment: .bottomTrailing) {
-//            GeometryReader { geometry in
-//                Image(product.imageName)
-//                    .resizable()
-//                    .scaledToFill()
-//                    .frame(width: geometry.size.width, height: geometry.size.width)
-//                    .clipped()
-//            }
-//            .aspectRatio(1, contentMode: .fit)
-//            .cornerRadius(12)
-//            .background(
-//                Rectangle()
-//                    .fill(Color.gray.opacity(0.15))
-//                    .cornerRadius(12)
-//            )
-//            
-//            likeButton
-//        }
-//    }
-    
     private var likeButton: some View {
         Button(action: {
             isLiked.toggle()
@@ -342,24 +320,5 @@ struct ProductCard: View {
         }
         .padding(8)
     }
-    
-//    private var productInfoSection: some View {
-//        VStack(alignment: .leading) {
-//            Text(product.brand)
-//                .font(.system(size: 13, weight: .semibold))
-//                .foregroundColor(.black)
-//            
-//            Text(product.name)
-//                .font(.system(size: 12))
-//                .foregroundColor(.gray)
-//                .lineLimit(1)
-//            
-//            Text("\(product.price.formatted())원")
-//                .font(.system(size: 14, weight: .bold))
-//                .foregroundColor(.black)
-//        }
-//        .padding(.top, 8)
-//        .padding(.leading, 8)
-//    }
 }
 

@@ -40,6 +40,7 @@ struct FeedView: View {
                     ProgressView()
                 } else {
                     MasonryLayout(feeds: viewModel.output.feeds)
+                        .environmentObject(viewModel)
                 }
             }
         }
@@ -47,10 +48,4 @@ struct FeedView: View {
             viewModel.input.viewOnTask.send(())
         }
     }
-
-    // MARK: - Methods
-
-//    private func refresh() async {
-//        viewModel.input.refreshTrigger.send(())
-//    }
 }

@@ -12,7 +12,11 @@ struct StyleDetailView: View {
     
     //MARK: - Properties
     @State private var selectedPage = 0
-    private let viewModel = StyleDetailViewModel()
+    @ObservedObject private var viewModel: StyleDetailViewModel
+    
+    init(viewModel: StyleDetailViewModel) {
+        self.viewModel = viewModel
+    }
     
     //MARK: - Body
     var body: some View {
@@ -143,6 +147,6 @@ struct StyleDetailView: View {
     }
 }
 
-#Preview {
-    StyleDetailView()
-}
+//#Preview {
+//    StyleDetailView()
+//}
