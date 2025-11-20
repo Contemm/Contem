@@ -64,7 +64,8 @@ final class StyleViewModel: ViewModelType {
         input.cardTapped
             .withUnretained(self)
             .sink { owner, feed in
-                owner.coordinator?.push(.styleDetail)
+                owner.coordinator?
+                    .push(.styleDetail(postId: feed.id.uuidString))
             }
             .store(in: &cancellables)
     }

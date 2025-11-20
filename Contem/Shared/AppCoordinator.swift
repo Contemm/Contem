@@ -9,7 +9,7 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
         case shopping
         case shoppingDetail
         case style
-        case styleDetail
+        case styleDetail(postId: String)
     }
     
     @Published var rootRoute: Route
@@ -47,8 +47,8 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
         case .style:
             let vm = StyleViewModel(coordinator: self)
             StyleView(viewModel: vm)
-        case .styleDetail:
-            let vm = StyleDetailViewModel(coordinator: self)
+        case .styleDetail(let postId):
+            let vm = StyleDetailViewModel(postId: postId, coordinator: self)
             StyleDetailView(viewModel: vm)
         }
     }
