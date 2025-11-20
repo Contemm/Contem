@@ -11,6 +11,7 @@ enum PostRequest: TargetTypeProtocol {
     // MARK: - Case
     case postList(next: String? = nil, limit: String? = nil, category: String) //게시글 조회
     case postFiles(files: [Data]) //파일 업로드
+    case post(postId: String) //게시글 한 개 조회
     
     // MARK: - Path
     var path: String {
@@ -19,13 +20,15 @@ enum PostRequest: TargetTypeProtocol {
             return "/posts"
         case .postFiles:
             return "/posts/files"
+        case .post(let postId):
+            return "/posts/\(postId)"
         }
     }
     
     // MARK: - Method
     var method: HTTPMethod {
         switch self {
-        case .postList:
+        case .postList, .post:
             return .get
         case .postFiles:
             return .post
@@ -59,12 +62,14 @@ enum PostRequest: TargetTypeProtocol {
             return params
         case .postFiles:
             return [:]
+        case .post(let postId):
+            return ["post_id": postId]
         }
     }
     
     var multipartFiles: [MultipartFile]?{
         switch self {
-        case .postList:
+        case .postList, .post:
             return nil
         case .postFiles(let files):
             return files.enumerated().map { index, data in
