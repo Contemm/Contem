@@ -39,18 +39,17 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
             let vm = SignInViewModel(coordinator: self)
             SignInView(viewModel: vm)
         case .shopping:
-//            TestAView()
             let vm = ShoppingViewModel(coordinator: self)
             ShoppingView(viewModel: vm)
         case .shoppingDetail:
-            TestBView()
-//            ShoppingDetailView()
+            let vm = ShoppingDetailViewModel(coordinator: self)
+            ShoppingDetailView(viewModel: vm)
         case .style:
-            TestCView()
-//            FeedView()
+            let vm = FeedViewModel(coordinator: self)
+            FeedView(viewModel: vm)
         case .styleDetail:
-            TestDView()
-//            StyleDetailView()
+            let vm = StyleDetailViewModel(coordinator: self)
+            StyleDetailView(viewModel: vm)
         }
     }
     

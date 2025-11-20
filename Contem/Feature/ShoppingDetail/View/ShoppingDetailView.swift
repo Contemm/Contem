@@ -13,6 +13,7 @@ struct ShoppingDetailView: View {
     // MARK: - ViewModel
 
     @ObservedObject private var viewModel: ShoppingDetailViewModel
+//    @StateObject private var viewModel = ShoppingDetailViewModel(coordinator: self)
 
     // MARK: - Initialization
 

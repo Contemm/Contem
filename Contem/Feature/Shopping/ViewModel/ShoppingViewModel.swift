@@ -17,6 +17,7 @@ final class ShoppingViewModel:ViewModelType {
         let onAppear = PassthroughSubject<Void, Never>()
         let selectMainCategory = CurrentValueSubject<TabCategory, Never>(.outer)
         let selectSubCategory = CurrentValueSubject<SubCategory, Never>(OuterSubCategory.padding)
+        let onTappedProduct = PassthroughSubject<String, Never>()
     }
     
     struct Output {
@@ -133,6 +134,12 @@ final class ShoppingViewModel:ViewModelType {
                     output.products = generateMockProducts()
                 }
                 
+            }.store(in: &cancellables)
+        
+        input.onTappedProduct
+            .sink { [weak self] id in
+                guard let self = self else { return }
+                coordinator?.push(.shoppingDetail)
             }.store(in: &cancellables)
     }
     

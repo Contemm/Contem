@@ -6,8 +6,11 @@
 //
 
 import SwiftUI
+import Combine
 
 struct MasonryLayout: View {
+    
+    @EnvironmentObject private var viewModel: FeedViewModel
     
     // MARK: - Properties
     
@@ -44,7 +47,9 @@ struct MasonryLayout: View {
                             FeedCardView(
                                 feed: feed,
                                 cardWidth: columnWidth
-                            )
+                            ).onTapGesture {
+                                viewModel.input.cardTapped.send(feed)
+                            }
                         }
                     }
                     
@@ -54,7 +59,9 @@ struct MasonryLayout: View {
                             FeedCardView(
                                 feed: feed,
                                 cardWidth: columnWidth
-                            )
+                            ).onTapGesture {
+                                viewModel.input.cardTapped.send(feed)
+                            }
                         }
                     }
                 }
