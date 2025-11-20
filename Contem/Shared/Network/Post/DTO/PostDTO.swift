@@ -51,3 +51,28 @@ struct Geolocation: Codable {
     let longitude: Double
     let latitude: Double
 }
+
+extension PostDTO{
+    func toEntity() -> StyleEntity{
+        return StyleEntity(
+            postId: postID,
+            category: category,
+            title: title,
+            content: content,
+            value1: value1,
+            value2: value2,
+            value3: value3,
+            value4: value4,
+            value5: value5,
+            createdAt: createdAt,
+            creator: StyleCreatorEntity(
+                userId: creator.userID,
+                nick: creator.nickname,
+                profileImage: creator.profileImage
+            ),
+            files: files,
+            likes: likes,
+            commentCount: commentCount
+        )
+    }
+}
