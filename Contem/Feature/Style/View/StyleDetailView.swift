@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 import Combine
 
 struct StyleDetailView: View {
@@ -24,14 +25,14 @@ struct StyleDetailView: View {
             if let style = viewModel.output.style{
                 //MARK: - 상단 이미지 슬라이더
                 TabView(selection: $selectedPage) {
-                    ForEach(style.files.indices, id: \.self) { index in
+                    ForEach(style.imageUrls.indices, id: \.self) { index in
                         GeometryReader { geometry in
                             ZStack{
-                                Image(style.files[index])
+                                KFImage(style.imageUrls[index])
+                                    .requestModifier(MyImageDownloadRequestModifier())
                                     .resizable()
                                     .scaledToFill()
                                     .frame(width: geometry.size.width, height: geometry.size.height)
-                                
                                 let tags = viewModel.output.tags[index] ?? []
                                 ForEach(tags, id: \.id){ tag in
                                     StyleTagLabel(text: "item")
