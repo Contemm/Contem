@@ -13,6 +13,8 @@ struct MasonryLayout: View {
     @EnvironmentObject private var viewModel: FeedViewModel
     
     // MARK: - Properties
+    @EnvironmentObject private var viewModel: StyleViewModel
+    
     
     // 피드 분배 결과를 미리 계산
     private var distributedFeeds: ([FeedModel], [FeedModel]) {
@@ -35,6 +37,7 @@ struct MasonryLayout: View {
     // MARK: - Body
     
     var body: some View {
+        
         GeometryReader { geometry in
             let columnWidth = (geometry.size.width - horizontalPadding * 2 - spacing) / CGFloat(columns)
             let (leftFeeds, rightFeeds) = distributedFeeds
@@ -47,7 +50,8 @@ struct MasonryLayout: View {
                             FeedCardView(
                                 feed: feed,
                                 cardWidth: columnWidth
-                            ).onTapGesture {
+                            )
+                            .onTapGesture {
                                 viewModel.input.cardTapped.send(feed)
                             }
                         }
@@ -59,7 +63,8 @@ struct MasonryLayout: View {
                             FeedCardView(
                                 feed: feed,
                                 cardWidth: columnWidth
-                            ).onTapGesture {
+                            )
+                            .onTapGesture {
                                 viewModel.input.cardTapped.send(feed)
                             }
                         }

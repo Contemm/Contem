@@ -1,14 +1,7 @@
-//
-//  FeedViewModel.swift
-//  Contem
-//
-//  Created by HyoTaek on 11/12/25.
-//
-
 import SwiftUI
 import Combine
 
-final class FeedViewModel: ViewModelType {
+final class StyleViewModel: ViewModelType {
 
     
     
@@ -79,7 +72,7 @@ final class FeedViewModel: ViewModelType {
 
 // MARK: - Methods
 
-extension FeedViewModel {
+extension StyleViewModel {
 
     // 더미 데이터 로드
     private func loadFeeds() {

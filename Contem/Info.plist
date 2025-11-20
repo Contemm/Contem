@@ -7,8 +7,6 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
-	<key>UIDesignRequiresCompatibility</key>
-	<true/>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Pretendard-Bold.otf</string>
@@ -17,5 +15,7 @@
 		<string>Pretendard-SemiBold.otf</string>
 		<string>Pretendard-Thin.otf</string>
 	</array>
+	<key>UIDesignRequiresCompatibility</key>
+	<true/>
 </dict>
 </plist>

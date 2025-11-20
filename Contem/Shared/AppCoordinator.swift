@@ -45,8 +45,8 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
             let vm = ShoppingDetailViewModel(coordinator: self)
             ShoppingDetailView(viewModel: vm)
         case .style:
-            let vm = FeedViewModel(coordinator: self)
-            FeedView(viewModel: vm)
+            let vm = StyleViewModel(coordinator: self)
+            StyleView(viewModel: vm)
         case .styleDetail:
             let vm = StyleDetailViewModel(coordinator: self)
             StyleDetailView(viewModel: vm)

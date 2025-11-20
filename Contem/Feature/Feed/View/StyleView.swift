@@ -1,22 +1,15 @@
-//
-//  FeedView.swift
-//  Contem
-//
-//  Created by HyoTaek on 11/11/25.
-//
-
 import SwiftUI
 import Combine
 
-struct FeedView: View {
+struct StyleView: View {
     
     // MARK: - ViewModel
     
-    @ObservedObject private var viewModel: FeedViewModel
+    @ObservedObject private var viewModel: StyleViewModel
 
     // MARK: - Init
 
-    init(viewModel: FeedViewModel) {
+    init(viewModel: StyleViewModel) {
         self.viewModel = viewModel
     }
 
