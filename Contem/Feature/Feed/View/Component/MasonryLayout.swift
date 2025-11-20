@@ -6,10 +6,13 @@
 //
 
 import SwiftUI
+import Combine
 
 struct MasonryLayout: View {
     
     // MARK: - Properties
+    @EnvironmentObject private var viewModel: StyleViewModel
+    
     
     // 피드 분배 결과를 미리 계산
     private var distributedFeeds: ([FeedModel], [FeedModel]) {
@@ -32,6 +35,7 @@ struct MasonryLayout: View {
     // MARK: - Body
     
     var body: some View {
+        
         GeometryReader { geometry in
             let columnWidth = (geometry.size.width - horizontalPadding * 2 - spacing) / CGFloat(columns)
             let (leftFeeds, rightFeeds) = distributedFeeds
@@ -45,6 +49,9 @@ struct MasonryLayout: View {
                                 feed: feed,
                                 cardWidth: columnWidth
                             )
+                            .onTapGesture {
+                                viewModel.input.cardTapped.send(feed)
+                            }
                         }
                     }
                     
@@ -55,6 +62,9 @@ struct MasonryLayout: View {
                                 feed: feed,
                                 cardWidth: columnWidth
                             )
+                            .onTapGesture {
+                                viewModel.input.cardTapped.send(feed)
+                            }
                         }
                     }
                 }

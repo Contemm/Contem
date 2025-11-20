@@ -46,8 +46,8 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
             TestBView()
 //            ShoppingDetailView()
         case .style:
-            TestCView()
-//            FeedView()
+            let vm = StyleViewModel(coordinator: self)
+            StyleView(viewModel: vm)
         case .styleDetail:
             let vm = StyleDetailViewModel(coordinator: self)
             StyleDetailView(viewModel: vm)

@@ -1,14 +1,7 @@
-//
-//  FeedViewModel.swift
-//  Contem
-//
-//  Created by HyoTaek on 11/12/25.
-//
-
 import SwiftUI
 import Combine
 
-final class FeedViewModel: ViewModelType {
+final class StyleViewModel: ViewModelType {
 
     // MARK: - MVVM
 
@@ -38,10 +31,10 @@ final class FeedViewModel: ViewModelType {
     }
 
     // MARK: - Init
-
-    init(
-//        coordinator: CoordinatorProtocol
-    ) {
+    private weak var coordinator: AppCoordinator?
+    
+    init(coordinator: AppCoordinator){
+        self.coordinator = coordinator
 //        self.coordinator = coordinator
         
         transform()
@@ -72,7 +65,7 @@ final class FeedViewModel: ViewModelType {
         input.cardTapped
             .withUnretained(self)
             .sink { owner, feed in
-//                owner.coordinator.push(.feedDetail(feed))
+                owner.coordinator?.push(.styleDetail)
             }
             .store(in: &cancellables)
     }
@@ -80,7 +73,7 @@ final class FeedViewModel: ViewModelType {
 
 // MARK: - Methods
 
-extension FeedViewModel {
+extension StyleViewModel {
 
     // 더미 데이터 로드
     private func loadFeeds() {
