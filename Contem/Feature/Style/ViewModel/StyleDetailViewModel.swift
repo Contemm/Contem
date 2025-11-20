@@ -10,8 +10,6 @@ import Combine
 
 final class StyleDetailViewModel: ViewModelType{
     
-    private weak var coordinator: AppCoordinator?
-    
     //MARK: - Properties
     var cancellables = Set<AnyCancellable>()
     
@@ -23,13 +21,17 @@ final class StyleDetailViewModel: ViewModelType{
     }
     
     struct Output{
-        var style: StyleEntity = MockStyle.sample
+        var style: StyleEntity?
+        var isLoading: Bool = false
+        var errorMessage: String?
         var tags: [Int: [StyleTag]] = [:]
     }
     
+    private let postId: String
     private weak var coordinator: AppCoordinator?
 
-    init(coordinator: AppCoordinator) {
+    init(postId: String, coordinator: AppCoordinator) {
+        self.postId = postId
         self.coordinator = coordinator
         transform()
     }
@@ -38,24 +40,27 @@ final class StyleDetailViewModel: ViewModelType{
         input.appear
             .sink { [weak self] _ in
                 guard let self else { return }
-                self.preParseAllTags()
+                Task{
+                    await self.fetchStyleDetail()
+                }
             }
             .store(in: &cancellables)
     }
     
     //MARK: - Functions
-    private func preParseAllTags() {
+    private func preParseAllTags(entity: StyleEntity) {
         let values = [
-            output.style.value1,
-            output.style.value2,
-            output.style.value3,
-            output.style.value4,
-            output.style.value5
+            entity.value1,
+            entity.value2,
+            entity.value3,
+            entity.value4,
+            entity.value5
         ]
 
         var dict: [Int: [StyleTag]] = [:]
 
-        for (idx, raw) in values.enumerated() {
+        for (idx, raw) in values.enumerated(){
+            guard let raw else { return }
             dict[idx] = parseTagString(raw)
         }
 
@@ -81,5 +86,27 @@ final class StyleDetailViewModel: ViewModelType{
         }
         
         return result
+    }
+    
+    //MARK: - Network
+    func fetchStyleDetail() async{
+        output.isLoading = true
+
+        Task{
+            do{
+                let response = try await NetworkService.shared.callRequest(
+                    router: PostRequest.post(postId: APIConfig.testPostId), //실제로 넘겨 받은 id로 넣기
+                    type: PostDTO.self
+                )
+                
+                let entity = response.toEntity()
+                output.style = entity
+                preParseAllTags(entity: entity)
+            }catch{
+                output.errorMessage = error.localizedDescription
+            }
+            
+            output.isLoading = false
+        }
     }
 }
