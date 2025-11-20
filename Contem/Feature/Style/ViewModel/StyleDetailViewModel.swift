@@ -10,6 +10,8 @@ import Combine
 
 final class StyleDetailViewModel: ViewModelType{
     
+    private weak var coordinator: AppCoordinator?
+    
     //MARK: - Properties
     var cancellables = Set<AnyCancellable>()
     

@@ -10,6 +10,8 @@ import Combine
 
 struct MasonryLayout: View {
     
+    @EnvironmentObject private var viewModel: FeedViewModel
+    
     // MARK: - Properties
     @EnvironmentObject private var viewModel: StyleViewModel
     

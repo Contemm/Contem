@@ -3,9 +3,6 @@ import Combine
 
 @MainActor
 final class ShoppingViewModel:ViewModelType {
-//    private let coordinator: CoordinatorProtocol
-//    private let shoppingAPI: ShoppingAPIProtocol
-    
     private weak var coordinator: AppCoordinator?
 
     // disposeBag
@@ -20,6 +17,7 @@ final class ShoppingViewModel:ViewModelType {
         let onAppear = PassthroughSubject<Void, Never>()
         let selectMainCategory = CurrentValueSubject<TabCategory, Never>(.outer)
         let selectSubCategory = CurrentValueSubject<SubCategory, Never>(OuterSubCategory.padding)
+        let onTappedProduct = PassthroughSubject<String, Never>()
     }
     
     struct Output {
@@ -34,13 +32,8 @@ final class ShoppingViewModel:ViewModelType {
         var currentSubCategory: SubCategory = OuterSubCategory.padding
     }
     
-    init(
-        coordinator: AppCoordinator,
-//        coordinator: CoordinatorProtocol,
-//         shoppingAPI: ShoppingAPIProtocol
-    ) {
+    init(coordinator: AppCoordinator) {
         self.coordinator = coordinator
-//        self.shoppingAPI = shoppingAPI
         transform()
     }
     
@@ -142,6 +135,12 @@ final class ShoppingViewModel:ViewModelType {
                 }
                 
             }.store(in: &cancellables)
+        
+        input.onTappedProduct
+            .sink { [weak self] id in
+                guard let self = self else { return }
+                coordinator?.push(.shoppingDetail)
+            }.store(in: &cancellables)
     }
     
 }
@@ -204,25 +203,26 @@ extension ShoppingViewModel {
 extension ShoppingViewModel {
     
     private func fetchBanner(body: [String: String]) async {
-//        do {
-//            let result = try await shoppingAPI.getBannerList(body: body)
-//            let bannerList = BannerList(from: result)
-//            output.banners = bannerList.banners
-//            output.infiniteBanners = calculateInfiniteBanners(from: bannerList.banners)
-//            
-//        } catch {
-//            print("에러 발생 \(error)")
-//        }
+        do {
+            let router = PostRequest.postList(category: "banner_outer")
+            let result = try await NetworkService.shared.callRequest(router: router, type: PostListDTO.self)
+            let bannerList = BannerList(from: result)
+            output.banners = bannerList.banners
+            output.infiniteBanners = calculateInfiniteBanners(from: bannerList.banners)
+        } catch {
+            print("에러 발생\(error)")
+        }
     }
     
     private func fetchProducts(body: [String: String]) async {
-//        do {
-//            let result = try await shoppingAPI.getBannerList(body: body)
-//            let productList = ShoppingProductList(from: result)
-//            output.products = productList.products
-//        } catch {
-//            print("에러 발생 \(error)")
-//        }
+        do {
+            let router = PostRequest.postList(limit: "10", category: "product_padding")
+            let result = try await NetworkService.shared.callRequest(router: router, type: PostListDTO.self)
+            let productList = ShoppingProductList(from: result)
+            output.products = productList.products
+        } catch {
+            print("에러 발생 \(error)")
+        }
     }
     
     

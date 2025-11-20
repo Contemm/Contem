@@ -17,7 +17,7 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
     
     init() {
         
-        self.rootRoute = .signin
+        self.rootRoute = .tabView
 //        if hasAccessToken() {
 //            self.rootRoute = .tabView
 //        } else {
@@ -39,12 +39,11 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
             let vm = SignInViewModel(coordinator: self)
             SignInView(viewModel: vm)
         case .shopping:
-//            TestAView()
             let vm = ShoppingViewModel(coordinator: self)
             ShoppingView(viewModel: vm)
         case .shoppingDetail:
-            TestBView()
-//            ShoppingDetailView()
+            let vm = ShoppingDetailViewModel(coordinator: self)
+            ShoppingDetailView(viewModel: vm)
         case .style:
             let vm = StyleViewModel(coordinator: self)
             StyleView(viewModel: vm)

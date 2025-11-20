@@ -3,17 +3,18 @@ import Combine
 
 final class StyleViewModel: ViewModelType {
 
-    // MARK: - MVVM
+    
+    
 
     var cancellables = Set<AnyCancellable>()
+    
     var input = Input()
+    
     @Published var output = Output()
-
-    // MARK: - Dependencies
-
-//     private let coordinator: CoordinatorProtocol
-
-    // MARK: - Input
+    
+    private weak var coordinator: AppCoordinator?
+    
+    
 
     struct Input {
         let viewOnTask = PassthroughSubject<Void, Never>()
@@ -31,11 +32,9 @@ final class StyleViewModel: ViewModelType {
     }
 
     // MARK: - Init
-    private weak var coordinator: AppCoordinator?
-    
-    init(coordinator: AppCoordinator){
+
+    init(coordinator: AppCoordinator) {
         self.coordinator = coordinator
-//        self.coordinator = coordinator
         
         transform()
     }

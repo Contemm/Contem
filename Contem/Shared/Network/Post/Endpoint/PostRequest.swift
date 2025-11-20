@@ -9,16 +9,16 @@ import Foundation
 
 enum PostRequest: TargetTypeProtocol {
     // MARK: - Case
-    case postList(next: String, limit: String, category: [String]) //게시글 조회
+    case postList(next: String? = nil, limit: String? = nil, category: String) //게시글 조회
     case postFiles(files: [Data]) //파일 업로드
     
     // MARK: - Path
     var path: String {
         switch self {
         case .postList:
-            return "posts"
+            return "/posts"
         case .postFiles:
-            return "posts/files"
+            return "/posts/files"
         }
     }
     
@@ -35,7 +35,7 @@ enum PostRequest: TargetTypeProtocol {
     // MARK: - Headers
     var headers: [String : String] {
         return [
-            "Authorization": "",
+            "Authorization": APIConfig.testToken,
             "SeSACKey": APIConfig.sesacKey,
             "ProductId": APIConfig.productID
         ]
@@ -44,10 +44,21 @@ enum PostRequest: TargetTypeProtocol {
     // MARK: - Parameters
     var parameters: [String : Any] {
         switch self {
-        case .postList(let next, let query, let category):
-            ["next": next, "query": query, "category": category]
+        case .postList(let next, let limit, let category):
+            var params: [String: Any] = ["category": category]
+            
+            // next가 nil이 아닐 때만 추가
+            if let next = next {
+                params["next"] = next
+            }
+            
+            // limit이 nil이 아닐 때만 추가
+            if let limit = limit {
+                params["limit"] = limit
+            }
+            return params
         case .postFiles:
-            [:]
+            return [:]
         }
     }
     

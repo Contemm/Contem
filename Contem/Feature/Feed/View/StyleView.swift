@@ -41,10 +41,4 @@ struct StyleView: View {
             viewModel.input.viewOnTask.send(())
         }
     }
-
-    // MARK: - Methods
-
-//    private func refresh() async {
-//        viewModel.input.refreshTrigger.send(())
-//    }
 }

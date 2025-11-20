@@ -38,18 +38,6 @@ protocol NetworkRouter {
 
 extension NetworkRouter {
 
-    /// 기본 Base URL (Secret/APIConfig.swift에서 가져옴)
-    ///
-    ///
-    /// ```swift
-    /// import Foundation
-    ///
-    /// enum APIConfig {
-    ///     static let baseURL = "http://lslp.sesac.co.kr:30279/v1/"
-    ///     static let sesacKey = "SESAC_KEY"
-    ///     static let productID = "PRODUCT_ID"
-    /// }
-    /// ```
     var baseURL: String {
         return APIConfig.baseURL
     }

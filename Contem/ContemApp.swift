@@ -1,10 +1,3 @@
-//
-//  ContemApp.swift
-//  Contem
-//
-//  Created by 송재훈 on 11/9/25.
-//
-
 import SwiftUI
 
 @main
