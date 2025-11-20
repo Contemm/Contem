@@ -26,6 +26,10 @@ struct StyleEntity{
     var likeCount: String{
         likes.count.description
     }
+    
+    var imageUrls: [URL?]{
+        files.map{ URL(string: APIConfig.baseURL + $0) }
+    }
 }
 
 struct StyleCreatorEntity {
