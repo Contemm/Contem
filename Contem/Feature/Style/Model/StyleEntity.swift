@@ -9,14 +9,14 @@ import Foundation
 
 struct StyleEntity{
     let postId: String
-    let category: String
-    let title: String
-    let content: String
-    let value1: String
-    let value2: String
-    let value3: String
-    let value4: String
-    let value5: String
+    let category: String?
+    let title: String?
+    let content: String?
+    let value1: String?
+    let value2: String?
+    let value3: String?
+    let value4: String?
+    let value5: String?
     let createdAt: String
     let creator: StyleCreatorEntity
     let files: [String] //이미지들
@@ -31,7 +31,7 @@ struct StyleEntity{
 struct StyleCreatorEntity {
     let userId: String
     let nick: String
-    let profileImage: String
+    let profileImage: String?
 }
 
 struct StyleTag: Identifiable{
