@@ -48,10 +48,13 @@ final class SignInViewModel: ViewModelType {
     
     private func signin() async{
         do{
-            _ = try await NetworkService.shared.callRequest(
+            let response = try await NetworkService.shared.callRequest(
                 router: UserRequest.login(email: output.email, password: output.password),
                 type: LoginDTO.self
             )
+            
+            await TokenStorage.shared.storeTokens(access: response.accessToken, refresh: response.refreshToken, userId: response.userID)
+            
             coordinator?.rootRoute = .tabView
         }catch{
             output.alertMessage = error.localizedDescription
