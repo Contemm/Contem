@@ -12,6 +12,9 @@ struct ContemApp: App {
                         coordinator.build(route: route)
                     }
             }
+            .task {
+                await coordinator.checkToken()
+            }
         }
     }
 }
