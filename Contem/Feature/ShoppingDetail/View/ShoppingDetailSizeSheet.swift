@@ -28,12 +28,12 @@ struct ShoppingDetailSizeSheet: View {
 
         do {
             let regex = try NSRegularExpression(pattern: sizePattern)
-            let range = NSRange(detailInfo.value3.startIndex..., in: detailInfo.value3)
-            let matches = regex.matches(in: detailInfo.value3, range: range)
+            let range = NSRange(detailInfo.sizeInfo.startIndex..., in: detailInfo.sizeInfo)
+            let matches = regex.matches(in: detailInfo.sizeInfo, range: range)
 
             return matches.compactMap { match -> String? in
-                guard let range = Range(match.range(at: 1), in: detailInfo.value3) else { return nil }
-                return String(detailInfo.value3[range])
+                guard let range = Range(match.range(at: 1), in: detailInfo.sizeInfo) else { return nil }
+                return String(detailInfo.sizeInfo[range])
             }
         } catch {
             // Regex 실패 시 기본 사이즈 반환
@@ -118,11 +118,11 @@ struct ShoppingDetailSizeRow: View {
     }
 }
 
-#Preview {
-    ShoppingDetailSizeSheet(
-        detailInfo: ShoppingDetailInfo.sample,
-        selectedSize: nil,
-        onSizeSelected: { _ in },
-        onDismiss: {}
-    )
-}
+//#Preview {
+//    ShoppingDetailSizeSheet(
+//        detailInfo: ShoppingDetailInfo.sample,
+//        selectedSize: nil,
+//        onSizeSelected: { _ in },
+//        onDismiss: {}
+//    )
+//}

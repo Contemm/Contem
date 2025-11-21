@@ -132,7 +132,7 @@ private struct SubCategoryHeader: View {
             .padding(.vertical, 12)
             .background(Color.white)
             
-            Divider()
+//            Divider()
         }
     }
     
@@ -267,6 +267,9 @@ struct ProductCard: View {
                 GeometryReader { geometry in
                     
                     KFImage(product.imageUrl)
+                        .onFailure { error in
+                            print("❌ 이미지 로드 실패: \(error.localizedDescription)")
+                        }
                         .requestModifier(MyImageDownloadRequestModifier())
                         .resizable()
                         .scaledToFill()

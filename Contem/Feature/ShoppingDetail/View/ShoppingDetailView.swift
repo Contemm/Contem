@@ -1,27 +1,15 @@
-//
-//  ShoppingDetailView.swift
-//  Contem
-//
-//  Created by 송재훈 on 11/14/25.
-//
-
 import SwiftUI
 import Combine
+import Kingfisher
 
 struct ShoppingDetailView: View {
 
-    // MARK: - ViewModel
-
     @ObservedObject private var viewModel: ShoppingDetailViewModel
-//    @StateObject private var viewModel = ShoppingDetailViewModel(coordinator: self)
 
-    // MARK: - Initialization
 
     init(viewModel: ShoppingDetailViewModel) {
         self.viewModel = viewModel
     }
-
-    // MARK: - Body
 
     var body: some View {
         ZStack {
@@ -113,10 +101,21 @@ struct ShoppingDetailView: View {
             ScrollView {
                 VStack(spacing: 0) {
                     // Image Carousel
-                    ImageCarouselView(imageNames: detailInfo.contentImages)
+                    ImageCarouselView(imageNames: detailInfo.contentImageUrls)
 
                     // Price Info
                     ShoppingDetailPriceView(detailInfo: detailInfo)
+                    
+                    // 제품 상세 이미지
+                    VStack {
+                        ForEach(detailInfo.productImages, id: \.self) { url in
+                            KFImage(url)
+                                .requestModifier(MyImageDownloadRequestModifier())
+                                .resizable()
+                                .scaledToFit()
+                                
+                        }
+                    }
 
                     Divider()
                         .padding(.vertical, .spacing16)
@@ -125,7 +124,7 @@ struct ShoppingDetailView: View {
                     VStack(spacing: 0) {
                         AccordionItemView(
                             title: "상품 정보",
-                            content: detailInfo.value2.isEmpty ? "상품 정보가 없습니다" : detailInfo.value2
+                            content: detailInfo.productInfo.isEmpty ? "상품 정보가 없습니다" : detailInfo.productInfo
                         )
 
                         AccordionItemView(
@@ -139,12 +138,14 @@ struct ShoppingDetailView: View {
                         )
                     }
 
-                    Divider()
-                        .padding(.vertical, .spacing24)
+                    
+                    Spacer().frame(height: 24)
+//                    Divider()
+//                        .padding(.vertical, .spacing24)
 
                     // Brand Section
                     ShoppingDetailBrandView(
-                        brandInfo: detailInfo.creator,
+                        brandInfo: UserDTO(userID: "dfdf", nickname: "테스트트", profileImage: "person.circle.fill"),
                         isFollowing: viewModel.output.isFollowing,
                         onFollowTapped: {
                             viewModel.input.followButtonTapped.send()

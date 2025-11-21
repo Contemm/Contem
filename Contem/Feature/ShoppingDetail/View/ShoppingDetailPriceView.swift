@@ -1,10 +1,3 @@
-//
-//  ShoppingDetailPriceView.swift
-//  Contem
-//
-//  Created by 송재훈 on 11/14/25.
-//
-
 import SwiftUI
 
 struct ShoppingDetailPriceView: View {
@@ -44,7 +37,7 @@ struct ShoppingDetailPriceView: View {
                     .foregroundColor(.primary100)
             }
 
-            Text(detailInfo.title)
+            Text(detailInfo.brandName)
                 .font(.titleSmall)
                 .foregroundColor(.primary100)
         }
@@ -54,6 +47,6 @@ struct ShoppingDetailPriceView: View {
     }
 }
 
-#Preview {
-    ShoppingDetailPriceView(detailInfo: ShoppingDetailInfo.sample)
-}
+//#Preview {
+//    ShoppingDetailPriceView(detailInfo: ShoppingDetailInfo.sample)
+//}

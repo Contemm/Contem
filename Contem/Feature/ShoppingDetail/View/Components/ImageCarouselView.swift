@@ -1,18 +1,12 @@
-//
-//  ImageCarouselView.swift
-//  Contem
-//
-//  Created by 송재훈 on 11/14/25.
-//
-
 import SwiftUI
+import Kingfisher
 
 /// 상품 이미지 캐러셀 뷰 (간소화 버전)
 struct ImageCarouselView: View {
 
     // MARK: - Properties
 
-    let imageNames: [String]
+    let imageNames: [URL]
     @State private var currentIndex: Int = 0
 
     // MARK: - Body
@@ -22,7 +16,7 @@ struct ImageCarouselView: View {
             // 이미지 캐러셀
             TabView(selection: $currentIndex) {
                 ForEach(Array(imageNames.enumerated()), id: \.offset) { index, imageName in
-                    Image(imageName)
+                    KFImage(imageName)
                         .resizable()
                         .scaledToFit()
                         .tag(index)
@@ -46,8 +40,8 @@ struct ImageCarouselView: View {
 
 // MARK: - Preview
 
-#Preview {
-    ImageCarouselView(
-        imageNames: ["ItemImage1", "ItemImage2", "ItemImage3", "ItemImage4"]
-    )
-}
+//#Preview {
+//    ImageCarouselView(
+//        imageNames: ["ItemImage1", "ItemImage2", "ItemImage3", "ItemImage4"]
+//    )
+//}

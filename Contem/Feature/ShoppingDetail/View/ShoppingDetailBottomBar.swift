@@ -83,14 +83,14 @@ struct ShoppingDetailBottomBar: View {
     }
 }
 
-#Preview {
-    ShoppingDetailBottomBar(
-        detailInfo: ShoppingDetailInfo.sample,
-        isLiked: false,
-        selectedSize: nil,
-        onLikeTapped: {},
-        onShareTapped: {},
-        onSizeSelectionTapped: {},
-        onPurchaseTapped: {}
-    )
-}
+//#Preview {
+//    ShoppingDetailBottomBar(
+//        detailInfo: ShoppingDetailInfo.sample,
+//        isLiked: false,
+//        selectedSize: nil,
+//        onLikeTapped: {},
+//        onShareTapped: {},
+//        onSizeSelectionTapped: {},
+//        onPurchaseTapped: {}
+//    )
+//}

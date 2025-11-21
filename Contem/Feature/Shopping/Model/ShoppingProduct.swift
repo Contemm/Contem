@@ -23,9 +23,9 @@ struct ShoppingProduct: Identifiable {
     init(from dto: PostDTO) {
         self.id = dto.postID
         self.thumbnailUrl = dto.files.first ?? ""
-        self.brandName = dto.title ?? ""
-        self.productName = dto.content ?? ""
-        self.price = dto.price ?? 0
+        self.brandName = dto.title
+        self.productName = dto.content
+        self.price = dto.price
     }
     
     

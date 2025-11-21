@@ -11,22 +11,15 @@ import Combine
 @MainActor
 final class ShoppingDetailViewModel: ViewModelType {
 
-    // MARK: - MVVM
     private weak var coordinator: AppCoordinator?
+    
+    private let postId: String
     
     var cancellables = Set<AnyCancellable>()
     
     var input = Input()
     
     @Published var output = Output()
-
-    // MARK: - Dependencies
-
-//    private let coordinator: CoordinatorProtocol
-//    private let shoppingDetailAPI: ShoppingDetailAPIProtocol
-//    private let postId: String
-
-    // MARK: - Input
 
     struct Input {
         let viewDidLoad = PassthroughSubject<Void, Never>()
@@ -38,8 +31,6 @@ final class ShoppingDetailViewModel: ViewModelType {
         let followButtonTapped = PassthroughSubject<Void, Never>()
         let backButtonTapped = PassthroughSubject<Void, Never>()
     }
-
-    // MARK: - Output
 
     struct Output {
         var detailInfo: ShoppingDetailInfo?
@@ -53,107 +44,103 @@ final class ShoppingDetailViewModel: ViewModelType {
         var showShareAlert = false
     }
 
-    // MARK: - Initialization
-
     init(
-        coordinator: AppCoordinator
-//        postId: String,
-////        coordinator: CoordinatorProtocol,
-//        shoppingDetailAPI: ShoppingDetailAPIProtocol = ShoppingDetailAPI()
+        coordinator: AppCoordinator,
+        postId: String
     ) {
         self.coordinator = coordinator
-//        self.postId = postId
-////        self.coordinator = coordinator
-//        self.shoppingDetailAPI = shoppingDetailAPI
-
+        self.postId = postId
         transform()
     }
-
-    // MARK: - Transform
 
     func transform() {
         // View Did Load - API 호출
         input.viewDidLoad
-            .sink { [weak self] in
-//                self?.fetchDetail()
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.fetchDetail()
             }
             .store(in: &cancellables)
 
         // Like Button
         input.likeButtonTapped
             .sink { [weak self] in
-//                guard let self = self else { return }
-//                self.output.isLiked.toggle()
+                guard let self = self else { return }
+                output.isLiked.toggle()
             }
             .store(in: &cancellables)
 
         // Share Button
         input.shareButtonTapped
             .sink { [weak self] in
-//                self?.output.showShareAlert = true
+                guard let self = self else { return }
+                output.showShareAlert = true
             }
             .store(in: &cancellables)
 
         // Size Selection
         input.sizeSelectionTapped
             .sink { [weak self] in
-//                self?.output.showSizeSheet = true
+                guard let self = self else { return }
+                output.showSizeSheet = true
             }
             .store(in: &cancellables)
 
         input.sizeSelected
             .sink { [weak self] size in
-//                self?.output.selectedSize = size
-//                self?.output.showSizeSheet = false
+//                guard let self = self else { return }
+//                output.selectedSize = size
+//                output.showSizeSheet = false
             }
             .store(in: &cancellables)
 
         // Purchase Button
         input.purchaseButtonTapped
             .sink { [weak self] in
-//                self?.output.showPurchaseAlert = true
+                self?.output.showPurchaseAlert = true
             }
             .store(in: &cancellables)
 
         // Follow Button
         input.followButtonTapped
             .sink { [weak self] in
-//                guard let self = self else { return }
-//                self.output.isFollowing.toggle()
+                guard let self = self else { return }
+                output.isFollowing.toggle()
             }
             .store(in: &cancellables)
 
         // Back Button - Coordinator 사용
         input.backButtonTapped
             .sink { [weak self] in
-                self?.coordinator?.pop()
-//                self?.coordinator.pop()
+                guard let self = self else { return }
+                coordinator?.pop()
             }
             .store(in: &cancellables)
     }
 
-    // MARK: - API Methods
-
     private func fetchDetail() {
-//        output.isLoading = true
-//        output.errorMessage = nil
+        output.isLoading = true
+        output.errorMessage = nil
 
-//        Task { [weak self] in
-//            guard let self = self else { return }
-//
-//            do {
-////                let detailInfo = try await self.shoppingDetailAPI.fetchDetail(postId: self.postId)
-////                await MainActor.run {
-////                    self.output.detailInfo = detailInfo
-////                    self.output.isLoading = false
-////                }
-//            } catch {
-////                await MainActor.run {
-////                    self.output.errorMessage = error.localizedDescription
-////                    self.output.isLoading = false
-////                }
-//            }
-//        }
+        Task { [weak self] in
+            guard let self = self else { return }
+
+            do {
+                let router = PostRequest.postItem(postId: postId)
+                let result = try await NetworkService.shared.callRequest(router: router, type: PostDTO.self)
+                let detailInfo = ShoppingDetailInfo(from: result)
+                print(detailInfo)
+                await MainActor.run {
+                    self.output.detailInfo = detailInfo
+                    self.output.isLoading = false
+                }
+            } catch {
+                await MainActor.run {
+                    self.output.errorMessage = error.localizedDescription
+                    self.output.isLoading = false
+                }
+            }
+        }
     }
 
     // MARK: - Helper Methods

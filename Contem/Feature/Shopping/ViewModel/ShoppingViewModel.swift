@@ -55,15 +55,6 @@ final class ShoppingViewModel:ViewModelType {
                 output.currentCategory = initMainCategory
                 output.currentSubCategory = initSubCategory
                 
-                // 초기 배너 로드
-                
-                // 초기 상품 로드
-//                let products = self.loadProducts(
-//                    tabCategory: initMainCategory,
-//                    subCategory: initSubCategory
-//                )
-//                output.products = products
-                
             }.store(in: &cancellables)
         
         // 메인 탭
@@ -90,13 +81,6 @@ final class ShoppingViewModel:ViewModelType {
                     output.infiniteBanners = calculateInfiniteBanners(from: mockBanners)
                 }
                 
-//                let products = loadProducts(
-//                    tabCategory: selectedTab,
-//                    subCategory: firstSubCategory
-//                )
-//                output.products = products
-                
-                
                 // 상품 로드 - 첫번째 서브카테고리에 따라 분기
                 if firstSubCategory.apiValue == OuterSubCategory.padding.apiValue {
                     Task {
@@ -112,16 +96,6 @@ final class ShoppingViewModel:ViewModelType {
         input.selectSubCategory
             .sink { [weak self] selectedSub in
                 guard let self = self else { return }
-                
-//                let currentTab = output.currentCategory
-//                
-//                output.currentSubCategory = selectedSub
-//                
-//                let products = loadProducts(
-//                    tabCategory: currentTab,
-//                    subCategory: selectedSub
-//                )
-//                output.products = products
                 
                 output.currentSubCategory = selectedSub
                 
@@ -139,7 +113,8 @@ final class ShoppingViewModel:ViewModelType {
         input.onTappedProduct
             .sink { [weak self] id in
                 guard let self = self else { return }
-                coordinator?.push(.shoppingDetail)
+                coordinator?.push(.shoppingDetail(id: id))
+//                coordinator?.push(.shoppingDetail(postId:  d))
             }.store(in: &cancellables)
     }
     
@@ -219,6 +194,7 @@ extension ShoppingViewModel {
             let router = PostRequest.postList(limit: "10", category: "product_padding")
             let result = try await NetworkService.shared.callRequest(router: router, type: PostListDTO.self)
             let productList = ShoppingProductList(from: result)
+            print("쇼핑탭 >> \(productList.products.last)")
             output.products = productList.products
         } catch {
             print("에러 발생 \(error)")
