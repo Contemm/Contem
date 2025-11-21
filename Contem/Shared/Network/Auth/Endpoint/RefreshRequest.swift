@@ -29,7 +29,6 @@ enum RefreshRequest: TargetTypeProtocol{
         case .refresh(let refreshToken):
             return [
                 "RefreshToken": refreshToken,
-                "Authorization": APIConfig.testToken,
                 "SeSACKey": APIConfig.sesacKey,
                 "ProductId": APIConfig.productID
             ]

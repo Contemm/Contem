@@ -36,11 +36,17 @@ enum UserRequest: TargetTypeProtocol {
     }
     
     // MARK: - Parameters
-    
     var parameters: [String : Any] {
         switch self {
         case .login(let email, let password):
             ["email": email, "password": password]
+        }
+    }
+    
+    var hasAuthorization: Bool{
+        switch self {
+        case .login(let email, let password):
+            return false
         }
     }
     

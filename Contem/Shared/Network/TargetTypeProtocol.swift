@@ -28,6 +28,7 @@ protocol TargetTypeProtocol{
     var headers: [String: String] { get }
     var parameters: [String: Any] { get }
     var multipartFiles: [MultipartFile]? { get }
+    var hasAuthorization: Bool { get }
 }
 
 extension TargetTypeProtocol{
@@ -41,6 +42,10 @@ extension TargetTypeProtocol{
     
     var url: URL?{
         return URL(string: endPoint)
+    }
+    
+    var hasAuthorization: Bool{
+        return true
     }
 }
 
@@ -74,8 +79,14 @@ extension TargetTypeProtocol{
             components.queryItems = items
         }
         
+        
         var request = URLRequest(url: components.url!)
         request.httpMethod = method.rawValue
+        
+        if hasAuthorization,
+           let token = try? KeychainManager.shared.read(.accessToken){
+            request.setValue(token, forHTTPHeaderField: "Authorization")
+        }
         
         headers.forEach { key, value in
             request.addValue(value, forHTTPHeaderField: key)

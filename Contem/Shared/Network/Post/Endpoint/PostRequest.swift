@@ -35,7 +35,6 @@ enum PostRequest: TargetTypeProtocol {
     // MARK: - Headers
     var headers: [String : String] {
         return [
-            "Authorization": APIConfig.testToken,
             "SeSACKey": APIConfig.sesacKey,
             "ProductId": APIConfig.productID
         ]
