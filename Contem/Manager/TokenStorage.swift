@@ -35,4 +35,9 @@ final actor TokenStorage {
     func clear() async{
         await KeychainManager.shared.clearAll()
     }
+    
+    func hasValidAccessToken() async -> Bool{
+        guard let accessToken = await getAccessToken() else { return false }
+        return !accessToken.isEmpty
+    }
 }
