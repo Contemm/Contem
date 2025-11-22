@@ -27,6 +27,9 @@ enum NetworkError: Error {
     /// 404 - 요청한 리소스를 찾을 수 없음
     case notFound
 
+    /// 418 - 리프래시 토큰 만료
+    case refreshTokenExpired
+    
     /// 500 - 서버 내부 오류
     case serverError
 
@@ -62,6 +65,8 @@ extension NetworkError: LocalizedError {
             return "접근 권한이 없습니다."
         case .notFound:
             return "요청한 정보를 찾을 수 없습니다."
+        case .refreshTokenExpired:
+            return "로그인 세션이 만료되었습니다.\n다시 로그인 해주세요."
         case .serverError:
             return "서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요."
         case .decodingFailed:
