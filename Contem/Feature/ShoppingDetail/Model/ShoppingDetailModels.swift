@@ -13,6 +13,7 @@ struct ShoppingDetailInfo: Codable {
     let salePrice: String // 할인가
     let productInfo: String // 상품 정보 (판매자, 제조국, 제조연월, 소재)
     let sizeInfo: String // 사이즈 정보j
+    let likes: [String]
     
     
     var contentImageUrls: [URL] {
@@ -70,6 +71,7 @@ struct ShoppingDetailInfo: Codable {
         self.productInfo = dto.value3 // 상품 정보 상세
         self.sizeInfo = dto.value5 // 사이즈 정보
         self.brandInfo = dto.creator // 브랜드 정보
+        self.likes = dto.likes // 좋아요 정보
     }
 }
 

@@ -42,6 +42,7 @@ struct ShoppingDetailView: View {
         }
         .navigationBarBackButtonHidden(true)
         .toolbar {
+            // 나가기
             ToolbarItem(placement: .navigationBarLeading) {
                 Button(action: {
                     viewModel.input.backButtonTapped.send()
@@ -51,7 +52,7 @@ struct ShoppingDetailView: View {
                         .foregroundColor(.primary100)
                 }
             }
-
+            // 공유 하기
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
                     viewModel.input.shareButtonTapped.send()
@@ -63,6 +64,7 @@ struct ShoppingDetailView: View {
             }
         }
         .sheet(isPresented: $viewModel.output.showSizeSheet) {
+            // 사이즈 선택
             ShoppingDetailSizeSheet(
                 detailInfo: viewModel.output.detailInfo,
                 selectedSize: viewModel.output.selectedSize,
@@ -159,7 +161,7 @@ struct ShoppingDetailView: View {
                 isLiked: viewModel.output.isLiked,
                 selectedSize: viewModel.output.selectedSize,
                 onLikeTapped: {
-                    viewModel.input.likeButtonTapped.send()
+                    viewModel.input.likeButtonTapped.send(viewModel.output.detailInfo?.brandInfo.userID ?? "")
                 },
                 onShareTapped: {
                     viewModel.input.shareButtonTapped.send()

@@ -12,6 +12,7 @@ enum PostRequest: TargetTypeProtocol {
     case postList(next: String? = nil, limit: String? = nil, category: String) //게시글 조회
     case postFiles(files: [Data]) //파일 업로드
     case postItem(postId: String)
+    case liked(isLiked: Bool, userId: String)
     
     // MARK: - Path
     var path: String {
@@ -22,6 +23,8 @@ enum PostRequest: TargetTypeProtocol {
             return "/posts/files"
         case .postItem(let postId):
             return "/posts/\(postId)"
+        case .liked(_ , let userId):
+            return "/posts/\(userId)/like"
         }
     }
     
@@ -34,6 +37,8 @@ enum PostRequest: TargetTypeProtocol {
             return .post
         case .postItem:
             return .get
+        case .liked:
+            return .post
         }
     }
     
@@ -66,6 +71,10 @@ enum PostRequest: TargetTypeProtocol {
             return [:]
         case .postItem:
             return [:]
+        case .liked(let isLiked, _):
+            return [
+                "like_status" : isLiked
+            ]
         }
     }
     
@@ -83,6 +92,8 @@ enum PostRequest: TargetTypeProtocol {
                     mimeType: "image/jpeg",
                     data: data)
             }
+        case .liked:
+            return nil
         }
     }
 }

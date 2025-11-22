@@ -16,7 +16,7 @@ final class ShoppingDetailViewModel: ViewModelType {
 
     struct Input {
         let viewDidLoad = PassthroughSubject<Void, Never>()
-        let likeButtonTapped = PassthroughSubject<Void, Never>()
+        let likeButtonTapped = PassthroughSubject<String, Never>()
         let shareButtonTapped = PassthroughSubject<Void, Never>()
         let sizeSelectionTapped = PassthroughSubject<Void, Never>()
         let sizeSelected = PassthroughSubject<String, Never>()
@@ -57,9 +57,11 @@ final class ShoppingDetailViewModel: ViewModelType {
 
         // Like Button
         input.likeButtonTapped
-            .sink { [weak self] in
+            .sink { [weak self] userid in
                 guard let self = self else { return }
                 output.isLiked.toggle()
+                print("------ 값 전달 >> \(userid) ------")
+                postLike(output.isLiked)
             }
             .store(in: &cancellables)
 
@@ -111,6 +113,7 @@ final class ShoppingDetailViewModel: ViewModelType {
             .store(in: &cancellables)
     }
 
+    // 상품 상세 정보 불러오기
     private func fetchDetail() {
         output.isLoading = true
         output.errorMessage = nil
@@ -132,6 +135,17 @@ final class ShoppingDetailViewModel: ViewModelType {
                     self.output.errorMessage = error.localizedDescription
                     self.output.isLoading = false
                 }
+            }
+        }
+    }
+    
+    private func postLike(_ currentLike: Bool) {
+        Task { [weak self] in
+            guard let self = self else { return }
+            do {
+                let router = PostRequest.liked(isLiked: output.isLiked, userId: "")
+            } catch {
+                
             }
         }
     }
