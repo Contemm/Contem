@@ -106,6 +106,16 @@ struct ShoppingDetailView: View {
                     // Price Info
                     ShoppingDetailPriceView(detailInfo: detailInfo)
                     
+                    
+                    Spacer().frame(height: CGFloat.spacing24)
+                    
+                    ShoppingDetailBrandView(
+                        brandInfo: UserDTO(userID: "dfdf", nickname: "테스트트", profileImage: "person.circle.fill"),
+                        isFollowing: viewModel.output.isFollowing,
+                        onFollowTapped: {
+                            viewModel.input.followButtonTapped.send()
+                        }
+                    )
                     Spacer().frame(height: CGFloat.spacing48)
                     
                     // 제품 상세 이미지
@@ -139,22 +149,11 @@ struct ShoppingDetailView: View {
                             content: "교환 및 반품은 상품 수령 후 7일 이내 가능합니다."
                         )
                     }
-
                     
-                    Spacer().frame(height: 24)
-//                    Divider()
-//                        .padding(.vertical, .spacing24)
-
-                    // Brand Section
-                    ShoppingDetailBrandView(
-                        brandInfo: UserDTO(userID: "dfdf", nickname: "테스트트", profileImage: "person.circle.fill"),
-                        isFollowing: viewModel.output.isFollowing,
-                        onFollowTapped: {
-                            viewModel.input.followButtonTapped.send()
-                        }
-                    )
+                    Spacer().frame(height: 120)
+                    
                 }
-                .padding(.bottom, 84)
+                .padding(.bottom, 128)
             }
 
             // Bottom Action Bar
@@ -178,17 +177,3 @@ struct ShoppingDetailView: View {
         }
     }
 }
-
-// MARK: - Preview
-
-//#Preview {
-//    NavigationStack {
-//        ShoppingDetailView(
-//            viewModel: ShoppingDetailViewModel(
-//                postId: "1",
-//                coordinator: MockCoordinator(),
-//                shoppingDetailAPI: MockShoppingDetailAPI()
-//            )
-//        )
-//    }
-//}
