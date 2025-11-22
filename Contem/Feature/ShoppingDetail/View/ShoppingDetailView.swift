@@ -106,6 +106,8 @@ struct ShoppingDetailView: View {
                     // Price Info
                     ShoppingDetailPriceView(detailInfo: detailInfo)
                     
+                    Spacer().frame(height: CGFloat.spacing48)
+                    
                     // 제품 상세 이미지
                     VStack {
                         ForEach(detailInfo.productImages, id: \.self) { url in

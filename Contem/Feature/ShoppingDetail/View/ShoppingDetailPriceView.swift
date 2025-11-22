@@ -1,12 +1,7 @@
 import SwiftUI
 
 struct ShoppingDetailPriceView: View {
-
-    // MARK: - Properties
-
     let detailInfo: ShoppingDetailInfo
-
-    // MARK: - Body
 
     var body: some View {
         VStack(alignment: .leading, spacing: .spacing12) {
@@ -55,7 +50,3 @@ struct ShoppingDetailPriceView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
-
-//#Preview {
-//    ShoppingDetailPriceView(detailInfo: ShoppingDetailInfo.sample)
-//}

@@ -17,6 +17,12 @@ struct ImageCarouselView: View {
             TabView(selection: $currentIndex) {
                 ForEach(Array(imageNames.enumerated()), id: \.offset) { index, imageName in
                     KFImage(imageName)
+                        .requestModifier(MyImageDownloadRequestModifier())
+                        .placeholder {
+                            // 로딩 중에 보여줄 플레이스홀더 (UX 개선)
+                            ProgressView()
+                                .controlSize(.large)
+                        }
                         .resizable()
                         .scaledToFit()
                         .tag(index)

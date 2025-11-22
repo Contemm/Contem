@@ -17,6 +17,7 @@ struct ShoppingDetailInfo: Codable {
     var contentImageUrls: [URL] {
         contentImages.map {
             let fullUrl = APIConfig.baseURL + $0
+            print("이미지지??? \(fullUrl)")
             return URL(string: fullUrl)!
         }
     }

@@ -74,6 +74,9 @@ extension CGFloat {
     
     /// 32pt - 최대 간격
     static let spacing32: CGFloat = 32
+    
+    /// 48pt - 
+    static let spacing48: CGFloat = 48
 }
 
 // MARK: - EdgeInsets Convenience
