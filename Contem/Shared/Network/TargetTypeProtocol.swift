@@ -83,11 +83,6 @@ extension TargetTypeProtocol{
         var request = URLRequest(url: components.url!)
         request.httpMethod = method.rawValue
         
-        if hasAuthorization,
-           let token = try? KeychainManager.shared.read(.accessToken){
-            request.setValue(token, forHTTPHeaderField: "Authorization")
-        }
-        
         headers.forEach { key, value in
             request.addValue(value, forHTTPHeaderField: key)
         }
