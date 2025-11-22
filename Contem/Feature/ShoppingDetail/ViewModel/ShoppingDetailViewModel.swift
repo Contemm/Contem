@@ -81,9 +81,9 @@ final class ShoppingDetailViewModel: ViewModelType {
 
         input.sizeSelected
             .sink { [weak self] size in
-//                guard let self = self else { return }
-//                output.selectedSize = size
-//                output.showSizeSheet = false
+                guard let self = self else { return }
+                output.selectedSize = size
+                output.showSizeSheet = false
             }
             .store(in: &cancellables)
 
