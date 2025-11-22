@@ -10,7 +10,7 @@ import Foundation
 // MARK: - MockShoppingDetailAPI
 
 /// 목업 데이터를 반환하는 ShoppingDetailAPI (실제 네트워크 요청 없음)
-final class MockShoppingDetailAPI: ShoppingDetailAPIProtocol {
+final class MockShoppingDetailAPI {
 
     // MARK: - Method
 
