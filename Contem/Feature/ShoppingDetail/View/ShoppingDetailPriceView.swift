@@ -37,9 +37,18 @@ struct ShoppingDetailPriceView: View {
                     .foregroundColor(.primary100)
             }
 
-            Text(detailInfo.brandName)
-                .font(.titleSmall)
-                .foregroundColor(.primary100)
+            VStack(alignment: .leading, spacing: CGFloat.spacing4) {
+                Text(detailInfo.brandName)
+                    .font(.titleSmall)
+                    .foregroundColor(.primary100)
+                
+                Text(detailInfo.productName)
+                    .font(.captionLarge)
+                
+                Text(detailInfo.productNameEn)
+                    .font(.captionSmall)
+            }
+            
         }
         .padding(.horizontal, .spacing20)
         .padding(.vertical, .spacing16)

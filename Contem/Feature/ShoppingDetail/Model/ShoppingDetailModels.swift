@@ -5,7 +5,8 @@ struct ShoppingDetailInfo: Codable {
     let id: String // 상품 아이디
     let brandName: String // 브랜드 이름
     let price: Int // 가격
-    let productName: String
+    let productName: String // 상품 이름
+    let productNameEn: String // 상품 영어 이름
     let contentImages: [String] // 이미지들, :로 구분
     let contentDetailImages: String // 이미지들 : 로 구분
     let salePrice: String // 할인가
@@ -61,6 +62,7 @@ struct ShoppingDetailInfo: Codable {
         self.brandName = dto.title // 브랜드 이름
         self.price = dto.price // 가격
         self.productName = dto.content // 상품 이름
+        self.productNameEn = dto.value4 // 상품 영어 이름
         self.contentImages = dto.files // 상품 베너 이미지
         self.contentDetailImages = dto.value1 // 상세 이미지
         self.salePrice = dto.value2 // 할인 가격

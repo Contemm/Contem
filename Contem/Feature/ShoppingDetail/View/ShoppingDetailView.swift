@@ -117,8 +117,8 @@ struct ShoppingDetailView: View {
                         }
                     }
 
-                    Divider()
-                        .padding(.vertical, .spacing16)
+//                    Divider()
+//                        .padding(.vertical, .spacing16)
 
                     // Accordion Sections (간소화 버전)
                     VStack(spacing: 0) {
