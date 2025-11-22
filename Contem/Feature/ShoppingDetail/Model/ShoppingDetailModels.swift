@@ -9,6 +9,7 @@ struct ShoppingDetailInfo: Codable {
     let productNameEn: String // 상품 영어 이름
     let contentImages: [String] // 이미지들, :로 구분
     let contentDetailImages: String // 이미지들 : 로 구분
+    let brandInfo: UserDTO
     let salePrice: String // 할인가
     let productInfo: String // 상품 정보 (판매자, 제조국, 제조연월, 소재)
     let sizeInfo: String // 사이즈 정보j
@@ -17,7 +18,6 @@ struct ShoppingDetailInfo: Codable {
     var contentImageUrls: [URL] {
         contentImages.map {
             let fullUrl = APIConfig.baseURL + $0
-            print("이미지지??? \(fullUrl)")
             return URL(string: fullUrl)!
         }
     }
@@ -67,14 +67,15 @@ struct ShoppingDetailInfo: Codable {
         self.contentImages = dto.files // 상품 베너 이미지
         self.contentDetailImages = dto.value1 // 상세 이미지
         self.salePrice = dto.value2 // 할인 가격
-        self.productInfo = dto.value3 // 사이즈 정보
-        self.sizeInfo = dto.value4
+        self.productInfo = dto.value3 // 상품 정보 상세
+        self.sizeInfo = dto.value5 // 사이즈 정보
+        self.brandInfo = dto.creator // 브랜드 정보
     }
 }
 
 /// 브랜드 정보 모델
 struct BrandInfo: Codable {
-    let user_id: String
-    let nick: String
+    let userId: String
+    let usernmae: String
     let profileImage: String
 }

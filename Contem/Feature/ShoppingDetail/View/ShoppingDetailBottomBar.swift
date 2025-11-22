@@ -1,10 +1,3 @@
-//
-//  ShoppingDetailBottomBar.swift
-//  Contem
-//
-//  Created by 송재훈 on 11/14/25.
-//
-
 import SwiftUI
 
 struct ShoppingDetailBottomBar: View {

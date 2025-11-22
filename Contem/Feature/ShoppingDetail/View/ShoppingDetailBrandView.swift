@@ -26,7 +26,6 @@ struct ShoppingDetailBrandView: View {
 
                 VStack(alignment: .leading, spacing: .spacing4) {
                     Text(brandInfo.nickname)
-                    Text("브랜드 이름")
                         .font(.titleSmall)
                         .foregroundColor(.primary100)
 
@@ -67,15 +66,3 @@ struct ShoppingDetailBrandView: View {
         .background(.gray25)
     }
 }
-
-//#Preview {
-//    ShoppingDetailBrandView(
-//        brandInfo: BrandInfo(
-//            user_id: "brand_northface_001",
-//            nick: "The North Face",
-//            profileImage: "BrandLogoImage"
-//        ),
-//        isFollowing: false,
-//        onFollowTapped: {}
-//    )
-//}

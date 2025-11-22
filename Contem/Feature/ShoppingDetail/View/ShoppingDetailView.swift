@@ -110,7 +110,7 @@ struct ShoppingDetailView: View {
                     Spacer().frame(height: CGFloat.spacing24)
                     
                     ShoppingDetailBrandView(
-                        brandInfo: UserDTO(userID: "dfdf", nickname: "테스트트", profileImage: "person.circle.fill"),
+                        brandInfo: detailInfo.brandInfo,
                         isFollowing: viewModel.output.isFollowing,
                         onFollowTapped: {
                             viewModel.input.followButtonTapped.send()
@@ -128,9 +128,6 @@ struct ShoppingDetailView: View {
                                 
                         }
                     }
-
-//                    Divider()
-//                        .padding(.vertical, .spacing16)
 
                     // Accordion Sections (간소화 버전)
                     VStack(spacing: 0) {
