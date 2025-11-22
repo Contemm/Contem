@@ -53,7 +53,7 @@ final class SignInViewModel: ViewModelType {
                 type: LoginDTO.self
             )
             
-            await TokenStorage.shared.storeTokens(access: response.accessToken, refresh: response.refreshToken, userId: response.userID)
+            try await TokenStorage.shared.storeTokens(access: response.accessToken, refresh: response.refreshToken, userId: response.userID)
             
             coordinator?.rootRoute = .tabView
         }catch{
