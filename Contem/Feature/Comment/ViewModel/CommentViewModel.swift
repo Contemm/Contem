@@ -17,6 +17,7 @@ final class CommentViewModel: ViewModelType, CommentProtocol {
     
     struct Input {
         let viewOnAppear = PassthroughSubject<Void, Never>()
+        let commentSendTapped = PassthroughSubject<String, Never>()
     }
     
     struct Output {
@@ -38,6 +39,15 @@ final class CommentViewModel: ViewModelType, CommentProtocol {
                     await owner.fetchComments(postId: owner.postId)
                 }
             }.store(in: &cancellables)
+        
+        input.commentSendTapped
+            .withUnretained(self)
+            .sink { owner, comment in
+                print(comment)
+                Task {
+                    await owner.createComment(postId: owner.postId, content: comment)
+                }
+            }.store(in: &cancellables)
     }
 }
 
@@ -56,7 +66,14 @@ extension CommentViewModel {
     }
     
     func createComment(postId: String, content: String) async {
-        
+        do {
+            let router = CommentPostRequest.create(postId: postId, content: content)
+            let result = try await NetworkService.shared.callRequest(router: router, type: CommentDTO.self)
+            let comment = Comment(from: result)
+            output.commentList.insert(comment, at: 0)
+        } catch {
+            
+        }
     }
     
     func updateComment(postId: String, commentId: String, content: String) async {
