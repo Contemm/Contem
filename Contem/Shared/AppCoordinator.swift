@@ -70,7 +70,7 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
         switch route {
         case .comment(let postId):
             let vm = CommentViewModel(coordinator: self, postId: postId)
-            CommnetView(viewModel: vm)
+            CommentView(viewModel: vm)
         }
     }
     

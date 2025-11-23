@@ -16,11 +16,11 @@ final class CommentViewModel: ViewModelType, CommentProtocol {
     var output = Output()
     
     struct Input {
-        let viewOnAppear = PassthroughSubject<String, Never>()
+        let viewOnAppear = PassthroughSubject<Void, Never>()
     }
     
     struct Output {
-        
+        var commentList: [Comment] = []
     }
     
     init(coordinator: AppCoordinator, postId: String) {
@@ -32,9 +32,10 @@ final class CommentViewModel: ViewModelType, CommentProtocol {
     func transform() {
         input.viewOnAppear
             .withUnretained(self)
-            .sink { owner, postId in
+            .sink { owner, _ in
+                print("피드 아이디:\(owner.postId)")
                 Task {
-                    await owner.fetchComments(postId: postId)
+                    await owner.fetchComments(postId: owner.postId)
                 }
             }.store(in: &cancellables)
     }
@@ -46,7 +47,8 @@ extension CommentViewModel {
         do {
             let router = CommentPostRequest.fetch(postId: postId)
             let result = try await NetworkService.shared.callRequest(router: router, type: CommentListDTO.self)
-            dump(result)
+            let comments = CommentList(from: result)
+            output.commentList = comments.commentList
         } catch {
             
         }
