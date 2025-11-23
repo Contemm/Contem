@@ -9,12 +9,18 @@ struct ShoppingDetailInfo: Codable {
     let productNameEn: String // 상품 영어 이름
     let contentImages: [String] // 이미지들, :로 구분
     let contentDetailImages: String // 이미지들 : 로 구분
-    let brandInfo: UserDTO
+    let brandInfo: UserDTO // 판매자 정보
     let salePrice: String // 할인가
     let productInfo: String // 상품 정보 (판매자, 제조국, 제조연월, 소재)
     let sizeInfo: String // 사이즈 정보j
     let likes: [String]
     
+    // 내가 좋아요 했는지 상태 확인
+    var isLiked: Bool {
+        let userId = "6917f9f2ff94927948ff319e"
+        // 로그인시 UserID UserDeftault에 저장 후 사용
+        return likes.contains(userId) // 임시 id 값임
+    }
     
     var contentImageUrls: [URL] {
         contentImages.map {

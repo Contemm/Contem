@@ -194,7 +194,6 @@ extension ShoppingViewModel {
             let router = PostRequest.postList(limit: "10", category: "product_padding")
             let result = try await NetworkService.shared.callRequest(router: router, type: PostListDTO.self)
             let productList = ShoppingProductList(from: result)
-            print("쇼핑탭 >> \(productList.products.last)")
             output.products = productList.products
         } catch {
             print("에러 발생 \(error)")

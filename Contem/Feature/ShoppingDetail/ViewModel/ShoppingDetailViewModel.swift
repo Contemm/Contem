@@ -68,13 +68,13 @@ final class ShoppingDetailViewModel: ViewModelType {
             }
             .store(in: &cancellables)
         
+        // 좋아요 통신
         likeNetworkTrigger
             .debounce(for: .seconds(0.5), scheduler: RunLoop.main)
             .sink { [weak self] (isLiked, postId) in
                 guard let self = self else { return }
                 postLike(currentLike: output.isLiked, postId: postId)
             }.store(in: &cancellables)
-        
         
 
         // Share Button
@@ -137,9 +137,9 @@ final class ShoppingDetailViewModel: ViewModelType {
                 let router = PostRequest.postItem(postId: postId)
                 let result = try await NetworkService.shared.callRequest(router: router, type: PostDTO.self)
                 let detailInfo = ShoppingDetailInfo(from: result)
-                print(detailInfo)
                 await MainActor.run {
                     self.output.detailInfo = detailInfo
+                    self.output.isLiked = detailInfo.isLiked
                     self.output.isLoading = false
                 }
             } catch {
@@ -156,11 +156,8 @@ final class ShoppingDetailViewModel: ViewModelType {
             guard let self = self else { return }
             do {
                 let router = PostRequest.liked(isLiked: output.isLiked, userId: postId)
-                let result = try await NetworkService.shared.callRequest(router: router, type: PostLikeDTO.self)
-                
-                print("통신 결과 \(result)")
+                let _ = try await NetworkService.shared.callRequest(router: router, type: PostLikeDTO.self)
             } catch {
-                print("좋아요 네트워크 통신 실패 >> \(error)")
                 await MainActor.run {
                     self.output.isLiked.toggle()
                 }
