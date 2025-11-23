@@ -8,6 +8,8 @@ final class ShoppingDetailViewModel: ViewModelType {
     
     private let postId: String
     
+    private let likeNetworkTrigger = PassthroughSubject<(Bool, String), Never>()
+    
     var cancellables = Set<AnyCancellable>()
     
     var input = Input()
@@ -57,13 +59,23 @@ final class ShoppingDetailViewModel: ViewModelType {
 
         // Like Button
         input.likeButtonTapped
-            .sink { [weak self] userid in
+            .sink { [weak self] postId in
                 guard let self = self else { return }
                 output.isLiked.toggle()
-                print("------ 값 전달 >> \(userid) ------")
-                postLike(output.isLiked)
+                
+                likeNetworkTrigger.send((output.isLiked, postId))
+                
             }
             .store(in: &cancellables)
+        
+        likeNetworkTrigger
+            .debounce(for: .seconds(0.5), scheduler: RunLoop.main)
+            .sink { [weak self] (isLiked, postId) in
+                guard let self = self else { return }
+                postLike(currentLike: output.isLiked, postId: postId)
+            }.store(in: &cancellables)
+        
+        
 
         // Share Button
         input.shareButtonTapped
@@ -139,13 +151,19 @@ final class ShoppingDetailViewModel: ViewModelType {
         }
     }
     
-    private func postLike(_ currentLike: Bool) {
+    private func postLike(currentLike: Bool, postId: String) {
         Task { [weak self] in
             guard let self = self else { return }
             do {
-                let router = PostRequest.liked(isLiked: output.isLiked, userId: "")
-            } catch {
+                let router = PostRequest.liked(isLiked: output.isLiked, userId: postId)
+                let result = try await NetworkService.shared.callRequest(router: router, type: PostLikeDTO.self)
                 
+                print("통신 결과 \(result)")
+            } catch {
+                print("좋아요 네트워크 통신 실패 >> \(error)")
+                await MainActor.run {
+                    self.output.isLiked.toggle()
+                }
             }
         }
     }

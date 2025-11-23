@@ -161,7 +161,7 @@ struct ShoppingDetailView: View {
                 isLiked: viewModel.output.isLiked,
                 selectedSize: viewModel.output.selectedSize,
                 onLikeTapped: {
-                    viewModel.input.likeButtonTapped.send(viewModel.output.detailInfo?.brandInfo.userID ?? "")
+                    viewModel.input.likeButtonTapped.send(viewModel.output.detailInfo?.id ?? "")
                 },
                 onShareTapped: {
                     viewModel.input.shareButtonTapped.send()
