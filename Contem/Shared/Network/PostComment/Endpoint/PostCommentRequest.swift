@@ -7,6 +7,8 @@ enum CommentPostRequest: TargetTypeProtocol {
     case update(postId: String ,commentId: String, content: String)
     case delete(postId: String, commentId: String)
     case createReply(postId: String, commentId: String, content: String)
+    
+    
     // MARK: - Path
     var path: String {
         switch self {
