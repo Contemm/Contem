@@ -100,7 +100,6 @@ final class ShoppingViewModel:ViewModelType {
                 guard let self = self else { return }
                 
                 output.currentSubCategory = selectedSub
-                ㄴ
                 if selectedSub.apiValue == OuterSubCategory.padding.apiValue {
                     Task {
                         await self.fetchProducts(body: ["category": selectedSub.apiValue])
