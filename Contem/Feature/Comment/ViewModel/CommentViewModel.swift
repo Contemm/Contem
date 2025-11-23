@@ -8,6 +8,7 @@ final class CommentViewModel: ViewModelType, CommentProtocol {
     
     var cancellables = Set<AnyCancellable>()
     private weak var coordinator: AppCoordinator?
+    private let postId: String
     
     var input = Input()
     
@@ -22,8 +23,9 @@ final class CommentViewModel: ViewModelType, CommentProtocol {
         
     }
     
-    init(coordinator: AppCoordinator) {
+    init(coordinator: AppCoordinator, postId: String) {
         self.coordinator = coordinator
+        self.postId = postId
         transform()
     }
     
@@ -31,26 +33,35 @@ final class CommentViewModel: ViewModelType, CommentProtocol {
         input.viewOnAppear
             .withUnretained(self)
             .sink { owner, postId in
-                owner.fetchComments(postId: postId)
+                Task {
+                    await owner.fetchComments(postId: postId)
+                }
             }.store(in: &cancellables)
     }
 }
 
 
 extension CommentViewModel {
-    func fetchComments(postId: String) async throws -> CommentListDTO {
-        <#code#>
+    func fetchComments(postId: String) async {
+        do {
+            let router = CommentPostRequest.fetch(postId: postId)
+            let result = try await NetworkService.shared.callRequest(router: router, type: CommentListDTO.self)
+            dump(result)
+        } catch {
+            
+        }
+        
     }
     
-    func createComment(postId: String, content: String) async throws -> CommentDTO {
-        <#code#>
+    func createComment(postId: String, content: String) async {
+        
     }
     
-    func updateComment(postId: String, commentId: String, content: String) async throws {
-        <#code#>
+    func updateComment(postId: String, commentId: String, content: String) async {
+        
     }
     
-    func createReply(postId: String, commentId: String, content: String) async throws -> CommentDTO {
-        <#code#>
+    func createReply(postId: String, commentId: String, content: String) async {
+        
     }
 }

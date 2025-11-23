@@ -12,7 +12,20 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
         case styleDetail
     }
     
+    enum SheetRoute: Identifiable {
+        case comment(postId: String)
+        
+        var id: String {
+            switch self {
+            case .comment(let postId): return "comment-\(postId)"
+            }
+        }
+    }
+    
     @Published var rootRoute: Route
+    
+    @Published var sheetRoute: SheetRoute?
+    
     @Published var navigationPath = NavigationPath()
     
     init() {
@@ -28,7 +41,6 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
     private func hasAccessToken() -> Bool {
         return Bool.random()
     }
-    
     
     @ViewBuilder
     func build(route: Route) -> some View {
@@ -53,6 +65,15 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
         }
     }
     
+    @ViewBuilder
+    func buildSheet(route: SheetRoute) -> some View {
+        switch route {
+        case .comment(let postId):
+            let vm = CommentViewModel(coordinator: self, postId: postId)
+            CommnetView(viewModel: vm)
+        }
+    }
+    
     func login() {
         navigationPath = NavigationPath()
         rootRoute = .tabView
@@ -74,5 +95,13 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
     
     func popToRoot() {
         navigationPath.removeLast(navigationPath.count)
+    }
+    
+    func present(sheet: SheetRoute) {
+        sheetRoute = sheet
+    }
+    
+    func dismissSheet() {
+        self.sheetRoute = nil
     }
 }
