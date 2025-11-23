@@ -1,17 +1,10 @@
-//
-//  ShoppingDetailBrandView.swift
-//  Contem
-//
-//  Created by 송재훈 on 11/14/25.
-//
-
 import SwiftUI
 
 struct ShoppingDetailBrandView: View {
 
     // MARK: - Properties
 
-    let brandInfo: BrandInfo
+    let brandInfo: UserDTO
     let isFollowing: Bool
     let onFollowTapped: () -> Void
 
@@ -20,7 +13,7 @@ struct ShoppingDetailBrandView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: .spacing16) {
             HStack(spacing: .spacing12) {
-                Image(brandInfo.profileImage)
+                Image("Person.fill")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 60, height: 60)
@@ -32,7 +25,7 @@ struct ShoppingDetailBrandView: View {
                     )
 
                 VStack(alignment: .leading, spacing: .spacing4) {
-                    Text(brandInfo.nick)
+                    Text(brandInfo.nickname)
                         .font(.titleSmall)
                         .foregroundColor(.primary100)
 
@@ -72,16 +65,4 @@ struct ShoppingDetailBrandView: View {
         .padding(.vertical, .spacing16)
         .background(.gray25)
     }
-}
-
-#Preview {
-    ShoppingDetailBrandView(
-        brandInfo: BrandInfo(
-            user_id: "brand_northface_001",
-            nick: "The North Face",
-            profileImage: "BrandLogoImage"
-        ),
-        isFollowing: false,
-        onFollowTapped: {}
-    )
 }

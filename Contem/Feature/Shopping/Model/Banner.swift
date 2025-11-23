@@ -22,8 +22,8 @@ struct Banner {
     // DTO로 부터 생성
     init(from dto: PostDTO) {
         self.id = dto.postID
-        self.title = "\(dto.title ?? "")\n\(dto.content ?? "")"
-        self.subtitle = dto.value1 ?? ""
+        self.title = "\(dto.title)\n\(dto.content)"
+        self.subtitle = dto.value1
         self.thumbnail = dto.files.first ?? ""
     }
     

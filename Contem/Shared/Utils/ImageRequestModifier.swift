@@ -1,10 +1,3 @@
-//
-//  ImageRedfd.swift
-//  Contem
-//
-//  Created by 박도원 on 11/16/25.
-//
-
 import Foundation
 import Kingfisher
 

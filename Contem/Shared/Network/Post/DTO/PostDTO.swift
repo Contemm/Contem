@@ -10,20 +10,20 @@ import Foundation
 
 struct PostDTO: Codable {
     let postID: String
-    let category: String?
-    let title: String?
-    let price: Int?
-    let content: String?
-    let value1: String?
-    let value2: String?
-    let value3: String?
-    let value4: String?
-    let value5: String?
-    let value6: String?
-    let value7: String?
-    let value8: String?
-    let value9: String?
-    let value10: String?
+    let category: String
+    let title: String
+    let price: Int
+    let content: String
+    let value1: String
+    let value2: String
+    let value3: String
+    let value4: String
+    let value5: String
+    let value6: String
+    let value7: String
+    let value8: String
+    let value9: String
+    let value10: String
     let createdAt: String
     let creator: UserDTO
     let files: [String]
