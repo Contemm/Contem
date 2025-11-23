@@ -86,12 +86,14 @@ struct ShoppingView: View {
                     .frame(height: 20)
                 
                 LazyVGrid(columns: columns, spacing: 20) {
-                    ForEach(viewModel.output.products) { product in
+                    ForEach($viewModel.output.products) { $product in
                         
-                        ProductCard(product: product)
-                            .onTapGesture {
-                                viewModel.input.onTappedProduct.send(product.id)
-                            }
+                        ProductCard(product: $product) {
+                            viewModel.input.likeButtonTapped.send(product.id)
+                        }
+                        .onTapGesture {
+                            viewModel.input.onTappedProduct.send(product.id)
+                        }
                     }
                 }
                 .padding(.horizontal, 16)
@@ -256,8 +258,8 @@ private struct BannerSection: View {
 
 // MARK: - 상품 카드
 struct ProductCard: View {
-    let product: ShoppingProduct
-    @State private var isLiked: Bool = false
+    @Binding var product: ShoppingProduct
+    let onLikedTapped: () -> Void
     
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
@@ -304,11 +306,11 @@ struct ProductCard: View {
     
     private var likeButton: some View {
         Button(action: {
-            isLiked.toggle()
+            onLikedTapped()
         }) {
-            Image(systemName: isLiked ? "heart.fill" : "heart")
+            Image(systemName: product.isLiked ? "heart.fill" : "heart")
                 .font(.system(size: 16))
-                .foregroundColor(isLiked ? .red : .white)
+                .foregroundColor(product.isLiked ? .red : .white)
                 .padding(8)
                 .background(
                     Circle()
