@@ -27,34 +27,60 @@ struct CommentView: View {
                 .disabled(text.isEmpty)
             }
             ScrollView {
-                LazyVStack {
+                LazyVStack(alignment: .leading, spacing: CGFloat.spacing16) {
                     ForEach(viewModel.output.commentList, id: \.commentId) { comment in
-                        Divider()
-                        Text(comment.user.nickname)
-                        Text(comment.comment)
-                        Text(comment.createCommentDate)
-                        HStack {
-                            Button("삭제") {
-                                viewModel.input.deleteCommentTapped.send(comment.commentId)
-                            }
+                        HStack(alignment: .top, spacing: CGFloat.spacing12) {
+                            Circle()
+                                .fill(Color.gray.opacity(0.3))
+                                .frame(width: 40, height: 40)
                             
-                            Button("수정") {
-                                viewModel.input.deleteCommentTapped.send(comment.commentId)
+                            VStack(alignment: .leading, spacing: CGFloat.spacing4) {
+                                HStack(alignment: .center, spacing: CGFloat.spacing4) {
+                                    Text(comment.user.nickname)
+                                        .font(.system(size: 14, weight: .semibold))
+                                    
+                                    Text(comment.createCommentDate)
+                                        .font(.captionRegular)
+                                }
+                                
+                                Text(comment.comment)
+                                    .font(.system(size: 14))
+                                    .lineLimit(nil)
+                                
+                                HStack(spacing: CGFloat.spacing4) {
+                                    Button {
+                                        self.commentId = comment.commentId
+                                    } label: {
+                                        Text("답글 달기")
+                                    }
+                                    Spacer().frame(width: CGFloat.spacing8)
+                                    Button {
+                                        viewModel.input.deleteCommentTapped.send(comment.commentId)
+                                    } label: {
+                                        Text("삭제")
+                                    }
+                                    Button {
+                                        viewModel.input.deleteCommentTapped.send(comment.commentId)
+                                    } label: {
+                                        Text("수정")
+                                    }
+                                }
+                                .font(.system(size: 12))
+                                .foregroundColor(.gray)
+                                .padding(.top, 2)
                             }
                         }
+                        .padding(.horizontal, CGFloat.spacing16)
                         
-                        Button("대댓글 달기") {
-                            self.commentId = comment.commentId
-                        }
+                        
+                        // 대댓글
                         VStack {
-                          
                             ForEach(comment.replies ?? [], id: \.commentId) { reply in
                                 HStack(alignment: .top) {
                                     // 대댓글 표시 아이콘 (ㄴ 모양 등)
-                                    Image(systemName: "arrow.turn.down.right")
-                                        .foregroundColor(.gray)
-                                        .frame(width: 20, height: 20)
-                                        .padding(.top, 4)
+                                    Circle()
+                                        .fill(Color.gray.opacity(0.3))
+                                        .frame(width: 32, height: 32)
                                     
                                     VStack(alignment: .leading, spacing: 4) {
                                         HStack {
@@ -86,13 +112,9 @@ struct CommentView: View {
                                         
                                     }
                                 }
-                                .padding(.vertical, 8)
-                                .padding(.leading, 10)
                                 .frame(maxWidth: .infinity, alignment: .leading)
-                                .background(Color.gray.opacity(0.05))
-                                .cornerRadius(8)
                             }
-                        }
+                        }.padding(.leading, 72)
                     }
                 }
             }
