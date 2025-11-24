@@ -11,21 +11,11 @@ struct CommentView: View {
     }
     
     var body: some View {
-        VStack {
-            HStack {
-                TextField("댓글을 입력하세요...", text: $text)
-                    .textFieldStyle(.roundedBorder)
-                    .autocapitalization(.none)
-                
-                Button {
-                    viewModel.input.commentSendTapped.send((text, commentId))
-                    text = ""
-                    commentId = nil
-                } label: {
-                    Text("전송")
-                }
-                .disabled(text.isEmpty)
-            }
+        VStack(spacing: 0) {
+            Text("댓글")
+                .font(.titleSmall)
+                .bold()
+                .padding(.vertical, CGFloat.spacing16)
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: CGFloat.spacing16) {
                     ForEach(viewModel.output.commentList, id: \.commentId) { comment in
@@ -59,6 +49,7 @@ struct CommentView: View {
                                     } label: {
                                         Text("삭제")
                                     }
+                                    Spacer().frame(width: 2)
                                     Button {
                                         viewModel.input.deleteCommentTapped.send(comment.commentId)
                                     } label: {
@@ -117,6 +108,30 @@ struct CommentView: View {
                         }.padding(.leading, 72)
                     }
                 }
+            }
+            
+            VStack {
+                Divider()
+                HStack {
+                    TextField("댓글을 입력하세요...", text: $text)
+                        .textFieldStyle(.roundedBorder)
+                        .autocapitalization(.none)
+                    
+                    Button {
+                        viewModel.input.commentSendTapped.send((text, commentId))
+                        text = ""
+                        commentId = nil
+                    } label: {
+                        Image(systemName: "paperplane")
+                            .foregroundStyle(Color.primary100)
+//                        Text("전송")
+                    }
+                    .disabled(text.isEmpty)
+                }
+                .padding(.horizontal)
+                .padding(.vertical, 8) // 입력창 위아래 여백
+                // 배경색을 지정해야 키보드가 올라올 때 뒤의 콘텐츠가 비치지 않습니다.
+                .background(Color(UIColor.systemBackground))
             }
         }.onAppear {
             viewModel.input.viewOnAppear.send()
