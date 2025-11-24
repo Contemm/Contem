@@ -1,12 +1,4 @@
-//
-//  UserDTO.swift
-//  Contem
-//
-//  Created by 박도원 on 11/15/25.
-//
-
 import Foundation
-
 
 struct UserDTO: Codable {
     let userID: String

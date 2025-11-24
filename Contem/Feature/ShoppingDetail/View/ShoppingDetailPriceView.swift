@@ -1,19 +1,7 @@
-//
-//  ShoppingDetailPriceView.swift
-//  Contem
-//
-//  Created by 송재훈 on 11/14/25.
-//
-
 import SwiftUI
 
 struct ShoppingDetailPriceView: View {
-
-    // MARK: - Properties
-
     let detailInfo: ShoppingDetailInfo
-
-    // MARK: - Body
 
     var body: some View {
         VStack(alignment: .leading, spacing: .spacing12) {
@@ -44,16 +32,21 @@ struct ShoppingDetailPriceView: View {
                     .foregroundColor(.primary100)
             }
 
-            Text(detailInfo.title)
-                .font(.titleSmall)
-                .foregroundColor(.primary100)
+            VStack(alignment: .leading, spacing: CGFloat.spacing4) {
+                Text(detailInfo.brandName)
+                    .font(.titleSmall)
+                    .foregroundColor(.primary100)
+                
+                Text(detailInfo.productName)
+                    .font(.captionLarge)
+                
+                Text(detailInfo.productNameEn)
+                    .font(.captionSmall)
+            }
+            
         }
         .padding(.horizontal, .spacing20)
         .padding(.vertical, .spacing16)
         .frame(maxWidth: .infinity, alignment: .leading)
     }
-}
-
-#Preview {
-    ShoppingDetailPriceView(detailInfo: ShoppingDetailInfo.sample)
 }

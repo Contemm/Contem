@@ -11,6 +11,8 @@ struct ContemApp: App {
                     .navigationDestination(for: AppCoordinator.Route.self) { route in
                         coordinator.build(route: route)
                     }
+            }.sheet(item: $coordinator.sheetRoute) { route in
+                coordinator.buildSheet(route: route)
             }
             .task {
                 await coordinator.checkToken()

@@ -4,7 +4,9 @@ import Combine
 @MainActor
 final class ShoppingViewModel:ViewModelType {
     private weak var coordinator: AppCoordinator?
-
+    
+    private let likeNetworkTrigger = PassthroughSubject<(Bool, String), Never>()
+    
     // disposeBag
     var cancellables = Set<AnyCancellable>()
     
@@ -18,6 +20,7 @@ final class ShoppingViewModel:ViewModelType {
         let selectMainCategory = CurrentValueSubject<TabCategory, Never>(.outer)
         let selectSubCategory = CurrentValueSubject<SubCategory, Never>(OuterSubCategory.padding)
         let onTappedProduct = PassthroughSubject<String, Never>()
+        let likeButtonTapped = PassthroughSubject<String, Never>()
     }
     
     struct Output {
@@ -26,7 +29,6 @@ final class ShoppingViewModel:ViewModelType {
         var infiniteBanners: [Banner] = []
         var displayBannerIndex: Int = 1
         var currentSubCategories: [String] = []
-        
         var products: [ShoppingProduct] = []
         var currentCategory = TabCategory.outer
         var currentSubCategory: SubCategory = OuterSubCategory.padding
@@ -47,22 +49,13 @@ final class ShoppingViewModel:ViewModelType {
                     await self.fetchProducts(body: ["category" : OuterSubCategory.padding.apiValue])
                 }
                 
-                                
+                
                 let initMainCategory = TabCategory.outer
                 let initSubCategory = initMainCategory.subCategories[0]
                 
                 // 초기 카테고리 설정
                 output.currentCategory = initMainCategory
                 output.currentSubCategory = initSubCategory
-                
-                // 초기 배너 로드
-                
-                // 초기 상품 로드
-//                let products = self.loadProducts(
-//                    tabCategory: initMainCategory,
-//                    subCategory: initSubCategory
-//                )
-//                output.products = products
                 
             }.store(in: &cancellables)
         
@@ -90,13 +83,6 @@ final class ShoppingViewModel:ViewModelType {
                     output.infiniteBanners = calculateInfiniteBanners(from: mockBanners)
                 }
                 
-//                let products = loadProducts(
-//                    tabCategory: selectedTab,
-//                    subCategory: firstSubCategory
-//                )
-//                output.products = products
-                
-                
                 // 상품 로드 - 첫번째 서브카테고리에 따라 분기
                 if firstSubCategory.apiValue == OuterSubCategory.padding.apiValue {
                     Task {
@@ -113,19 +99,7 @@ final class ShoppingViewModel:ViewModelType {
             .sink { [weak self] selectedSub in
                 guard let self = self else { return }
                 
-//                let currentTab = output.currentCategory
-//                
-//                output.currentSubCategory = selectedSub
-//                
-//                let products = loadProducts(
-//                    tabCategory: currentTab,
-//                    subCategory: selectedSub
-//                )
-//                output.products = products
-                
                 output.currentSubCategory = selectedSub
-                
-                // .padding 카테고리면 서버 데이터, 아니면 Mock 데이터
                 if selectedSub.apiValue == OuterSubCategory.padding.apiValue {
                     Task {
                         await self.fetchProducts(body: ["category": selectedSub.apiValue])
@@ -139,7 +113,26 @@ final class ShoppingViewModel:ViewModelType {
         input.onTappedProduct
             .sink { [weak self] id in
                 guard let self = self else { return }
-                coordinator?.push(.shoppingDetail)
+                coordinator?.push(.shoppingDetail(id: id))
+            }.store(in: &cancellables)
+        
+        input.likeButtonTapped
+            .sink { [weak self] postId in
+                guard let self = self else { return }
+                if let index = output.products.firstIndex(where: { $0.id == postId }) {
+                    self.output.products[index].toggleLike()
+                    
+                    let currentState = self.output.products[index].isLiked
+                    likeNetworkTrigger.send((currentState, postId))
+                }
+                
+            }.store(in: &cancellables)
+        
+        likeNetworkTrigger
+            .debounce(for: .seconds(0.5), scheduler: RunLoop.main)
+            .sink { [weak self] (isLiked, postId) in
+                guard let self = self else { return }
+                postLike(currentLike: isLiked, postId: postId)
             }.store(in: &cancellables)
     }
     
@@ -225,6 +218,22 @@ extension ShoppingViewModel {
         }
     }
     
+    private func postLike(currentLike: Bool, postId: String) {
+        Task { [weak self] in
+            guard let self = self else { return }
+            do {
+                let router = PostRequest.liked(isLiked: currentLike, userId: postId)
+                let _ = try await NetworkService.shared.callRequest(router: router, type: PostLikeDTO.self)
+            } catch {
+                await MainActor.run {
+                    if let index = self.output.products.firstIndex(where: { $0.id == postId }) {
+                        self.output.products[index].toggleLike()
+                    }
+                }
+            }
+        }
+    }
+    
     
     
     /// 카테고리별 배너 로드
@@ -250,18 +259,90 @@ extension ShoppingViewModel {
     
     private func generateMockProducts() -> [ShoppingProduct] {
         return [
-            ShoppingProduct(thumbnailUrl: "image_1", brandName: "Palace", productName: "팔라스 퍼텍스 퀼팅 RS…", price: 930000),
-            ShoppingProduct(thumbnailUrl: "image_2", brandName: "moif", productName: "[더블점핑][FW25] 모…", price: 567000),
-            ShoppingProduct(thumbnailUrl: "image_3", brandName: "Jordan", productName: "조던 1 x 자이언 윌리엄…", price: 210000),
-            ShoppingProduct(thumbnailUrl: "image_4", brandName: "Polyteru Human In...", productName: "폴리테루 휴먼인텍스 츄…", price: 164000),
-            ShoppingProduct(thumbnailUrl: "image_5", brandName: "Palace", productName: "팔라스 퍼텍스 퀼팅 RS…", price: 840000),
-            ShoppingProduct(thumbnailUrl: "image_6", brandName: "moif", productName: "[더블점핑][FW25] 모…", price: 567000),
-            ShoppingProduct(thumbnailUrl: "image_7", brandName: "IAB Studio", productName: "아이앱 스튜디오 아이앱…", price: 166000),
-            ShoppingProduct(thumbnailUrl: "image_1", brandName: "moif", productName: "[더블점핑][FW25] 모…", price: 495000),
-            ShoppingProduct(thumbnailUrl: "image_2", brandName: "Nike", productName: "(W) 나이키 아스트로그…", price: 138000),
-            ShoppingProduct(thumbnailUrl: "image_3", brandName: "Polyteru", productName: "폴리테루 팬츠…", price: 164000),
-            ShoppingProduct(thumbnailUrl: "image_4", brandName: "Nike", productName: "나이키 신발…", price: 200000),
-            ShoppingProduct(thumbnailUrl: "image_5", brandName: "Palace", productName: "팔라스 재킷…", price: 750000)
+            ShoppingProduct(
+                thumbnailUrl: "image_1",
+                brandName: "Palace",
+                productName: "팔라스 퍼텍스 퀼팅 RS…",
+                price: 930000,
+                likes: []
+            ),
+            ShoppingProduct(
+                thumbnailUrl: "image_2",
+                brandName: "moif",
+                productName: "[더블점핑][FW25] 모…",
+                price: 567000,
+                likes: []
+            ),
+            ShoppingProduct(
+                thumbnailUrl: "image_3",
+                brandName: "Jordan",
+                productName: "조던 1 x 자이언 윌리엄…",
+                price: 210000,
+                likes: []
+            ),
+            ShoppingProduct(
+                thumbnailUrl: "image_4",
+                brandName: "Polyteru Human In...",
+                productName: "폴리테루 휴먼인텍스 츄…",
+                price: 164000,
+                likes: []
+            ),
+            ShoppingProduct(
+                thumbnailUrl: "image_5",
+                brandName: "Palace",
+                productName: "팔라스 퍼텍스 퀼팅 RS…",
+                price: 840000,
+                likes: []
+            ),
+            ShoppingProduct(
+                thumbnailUrl: "image_6",
+                brandName: "moif",
+                productName: "[더블점핑][FW25] 모…",
+                price: 567000,
+                likes: []
+            ),
+            ShoppingProduct(
+                thumbnailUrl: "image_7",
+                brandName: "IAB Studio",
+                productName: "아이앱 스튜디오 아이앱…",
+                price: 166000,
+                likes: []
+            ),
+            ShoppingProduct(
+                thumbnailUrl: "image_1",
+                brandName: "moif",
+                productName: "[더블점핑][FW25] 모…",
+                price: 495000,
+                likes: []
+            ),
+            ShoppingProduct(
+                thumbnailUrl: "image_2",
+                brandName: "Nike",
+                productName: "(W) 나이키 아스트로그…",
+                price: 138000,
+                likes: []
+            ),
+            ShoppingProduct(
+                thumbnailUrl: "image_3",
+                brandName: "Polyteru",
+                productName: "폴리테루 팬츠…",
+                price: 164000,
+                likes: []
+            ),
+            ShoppingProduct(
+                thumbnailUrl: "image_4",
+                brandName: "Nike",
+                productName: "나이키 l신발…",
+                price: 200000,
+                likes: []
+            ),
+            ShoppingProduct(
+                thumbnailUrl: "image_5",
+                brandName: "Palace",
+                productName: "팔라스 재킷…",
+                price: 750000,
+                likes: []
+            )
         ]
     }
     

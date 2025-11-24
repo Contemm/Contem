@@ -1,27 +1,15 @@
-//
-//  ShoppingDetailView.swift
-//  Contem
-//
-//  Created by 송재훈 on 11/14/25.
-//
-
 import SwiftUI
 import Combine
+import Kingfisher
 
 struct ShoppingDetailView: View {
 
-    // MARK: - ViewModel
-
     @ObservedObject private var viewModel: ShoppingDetailViewModel
-//    @StateObject private var viewModel = ShoppingDetailViewModel(coordinator: self)
 
-    // MARK: - Initialization
 
     init(viewModel: ShoppingDetailViewModel) {
         self.viewModel = viewModel
     }
-
-    // MARK: - Body
 
     var body: some View {
         ZStack {
@@ -54,6 +42,7 @@ struct ShoppingDetailView: View {
         }
         .navigationBarBackButtonHidden(true)
         .toolbar {
+            // 나가기
             ToolbarItem(placement: .navigationBarLeading) {
                 Button(action: {
                     viewModel.input.backButtonTapped.send()
@@ -63,7 +52,7 @@ struct ShoppingDetailView: View {
                         .foregroundColor(.primary100)
                 }
             }
-
+            // 공유 하기
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
                     viewModel.input.shareButtonTapped.send()
@@ -75,6 +64,7 @@ struct ShoppingDetailView: View {
             }
         }
         .sheet(isPresented: $viewModel.output.showSizeSheet) {
+            // 사이즈 선택
             ShoppingDetailSizeSheet(
                 detailInfo: viewModel.output.detailInfo,
                 selectedSize: viewModel.output.selectedSize,
@@ -113,19 +103,39 @@ struct ShoppingDetailView: View {
             ScrollView {
                 VStack(spacing: 0) {
                     // Image Carousel
-                    ImageCarouselView(imageNames: detailInfo.contentImages)
+                    ImageCarouselView(imageNames: detailInfo.contentImageUrls)
 
                     // Price Info
                     ShoppingDetailPriceView(detailInfo: detailInfo)
-
-                    Divider()
-                        .padding(.vertical, .spacing16)
+                    
+                    
+                    Spacer().frame(height: CGFloat.spacing24)
+                    
+                    ShoppingDetailBrandView(
+                        brandInfo: detailInfo.brandInfo,
+                        isFollowing: viewModel.output.isFollowing,
+                        onFollowTapped: {
+                            viewModel.input.followButtonTapped.send()
+                        }
+                    )
+                    Spacer().frame(height: CGFloat.spacing48)
+                    
+                    // 제품 상세 이미지
+                    VStack {
+                        ForEach(detailInfo.productImages, id: \.self) { url in
+                            KFImage(url)
+                                .requestModifier(MyImageDownloadRequestModifier())
+                                .resizable()
+                                .scaledToFit()
+                                
+                        }
+                    }
 
                     // Accordion Sections (간소화 버전)
                     VStack(spacing: 0) {
                         AccordionItemView(
                             title: "상품 정보",
-                            content: detailInfo.value2.isEmpty ? "상품 정보가 없습니다" : detailInfo.value2
+                            content: detailInfo.productInfo.isEmpty ? "상품 정보가 없습니다" : detailInfo.productInfo
                         )
 
                         AccordionItemView(
@@ -138,20 +148,11 @@ struct ShoppingDetailView: View {
                             content: "교환 및 반품은 상품 수령 후 7일 이내 가능합니다."
                         )
                     }
-
-                    Divider()
-                        .padding(.vertical, .spacing24)
-
-                    // Brand Section
-                    ShoppingDetailBrandView(
-                        brandInfo: detailInfo.creator,
-                        isFollowing: viewModel.output.isFollowing,
-                        onFollowTapped: {
-                            viewModel.input.followButtonTapped.send()
-                        }
-                    )
+                    
+                    Spacer().frame(height: 120)
+                    
                 }
-                .padding(.bottom, 84)
+                .padding(.bottom, 128)
             }
 
             // Bottom Action Bar
@@ -160,7 +161,7 @@ struct ShoppingDetailView: View {
                 isLiked: viewModel.output.isLiked,
                 selectedSize: viewModel.output.selectedSize,
                 onLikeTapped: {
-                    viewModel.input.likeButtonTapped.send()
+                    viewModel.input.likeButtonTapped.send(viewModel.output.detailInfo?.id ?? "")
                 },
                 onShareTapped: {
                     viewModel.input.shareButtonTapped.send()
@@ -175,17 +176,3 @@ struct ShoppingDetailView: View {
         }
     }
 }
-
-// MARK: - Preview
-
-//#Preview {
-//    NavigationStack {
-//        ShoppingDetailView(
-//            viewModel: ShoppingDetailViewModel(
-//                postId: "1",
-//                coordinator: MockCoordinator(),
-//                shoppingDetailAPI: MockShoppingDetailAPI()
-//            )
-//        )
-//    }
-//}

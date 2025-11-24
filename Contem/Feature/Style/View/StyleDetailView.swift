@@ -54,6 +54,7 @@ struct StyleDetailView: View {
                     HStack(spacing: .spacing8){
                         Button {
                             print("좋아요 버튼 클릭")
+                           
                         } label: {
                             Image(systemName: "heart")
                         }
@@ -66,6 +67,8 @@ struct StyleDetailView: View {
                     HStack(spacing: .spacing8){
                         Button {
                             print("댓글 버튼 클릭")
+                            let testId = "691ee5849682593e05755005"
+                            viewModel.input.commentButtonTapped.send(testId)
                         } label: {
                             Image(systemName: "message")
                         }

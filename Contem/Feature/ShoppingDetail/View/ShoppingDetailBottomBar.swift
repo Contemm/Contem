@@ -1,10 +1,3 @@
-//
-//  ShoppingDetailBottomBar.swift
-//  Contem
-//
-//  Created by 송재훈 on 11/14/25.
-//
-
 import SwiftUI
 
 struct ShoppingDetailBottomBar: View {
@@ -79,18 +72,6 @@ struct ShoppingDetailBottomBar: View {
             .background(.primary0)
         }
         .background(.primary0)
-        .shadow(color: .primary100.opacity(0.1), radius: 10, x: 0, y: -5)
     }
 }
 
-#Preview {
-    ShoppingDetailBottomBar(
-        detailInfo: ShoppingDetailInfo.sample,
-        isLiked: false,
-        selectedSize: nil,
-        onLikeTapped: {},
-        onShareTapped: {},
-        onSizeSelectionTapped: {},
-        onPurchaseTapped: {}
-    )
-}

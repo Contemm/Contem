@@ -7,12 +7,24 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
         case tabView
         case signin
         case shopping
-        case shoppingDetail
+        case shoppingDetail(id: String)
         case style
         case styleDetail
     }
     
     @Published var rootRoute: Route = .signin
+    enum SheetRoute: Identifiable {
+        case comment(postId: String)
+        
+        var id: String {
+            switch self {
+            case .comment(let postId): return "comment-\(postId)"
+            }
+        }
+    }
+    
+    @Published var sheetRoute: SheetRoute?
+    
     @Published var navigationPath = NavigationPath()
     
     func checkToken() async {
@@ -31,8 +43,8 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
         case .shopping:
             let vm = ShoppingViewModel(coordinator: self)
             ShoppingView(viewModel: vm)
-        case .shoppingDetail:
-            let vm = ShoppingDetailViewModel(coordinator: self)
+        case .shoppingDetail(let postId):
+            let vm = ShoppingDetailViewModel(coordinator: self, postId: postId)
             ShoppingDetailView(viewModel: vm)
         case .style:
             let vm = StyleViewModel(coordinator: self)
@@ -40,6 +52,15 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
         case .styleDetail:
             let vm = StyleDetailViewModel(coordinator: self)
             StyleDetailView(viewModel: vm)
+        }
+    }
+    
+    @ViewBuilder
+    func buildSheet(route: SheetRoute) -> some View {
+        switch route {
+        case .comment(let postId):
+            let vm = CommentViewModel(coordinator: self, postId: postId)
+            CommentView(viewModel: vm)
         }
     }
     
@@ -64,5 +85,13 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
     
     func popToRoot() {
         navigationPath.removeLast(navigationPath.count)
+    }
+    
+    func present(sheet: SheetRoute) {
+        sheetRoute = sheet
+    }
+    
+    func dismissSheet() {
+        self.sheetRoute = nil
     }
 }
