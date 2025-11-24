@@ -10,8 +10,6 @@ import Combine
 
 final class StyleDetailViewModel: ViewModelType{
     
-    private weak var coordinator: AppCoordinator?
-    
     //MARK: - Properties
     var cancellables = Set<AnyCancellable>()
     
@@ -27,6 +25,8 @@ final class StyleDetailViewModel: ViewModelType{
         var style: StyleEntity = MockStyle.sample
         var tags: [Int: [StyleTag]] = [:]
     }
+    
+    private weak var coordinator: AppCoordinator?
 
     init(coordinator: AppCoordinator) {
         self.coordinator = coordinator

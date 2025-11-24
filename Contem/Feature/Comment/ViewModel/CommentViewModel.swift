@@ -98,10 +98,8 @@ extension CommentViewModel {
     func deleteComment(postId: String, commentId: String) async {
         do {
             let router = CommentPostRequest.delete(postId: postId, commentId: commentId)
-            try await NetworkService.shared.callRequest(router: router)
-            print("지우기 성공")
+            let a = try await NetworkService.shared.callRequest(router: router, type: EmptyResponseDTO.self)
         } catch  {
-            
         }
     }
 }

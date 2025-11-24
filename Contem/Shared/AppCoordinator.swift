@@ -12,6 +12,7 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
         case styleDetail
     }
     
+    @Published var rootRoute: Route = .signin
     enum SheetRoute: Identifiable {
         case comment(postId: String)
         
@@ -22,24 +23,13 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
         }
     }
     
-    @Published var rootRoute: Route
-    
     @Published var sheetRoute: SheetRoute?
     
     @Published var navigationPath = NavigationPath()
     
-    init() {
-        
-        self.rootRoute = .tabView
-//        if hasAccessToken() {
-//            self.rootRoute = .tabView
-//        } else {
-//            self.rootRoute = .signin
-//        }
-    }
-    
-    private func hasAccessToken() -> Bool {
-        return Bool.random()
+    func checkToken() async {
+        let hasToken = await TokenStorage.shared.hasValidAccessToken()
+        rootRoute = hasToken ? .tabView : .signin
     }
     
     @ViewBuilder
