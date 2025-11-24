@@ -44,6 +44,7 @@ final class StyleDetailViewModel: ViewModelType{
         input.commentButtonTapped
             .withUnretained(self)
             .sink { owner, postId in
+                print("댓글 화면 열기 >> \(postId)")
                 owner.coordinator?.present(sheet: .comment(postId: postId))
             }.store(in: &cancellables)
     }

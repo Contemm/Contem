@@ -35,7 +35,6 @@ final class CommentViewModel: ViewModelType, CommentProtocol {
         input.viewOnAppear
             .withUnretained(self)
             .sink { owner, _ in
-                print("피드 아이디:\(owner.postId)")
                 Task {
                     await owner.fetchComments(postId: owner.postId)
                 }
@@ -53,9 +52,8 @@ final class CommentViewModel: ViewModelType, CommentProtocol {
         input.deleteCommentTapped
             .withUnretained(self)
             .sink { owner, commentId in
+                print("게시글 아이디 : \(owner.postId)")
                 Task {
-                    print("댓글 아이디 \(commentId)")
-                    print("게시글 아이디: >> \(owner.postId)")
                     await owner.deleteComment(postId: owner.postId, commentId: commentId)
                 }
             }.store(in: &cancellables)
@@ -99,9 +97,11 @@ extension CommentViewModel {
         do {
             let router = CommentPostRequest.delete(postId: postId, commentId: commentId)
             try await NetworkService.shared.callRequest(router: router)
-            print("지우기 성공")
+            await MainActor.run {
+                output.commentList.removeAll { $0.commentId == commentId }
+            }
         } catch  {
-            
+            print("실패 \(error)")
         }
     }
 }
