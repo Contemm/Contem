@@ -20,6 +20,7 @@ final class StyleDetailViewModel: ViewModelType{
     
     struct Input{
         let appear = PassthroughSubject<Void, Never>()
+        let commentButtonTapped = PassthroughSubject<String, Never>()
     }
     
     struct Output{
@@ -39,6 +40,12 @@ final class StyleDetailViewModel: ViewModelType{
                 self.preParseAllTags()
             }
             .store(in: &cancellables)
+        
+        input.commentButtonTapped
+            .withUnretained(self)
+            .sink { owner, postId in
+                owner.coordinator?.present(sheet: .comment(postId: postId))
+            }.store(in: &cancellables)
     }
     
     //MARK: - Functions
