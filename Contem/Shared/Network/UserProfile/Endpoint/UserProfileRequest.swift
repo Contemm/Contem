@@ -28,7 +28,6 @@ enum UserProfileRequest: TargetTypeProtocol {
     // MARK: - Headers
     var headers: [String : String] {
         return [
-            "Authorization": "로그인 응답 후 Keychain 혹은 UserDefaults에 저장된 accessToken값",
             "SeSACKey": APIConfig.sesacKey,
             "ProductId": APIConfig.productID
         ]

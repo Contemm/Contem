@@ -10,7 +10,6 @@ import Combine
 
 struct MasonryLayout: View {
     
-    
     // MARK: - Properties
     @EnvironmentObject private var viewModel: StyleViewModel
     

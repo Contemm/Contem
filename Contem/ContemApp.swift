@@ -14,6 +14,9 @@ struct ContemApp: App {
             }.sheet(item: $coordinator.sheetRoute) { route in
                 coordinator.buildSheet(route: route)
             }
+            .task {
+                await coordinator.checkToken()
+            }
         }
     }
 }

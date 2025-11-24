@@ -6,69 +6,89 @@
 //
 
 import Foundation
-import Combine
 
-final class NetworkService{
+final class NetworkService {
     static let shared = NetworkService()
-    
-    private init(){ }
+    private init() { }
     
     private let urlSession: URLSession = {
-        let configuration = URLSessionConfiguration.default
-        configuration.timeoutIntervalForRequest = 30 //개별 요청 제한시간: 30초
-        configuration.timeoutIntervalForResource = 60 //다운로드 요청 제한시간: 60초
-        
-        return URLSession(configuration: configuration)
+        let config = URLSessionConfiguration.default
+        config.timeoutIntervalForRequest = 30
+        config.timeoutIntervalForResource = 60
+        return URLSession(configuration: config)
     }()
     
-    func callRequest<T: Decodable>(router: TargetTypeProtocol, type: T.Type) async throws -> T{
-        let request = try router.asUrlRequest()
-        
-        let (data, response) = try await urlSession.data(for: request)
-        
-        guard let http = response as? HTTPURLResponse else{
-            throw NetworkError.invalidResponse
-        }
-        
-        switch http.statusCode{
-        case 200..<300:
-            do{
-                let decoded = try JSONDecoder().decode(type, from: data)
-                return decoded
-            }catch{
-                throw NetworkError.decodingFailed
+    @discardableResult
+    func callRequest<T: Decodable>(router: TargetTypeProtocol, type: T.Type) async throws -> T {
+        do {
+            // 1차 시도
+            return try await send(router: router, type: type)
+        } catch let error as NetworkError {
+            if case .statusCodeError(let status) = error{
+                switch status {
+                case .accessTokenExpired, .unauthorized, .forbidden:
+                    if !router.hasAuthorization || router.path
+                        .contains("/auth/refresh") {
+                        throw error
+                    }
+                    
+                    let newToken = try await TokenStorage.shared.refreshAccessToken()
+                    return try await send(router: router, type: type, overrideToken: newToken)
+                    
+                default:
+                    break // 갱신 대상 아님
+                }
             }
-            
-        case 400: throw NetworkError.badRequest
-        case 401: throw NetworkError.unauthorized
-        case 403: throw NetworkError.forbidden
-        case 404: throw NetworkError.notFound
-        case 500..<600: throw NetworkError.serverError
-        default: throw NetworkError.unknownError
+            //401이 아닌 다른 NetworkError는 그대로 던짐
+            throw error
+        }catch{
+            //알 수 없는 에러
+            throw error
         }
     }
     
-    
-    func callRequest(router: TargetTypeProtocol) async throws {
-        let request = try router.asUrlRequest()
+    // MARK: - Private Send Method
+    private func send<T: Decodable>(
+        router: TargetTypeProtocol,
+        type: T.Type,
+        overrideToken: String? = nil
+    ) async throws -> T {
         
-        // 데이터(Body)는 필요 없으므로 _로 처리
-        let (_, response) = try await urlSession.data(for: request)
+        var request = try router.asUrlRequest()
+        
+        // 재요청 시 새 토큰 주입
+        if let overrideToken {
+            request.setValue(overrideToken, forHTTPHeaderField: "Authorization")
+        } else {
+            // 일반 요청 시
+            if router.hasAuthorization,
+               let token = await TokenStorage.shared.getAccessToken(), !token.isEmpty {
+                request.setValue(token, forHTTPHeaderField: "Authorization")
+            }
+        }
+        
+        let (data, response) = try await urlSession.data(for: request)
         
         guard let http = response as? HTTPURLResponse else {
             throw NetworkError.invalidResponse
         }
         
-        switch http.statusCode {
-        case 200..<300:
-            return
-            
-        case 400: throw NetworkError.badRequest
-        case 401: throw NetworkError.unauthorized
-        case 403: throw NetworkError.forbidden
-        case 404: throw NetworkError.notFound
-        case 500..<600: throw NetworkError.serverError
-        default: throw NetworkError.unknownError
+        if (200..<300).contains(http.statusCode){
+            if type == EmptyResponseDTO.self {
+                
+                if let emptyValue = EmptyResponseDTO() as? T {
+                    return emptyValue
+                }
+                
+                throw NetworkError.decodingFailed
+            }
+            do{
+                return try JSONDecoder().decode(type, from: data)
+            }catch{
+                throw NetworkError.decodingFailed
+            }
         }
+        
+        throw NetworkError.mapping(error: nil, response: http, data: data)
     }
 }
