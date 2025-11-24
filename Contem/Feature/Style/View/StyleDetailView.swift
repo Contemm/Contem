@@ -54,19 +54,21 @@ struct StyleDetailView: View {
                         //좋아요
                         HStack(spacing: .spacing8){
                             Button {
-                                print("좋아요 버튼 클릭")
+                                viewModel.input.likebuttonTapped.send(())
                             } label: {
-                                Image(systemName: "heart")
+                                Image(systemName: viewModel.output.isStyleLiked ? "heart.fill" : "heart")
+                                    .foregroundColor(viewModel.output.isStyleLiked ? .red : .gray500)
                             }
                             
                             Text(style.likeCount)
                                 .foregroundStyle(.primary100)
+                                .monospaced()
+                                .font(.bodyRegular)
                         }//: HSTACK
                         
                         //댓글
                         HStack(spacing: .spacing8){
                             Button {
-                                print("댓글 버튼 클릭")
                                 viewModel.input.commentButtonTapped.send(APIConfig.testPostId)
                             } label: {
                                 Image(systemName: "message")
@@ -74,6 +76,8 @@ struct StyleDetailView: View {
                             
                             Text("\(style.commentCount)")
                                 .foregroundStyle(.primary100)
+                                .monospaced()
+                                .font(.bodyRegular)
                         }//: HSTACK
                     }//: HSTACK
                     .foregroundStyle(.gray500)
