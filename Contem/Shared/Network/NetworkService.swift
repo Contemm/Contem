@@ -18,6 +18,7 @@ final class NetworkService {
         return URLSession(configuration: config)
     }()
     
+    @discardableResult
     func callRequest<T: Decodable>(router: TargetTypeProtocol, type: T.Type) async throws -> T {
         do {
             // 1차 시도
@@ -73,6 +74,14 @@ final class NetworkService {
         }
         
         if (200..<300).contains(http.statusCode){
+            if type == EmptyResponseDTO.self {
+                
+                if let emptyValue = EmptyResponseDTO() as? T {
+                    return emptyValue
+                }
+                
+                throw NetworkError.decodingFailed
+            }
             do{
                 return try JSONDecoder().decode(type, from: data)
             }catch{
