@@ -17,12 +17,13 @@ final class CommentViewModel: ViewModelType, CommentProtocol {
     
     struct Input {
         let viewOnAppear = PassthroughSubject<Void, Never>()
-        let commentSendTapped = PassthroughSubject<String, Never>()
+        let commentSendTapped = PassthroughSubject<(String, String?), Never>()
         let deleteCommentTapped = PassthroughSubject<String, Never>()
     }
     
     struct Output {
         var commentList: [Comment] = []
+        var replyList: [Comment] = []
     }
     
     init(coordinator: AppCoordinator, postId: String) {
@@ -42,10 +43,18 @@ final class CommentViewModel: ViewModelType, CommentProtocol {
         
         input.commentSendTapped
             .withUnretained(self)
-            .sink { owner, comment in
-                print(comment)
+            .sink { owner, commentInfo in
+                let (comment, commentId) = commentInfo
+                            
                 Task {
-                    await owner.createComment(postId: owner.postId, content: comment)
+                    if let commentId = commentId {
+                        // 대댓글 작성
+                        await owner.createReply(postId: owner.postId, commentId: commentId, content: comment)
+                    } else {
+                        // 댓글 작성
+                        await owner.createComment(postId: owner.postId, content: comment)
+                    }
+                    
                 }
             }.store(in: &cancellables)
         
@@ -90,7 +99,14 @@ extension CommentViewModel {
     }
     
     func createReply(postId: String, commentId: String, content: String) async {
-        
+        do {
+            let router = CommentPostRequest.createReply(postId: postId, commentId: commentId, content: content)
+            let result = try await NetworkService.shared.callRequest(router: router, type: CommentDTO.self)
+            let reply = Comment(from: result)
+            output.commentList.insert(reply, at: 0)
+        } catch {
+            
+        }
     }
     
     func deleteComment(postId: String, commentId: String) async {
