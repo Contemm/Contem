@@ -95,7 +95,21 @@ extension CommentViewModel {
     }
     
     func updateComment(postId: String, commentId: String, content: String) async {
-        
+        do {
+            let router = CommentPostRequest.update(postId: postId, commentId: commentId, content: content)
+            let result = try await NetworkService.shared.callRequest(router: router, type: CommentDTO.self)
+            let modifiedComment = Comment(from: result)
+            
+            await MainActor.run {
+                if let index = output.commentList.firstIndex(where: { $0.commentId == commentId }) {
+                    output.commentList[index] = modifiedComment
+                } else if let replyIndex = output.replyList.firstIndex(where: { $0.commentId == commentId }){
+                    output.replyList[replyIndex] = modifiedComment
+                }
+            }
+        } catch {
+            
+        }
     }
     
     func createReply(postId: String, commentId: String, content: String) async {
