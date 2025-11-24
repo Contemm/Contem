@@ -23,7 +23,6 @@ final class CommentViewModel: ViewModelType, CommentProtocol {
     
     struct Output {
         var commentList: [Comment] = []
-        var replyList: [Comment] = []
     }
     
     init(coordinator: AppCoordinator, postId: String) {
@@ -71,29 +70,37 @@ final class CommentViewModel: ViewModelType, CommentProtocol {
 
 
 extension CommentViewModel {
+    // 댓글 조회
     func fetchComments(postId: String) async {
         do {
             let router = CommentPostRequest.fetch(postId: postId)
             let result = try await NetworkService.shared.callRequest(router: router, type: CommentListDTO.self)
             let comments = CommentList(from: result)
-            output.commentList = comments.commentList
+            await MainActor.run {
+                output.commentList = comments.commentList
+            }
+            
         } catch {
             
         }
         
     }
     
+    // 댓글 작성
     func createComment(postId: String, content: String) async {
         do {
             let router = CommentPostRequest.create(postId: postId, content: content)
             let result = try await NetworkService.shared.callRequest(router: router, type: CommentDTO.self)
             let comment = Comment(from: result)
-            output.commentList.insert(comment, at: 0)
+            await MainActor.run {
+                output.commentList.append(comment)
+            }
         } catch {
             
         }
     }
     
+    // 댓글&대댓글 수정
     func updateComment(postId: String, commentId: String, content: String) async {
         do {
             let router = CommentPostRequest.update(postId: postId, commentId: commentId, content: content)
@@ -103,8 +110,6 @@ extension CommentViewModel {
             await MainActor.run {
                 if let index = output.commentList.firstIndex(where: { $0.commentId == commentId }) {
                     output.commentList[index] = modifiedComment
-                } else if let replyIndex = output.replyList.firstIndex(where: { $0.commentId == commentId }){
-                    output.replyList[replyIndex] = modifiedComment
                 }
             }
         } catch {
@@ -112,23 +117,44 @@ extension CommentViewModel {
         }
     }
     
+    // 대댓글 작성
     func createReply(postId: String, commentId: String, content: String) async {
         do {
             let router = CommentPostRequest.createReply(postId: postId, commentId: commentId, content: content)
             let result = try await NetworkService.shared.callRequest(router: router, type: CommentDTO.self)
             let reply = Comment(from: result)
-            output.commentList.insert(reply, at: 0)
+            await MainActor.run {
+                if let index = output.commentList.firstIndex(where: { $0.commentId == commentId }) {
+                    var parentComment = output.commentList[index]
+                    var currentReplies = parentComment.replies ?? []
+                    currentReplies.append(reply)
+                    parentComment.replies = currentReplies
+                    output.commentList[index] = parentComment
+                }
+            }
         } catch {
             
         }
     }
     
+    // 댓글&대댓글 삭제
     func deleteComment(postId: String, commentId: String) async {
         do {
             let router = CommentPostRequest.delete(postId: postId, commentId: commentId)
-            try await NetworkService.shared.callRequest(router: router)
+            try await NetworkService.shared.callRequest(router: router, type: EmptyResponseDTO.self)
             await MainActor.run {
-                output.commentList.removeAll { $0.commentId == commentId }
+                if let index = output.commentList.firstIndex(where: { $0.commentId == commentId }) {
+                    output.commentList.remove(at: index)
+                    return
+                }
+                
+                if let parentIndex = output.commentList.firstIndex(where: { parent in
+                    parent.replies?.contains(where: { $0.commentId == commentId }) == true
+                }) {
+                    
+                    output.commentList[parentIndex].replies?.removeAll { $0.commentId == commentId }
+                }
+                
             }
         } catch  {
             print("실패 \(error)")

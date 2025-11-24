@@ -14,7 +14,7 @@ struct Comment {
     let comment: String
     private let createdAt: Date
     let user: UserDTO
-    let replies: [Comment]?
+    var replies: [Comment]?
     var createCommentDate: String {
         let diff = Date().timeIntervalSince(self.createdAt)
         
