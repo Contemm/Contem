@@ -84,7 +84,7 @@ struct StyleDetailView: View {
                     Divider()
                         .foregroundStyle(.gray100)
                     
-                    VStack(spacing: .spacing8){
+                    VStack(alignment: .leading, spacing: .spacing8){
                         //제목
                         Text(style.title ?? "...")
                             .foregroundStyle(.primary100)
