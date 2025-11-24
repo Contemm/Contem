@@ -33,6 +33,9 @@ struct CommentView: View {
                         Text(comment.user.nickname)
                         Text(comment.comment)
                         Text(comment.createCommentDate)
+                        Button("삭제") {
+                            viewModel.input.deleteCommentTapped.send(comment.commentId)
+                        }
                     }
                 }
             }

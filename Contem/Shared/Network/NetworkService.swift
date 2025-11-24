@@ -47,4 +47,28 @@ final class NetworkService{
         default: throw NetworkError.unknownError
         }
     }
+    
+    
+    func callRequest(router: TargetTypeProtocol) async throws {
+        let request = try router.asUrlRequest()
+        
+        // 데이터(Body)는 필요 없으므로 _로 처리
+        let (_, response) = try await urlSession.data(for: request)
+        
+        guard let http = response as? HTTPURLResponse else {
+            throw NetworkError.invalidResponse
+        }
+        
+        switch http.statusCode {
+        case 200..<300:
+            return
+            
+        case 400: throw NetworkError.badRequest
+        case 401: throw NetworkError.unauthorized
+        case 403: throw NetworkError.forbidden
+        case 404: throw NetworkError.notFound
+        case 500..<600: throw NetworkError.serverError
+        default: throw NetworkError.unknownError
+        }
+    }
 }

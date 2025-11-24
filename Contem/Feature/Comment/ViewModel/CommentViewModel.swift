@@ -18,6 +18,7 @@ final class CommentViewModel: ViewModelType, CommentProtocol {
     struct Input {
         let viewOnAppear = PassthroughSubject<Void, Never>()
         let commentSendTapped = PassthroughSubject<String, Never>()
+        let deleteCommentTapped = PassthroughSubject<String, Never>()
     }
     
     struct Output {
@@ -46,6 +47,16 @@ final class CommentViewModel: ViewModelType, CommentProtocol {
                 print(comment)
                 Task {
                     await owner.createComment(postId: owner.postId, content: comment)
+                }
+            }.store(in: &cancellables)
+        
+        input.deleteCommentTapped
+            .withUnretained(self)
+            .sink { owner, commentId in
+                Task {
+                    print("댓글 아이디 \(commentId)")
+                    print("게시글 아이디: >> \(owner.postId)")
+                    await owner.deleteComment(postId: owner.postId, commentId: commentId)
                 }
             }.store(in: &cancellables)
     }
@@ -82,5 +93,15 @@ extension CommentViewModel {
     
     func createReply(postId: String, commentId: String, content: String) async {
         
+    }
+    
+    func deleteComment(postId: String, commentId: String) async {
+        do {
+            let router = CommentPostRequest.delete(postId: postId, commentId: commentId)
+            try await NetworkService.shared.callRequest(router: router)
+            print("지우기 성공")
+        } catch  {
+            
+        }
     }
 }
