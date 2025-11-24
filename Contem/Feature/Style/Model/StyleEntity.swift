@@ -20,7 +20,7 @@ struct StyleEntity{
     let createdAt: String
     let creator: StyleCreatorEntity
     let files: [String] //이미지들
-    let likes: [String]
+    var likes: [String]
     let commentCount: Int
     
     var likeCount: String{
@@ -29,6 +29,14 @@ struct StyleEntity{
     
     var imageUrls: [URL?]{
         files.map{ URL(string: APIConfig.baseURL + $0) }
+    }
+    
+    mutating func toggleLike(userId: String){
+        if let index = likes.firstIndex(of: userId){
+            likes.remove(at: index)
+        }else{
+            likes.append(userId)
+        }
     }
 }
 
