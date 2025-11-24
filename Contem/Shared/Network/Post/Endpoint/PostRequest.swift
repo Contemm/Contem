@@ -33,9 +33,7 @@ enum PostRequest: TargetTypeProtocol {
         switch self {
         case .postList, .post:
             return .get
-        case .postFiles:
-            return .post
-        case .like:
+        case .postFiles, .like:
             return .post
         }
     }
