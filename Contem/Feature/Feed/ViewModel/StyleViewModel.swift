@@ -65,7 +65,7 @@ final class StyleViewModel: ViewModelType {
             .withUnretained(self)
             .sink { owner, feed in
                 owner.coordinator?
-                    .push(.styleDetail(postId: feed.id.uuidString))
+                    .push(.styleDetail(postId: APIConfig.testPostId))
             }
             .store(in: &cancellables)
     }
