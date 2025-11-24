@@ -22,17 +22,27 @@ final class NetworkService {
         do {
             // 1차 시도
             return try await send(router: router, type: type)
-        } catch NetworkError.unauthorized {
-            if router.path
-                .contains("/auth/refresh") || !router.hasAuthorization {
-                throw NetworkError.unauthorized
+        } catch let error as NetworkError {
+            if case .statusCodeError(let status) = error{
+                switch status {
+                case .accessTokenExpired, .unauthorized, .forbidden:
+                    if !router.hasAuthorization || router.path
+                        .contains("/auth/refresh") {
+                        throw error
+                    }
+                    
+                    let newToken = try await TokenStorage.shared.refreshAccessToken()
+                    return try await send(router: router, type: type, overrideToken: newToken)
+                    
+                default:
+                    break // 갱신 대상 아님
+                }
             }
-            
-            // TokenStorage에게 갱신 요청 (실패 시 refreshTokenExpired 에러 던짐)
-            let newToken = try await TokenStorage.shared.refreshAccessToken()
-            
-            // 갱신 성공 -> 재요청
-            return try await send(router: router, type: type, overrideToken: newToken)
+            //401이 아닌 다른 NetworkError는 그대로 던짐
+            throw error
+        }catch{
+            //알 수 없는 에러
+            throw error
         }
     }
     
@@ -50,10 +60,10 @@ final class NetworkService {
             request.setValue(overrideToken, forHTTPHeaderField: "Authorization")
         } else {
             // 일반 요청 시
-                if router.hasAuthorization,
-                   let token = await TokenStorage.shared.getAccessToken(), !token.isEmpty {
-                    request.setValue(token, forHTTPHeaderField: "Authorization")
-                }
+            if router.hasAuthorization,
+               let token = await TokenStorage.shared.getAccessToken(), !token.isEmpty {
+                request.setValue(token, forHTTPHeaderField: "Authorization")
+            }
         }
         
         let (data, response) = try await urlSession.data(for: request)
@@ -62,21 +72,14 @@ final class NetworkService {
             throw NetworkError.invalidResponse
         }
         
-        switch http.statusCode {
-        case 200..<300:
-            do {
+        if (200..<300).contains(http.statusCode){
+            do{
                 return try JSONDecoder().decode(type, from: data)
-            } catch {
+            }catch{
                 throw NetworkError.decodingFailed
             }
-            
-        case 400: throw NetworkError.badRequest
-        case 401: throw NetworkError.unauthorized
-        case 403: throw NetworkError.forbidden
-        case 404: throw NetworkError.notFound
-        case 418: throw NetworkError.refreshTokenExpired
-        case 500..<600: throw NetworkError.serverError
-        default: throw NetworkError.unknownError
         }
+        
+        throw NetworkError.mapping(error: nil, response: http, data: data)
     }
 }

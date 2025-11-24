@@ -52,8 +52,9 @@ final actor TokenStorage {
         let task = Task<String, Error> {
             defer { refreshTask = nil }
             
-            guard let refreshToken = try? await KeychainManager.shared.read(.refreshToken) else {
-                throw NetworkError.refreshTokenExpired
+            guard let refreshToken = try? await KeychainManager.shared.read(.refreshToken),
+                  !refreshToken.isEmpty else {
+                throw NetworkError.statusCodeError(type: .refreshTokenExpired())
             }
             
             let router = RefreshRequest.refresh(refreshToken: refreshToken)
@@ -67,31 +68,42 @@ final actor TokenStorage {
                 (data, response) = try await URLSession.shared
                     .data(for: request)
             }catch{
-                throw NetworkError.networkFailure(error)
+                throw NetworkError
+                    .mapping(error: error, response: nil, data: nil)
             }
             
             guard let http = response as? HTTPURLResponse else{
                 throw NetworkError.invalidResponse
             }
             
-            switch http.statusCode{
-            case 200:
+            if (200..<300).contains(http.statusCode){
                 do{
-                    let response = try JSONDecoder().decode(RefreshDTO.self
-                                                            , from: data)
+                    let response = try JSONDecoder().decode(
+                        RefreshDTO.self,
+                        from: data
+                    )
+                    
                     try await storeTokens(
                         access: response.accessToken,
                         refresh: response.refreshToken
                     )
+                    
                     return response.accessToken
                 }catch{
                     throw NetworkError.decodingFailed
                 }
-            case 418:
-                await clear()
-                throw NetworkError.refreshTokenExpired
-            default:
-                throw NetworkError.serverError
+            }else{
+                let mappedError = NetworkError.mapping(
+                    error: nil,
+                    response: http,
+                    data: data
+                )
+                
+                if http.statusCode == 401 || http.statusCode == 418 || http.statusCode == 403 {
+                    await clear()
+                }
+                
+                throw mappedError
             }
         }
         
