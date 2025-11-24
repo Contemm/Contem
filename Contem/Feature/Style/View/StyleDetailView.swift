@@ -67,6 +67,7 @@ struct StyleDetailView: View {
                         HStack(spacing: .spacing8){
                             Button {
                                 print("댓글 버튼 클릭")
+                                viewModel.input.commentButtonTapped.send(APIConfig.testPostId)
                             } label: {
                                 Image(systemName: "message")
                             }

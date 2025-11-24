@@ -12,6 +12,7 @@ enum PostRequest: TargetTypeProtocol {
     case postList(next: String? = nil, limit: String? = nil, category: String) //게시글 조회
     case postFiles(files: [Data]) //파일 업로드
     case post(postId: String) //게시글 한 개 조회
+    case like(postId: String, isLiked: Bool) //게시글 좋아요
     
     // MARK: - Path
     var path: String {
@@ -22,6 +23,8 @@ enum PostRequest: TargetTypeProtocol {
             return "/posts/files"
         case .post(let postId):
             return "/posts/\(postId)"
+        case .like(let postId, _):
+            return "/posts/\(postId)/like"
         }
     }
     
@@ -32,13 +35,14 @@ enum PostRequest: TargetTypeProtocol {
             return .get
         case .postFiles:
             return .post
+        case .like:
+            return .post
         }
     }
     
     // MARK: - Headers
     var headers: [String : String] {
         return [
-            "Authorization": APIConfig.testToken,
             "SeSACKey": APIConfig.sesacKey,
             "ProductId": APIConfig.productID
         ]
@@ -64,6 +68,10 @@ enum PostRequest: TargetTypeProtocol {
             return [:]
         case .post(let postId):
             return ["post_id": postId]
+        case .like(_, let isLiked):
+            return [
+                "like_status" : isLiked
+            ]
         }
     }
     
@@ -79,6 +87,8 @@ enum PostRequest: TargetTypeProtocol {
                     mimeType: "image/jpeg",
                     data: data)
             }
+        case .like:
+            return nil
         }
     }
 }

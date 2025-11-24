@@ -7,28 +7,30 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
         case tabView
         case signin
         case shopping
-        case shoppingDetail
+        case shoppingDetail(id: String)
         case style
         case styleDetail(postId: String)
     }
     
-    @Published var rootRoute: Route
+    @Published var rootRoute: Route = .signin
+    enum SheetRoute: Identifiable {
+        case comment(postId: String)
+        
+        var id: String {
+            switch self {
+            case .comment(let postId): return "comment-\(postId)"
+            }
+        }
+    }
+    
+    @Published var sheetRoute: SheetRoute?
+    
     @Published var navigationPath = NavigationPath()
     
-    init() {
-        
-        self.rootRoute = .tabView
-//        if hasAccessToken() {
-//            self.rootRoute = .tabView
-//        } else {
-//            self.rootRoute = .signin
-//        }
+    func checkToken() async {
+        let hasToken = await TokenStorage.shared.hasValidAccessToken()
+        rootRoute = hasToken ? .tabView : .signin
     }
-    
-    private func hasAccessToken() -> Bool {
-        return Bool.random()
-    }
-    
     
     @ViewBuilder
     func build(route: Route) -> some View {
@@ -41,8 +43,8 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
         case .shopping:
             let vm = ShoppingViewModel(coordinator: self)
             ShoppingView(viewModel: vm)
-        case .shoppingDetail:
-            let vm = ShoppingDetailViewModel(coordinator: self)
+        case .shoppingDetail(let postId):
+            let vm = ShoppingDetailViewModel(coordinator: self, postId: postId)
             ShoppingDetailView(viewModel: vm)
         case .style:
             let vm = StyleViewModel(coordinator: self)
@@ -50,6 +52,15 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
         case .styleDetail(let postId):
             let vm = StyleDetailViewModel(postId: postId, coordinator: self)
             StyleDetailView(viewModel: vm)
+        }
+    }
+    
+    @ViewBuilder
+    func buildSheet(route: SheetRoute) -> some View {
+        switch route {
+        case .comment(let postId):
+            let vm = CommentViewModel(coordinator: self, postId: postId)
+            CommentView(viewModel: vm)
         }
     }
     
@@ -74,5 +85,13 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
     
     func popToRoot() {
         navigationPath.removeLast(navigationPath.count)
+    }
+    
+    func present(sheet: SheetRoute) {
+        sheetRoute = sheet
+    }
+    
+    func dismissSheet() {
+        self.sheetRoute = nil
     }
 }

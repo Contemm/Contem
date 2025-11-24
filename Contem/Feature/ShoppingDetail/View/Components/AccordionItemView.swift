@@ -1,10 +1,3 @@
-//
-//  AccordionItemView.swift
-//  Contem
-//
-//  Created by 송재훈 on 11/14/25.
-//
-
 import SwiftUI
 
 /// 접을 수 있는 아코디언 아이템 뷰 (간소화 버전)
