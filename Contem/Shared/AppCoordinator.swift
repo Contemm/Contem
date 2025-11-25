@@ -11,7 +11,7 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
         case createStyle
         case style
         case styleDetail(postId: String)
-        case profile
+        case profile(userId: String)
     }
     
     @Published var rootRoute: Route = .signin
@@ -56,8 +56,9 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
         case .styleDetail(let postId):
             let vm = StyleDetailViewModel(postId: postId, coordinator: self)
             StyleDetailView(viewModel: vm)
-        case .profile:
-            Profileview()
+        case .profile(let userId):
+            let vm = ProfileViewModel(userId: userId)
+            Profileview(viewModel: vm)
         }
     }
     

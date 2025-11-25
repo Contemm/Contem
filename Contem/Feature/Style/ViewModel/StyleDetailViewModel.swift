@@ -58,7 +58,9 @@ final class StyleDetailViewModel: ViewModelType{
         
         input.profileTapped
             .sink { [weak self] _ in
-                self?.coordinator?.push(.profile)
+                guard let self,
+                let userId = output.style?.creator.userId else { return }
+                self.coordinator?.push(.profile(userId: userId))
             }
             .store(in: &cancellables)
         
