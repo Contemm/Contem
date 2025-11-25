@@ -23,30 +23,52 @@ struct StyleDetailView: View {
     var body: some View {
         VStack(spacing: .spacing16){
             if let style = viewModel.output.style{
-                //MARK: - 상단 이미지 슬라이더
-                TabView(selection: $selectedPage) {
-                    ForEach(style.imageUrls.indices, id: \.self) { index in
-                        GeometryReader { geometry in
-                            ZStack{
-                                KFImage(style.imageUrls[index])
-                                    .requestModifier(MyImageDownloadRequestModifier())
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: geometry.size.width, height: geometry.size.height)
-                                let tags = viewModel.output.tags[index] ?? []
-                                ForEach(tags, id: \.id){ tag in
-                                    StyleTagLabel(text: "item")
-                                        .position(x: geometry.size.width * tag.relX,
-                                                  y: geometry.size.height * tag.relY)
-                                }
-                            }//: ZSTACK
-                            .clipped()
-                        }//: GeometryReader
-                        .tag(index)
-                    }//: LOOP
-                }//: TABVIEW
-                .tabViewStyle(.page)
-                .indexViewStyle(.page(backgroundDisplayMode: .automatic))
+                VStack(spacing: .spacing8){
+                    HStack(spacing: .spacing8){
+                        KFImage(style.creator.profileImageUrls)
+                            .requestModifier(MyImageDownloadRequestModifier())
+                            .placeholder { _ in
+                                Circle()
+                                    .fill(.gray50)
+                            }
+                            .frame(width: 40, height: 40)
+                        VStack(alignment: .leading, spacing: .spacing4){
+                            Text(style.creator.nick)
+                                .font(.bodyMedium)
+                            Text(style.createdAt.toKoreanDateFormat())
+                                .font(.captionRegular)
+                                .foregroundStyle(.gray900)
+                        }//: VSTACK
+                    }//: HSTACK
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal(.spacing16))
+                    
+                    //MARK: - 상단 이미지 슬라이더
+                    TabView(selection: $selectedPage) {
+                        ForEach(style.imageUrls.indices, id: \.self) { index in
+                            GeometryReader { geometry in
+                                ZStack{
+                                    KFImage(style.imageUrls[index])
+                                        .requestModifier(MyImageDownloadRequestModifier())
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width: geometry.size.width, height: geometry.size.height)
+                                    let tags = viewModel.output.tags[index] ?? []
+                                    ForEach(tags, id: \.id){ tag in
+                                        StyleTagLabel(text: "item")
+                                            .position(x: geometry.size.width * tag.relX,
+                                                      y: geometry.size.height * tag.relY)
+                                    }
+                                }//: ZSTACK
+                                .clipped()
+                            }//: GeometryReader
+                            .tag(index)
+                        }//: LOOP
+                    }//: TABVIEW
+                    .tabViewStyle(.page)
+                    .indexViewStyle(.page(backgroundDisplayMode: .automatic))
+                }//: VSTACK
+                .padding(.top, .spacing8)
                 
                 VStack(spacing: .spacing16){
                     HStack(spacing: .spacing16){
