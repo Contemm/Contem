@@ -28,9 +28,10 @@ struct CommentView: View {
                 LazyVStack(alignment: .leading, spacing: CGFloat.spacing16) {
                     ForEach(viewModel.output.commentList, id: \.commentId) { comment in
                         HStack(alignment: .top, spacing: CGFloat.spacing12) {
-                            Circle()
-                                .fill(Color.gray.opacity(0.3))
-                                .frame(width: 40, height: 40)
+                            profileImageView(imagePath: comment.user.profileImage, size: 40)
+//                            Circle()
+//                                .fill(Color.gray.opacity(0.3))
+//                                .frame(width: 40, height: 40)
                             
                             VStack(alignment: .leading, spacing: CGFloat.spacing4) {
                                 HStack(alignment: .center, spacing: CGFloat.spacing4) {
@@ -59,7 +60,7 @@ struct CommentView: View {
                                     }
                                     Spacer().frame(width: 2)
                                     Button {
-                                        viewModel.input.deleteCommentTapped.send(comment.commentId)
+                                       print("수정하기 로직추가")
                                     } label: {
                                         Text("수정")
                                     }
@@ -76,9 +77,7 @@ struct CommentView: View {
                         VStack {
                             ForEach(comment.replies ?? [], id: \.commentId) { reply in
                                 HStack(alignment: .top) {
-                                    Circle()
-                                        .fill(Color.gray.opacity(0.3))
-                                        .frame(width: 32, height: 32)
+                                    profileImageView(imagePath: reply.user.profileImage, size: 32)
                                     
                                     VStack(alignment: .leading, spacing: 4) {
                                         HStack {
@@ -231,6 +230,27 @@ struct CommentView: View {
                     }
                 }
             }
+        }
+    }
+    
+    @ViewBuilder
+    private func profileImageView(imagePath: String?, size: CGFloat) -> some View {
+        if let path = imagePath, !path.isEmpty, let url = URL(string: APIConfig.baseURL + path) {
+            KFImage(url)
+                .requestModifier(MyImageDownloadRequestModifier())
+                .resizable()
+                .scaledToFill()
+                .frame(width: size, height: size)
+                .clipShape(Circle())
+        } else {
+            Image(systemName: "person.fill")
+                .resizable()
+                .scaledToFit()
+                .padding(size * 0.25) // 아이콘 크기 조절 (원 내부 여백)
+                .frame(width: size, height: size)
+                .background(Color.gray.opacity(0.3)) // 배경색
+                .clipShape(Circle())
+                .foregroundColor(.white) // 아이콘 색상
         }
     }
     
