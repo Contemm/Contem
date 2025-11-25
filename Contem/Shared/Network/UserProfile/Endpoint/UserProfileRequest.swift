@@ -8,19 +8,22 @@
 enum UserProfileRequest: TargetTypeProtocol {
     // MARK: - Case
     case getMyProfile
+    case getOtherProfile(userId: String)
     
     // MARK: - Path
     var path: String {
         switch self {
         case .getMyProfile:
             return "/users/me/profile"
+        case .getOtherProfile(let userId):
+            return "/users/\(userId)/profile"
         }
     }
     
     // MARK: - Method
     var method: HTTPMethod {
         switch self {
-        case .getMyProfile:
+        case .getMyProfile, .getOtherProfile:
             return .get
         }
     }
@@ -34,18 +37,11 @@ enum UserProfileRequest: TargetTypeProtocol {
     }
     
     // MARK: - Parameters
-    
     var parameters: [String : Any] {
-        switch self {
-        case .getMyProfile:
-            [:]
-        }
+        [:]
     }
     
     var multipartFiles: [MultipartFile]?{
-        switch self {
-        case .getMyProfile:
-            nil
-        }
+        return nil
     }
 }
