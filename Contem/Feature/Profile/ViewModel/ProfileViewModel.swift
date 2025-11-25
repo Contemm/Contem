@@ -22,6 +22,7 @@ final class ProfileViewModel: ViewModelType{
     
     struct Output{
         var profile: ProfileEntity?
+        var isLoading: Bool = false
         var errorMessage: String?
     }
     
@@ -44,6 +45,8 @@ final class ProfileViewModel: ViewModelType{
     }
     
     func fetchProfile() async{
+        output.isLoading = true
+        
         Task{
             do{
                 let response = try await NetworkService.shared.callRequest(router: UserProfileRequest.getOtherProfile(userId: userId), type: OtherProfileDTO.self)
@@ -53,6 +56,8 @@ final class ProfileViewModel: ViewModelType{
             }catch let error as NetworkError{
                 output.errorMessage = error.errorDescription
             }
+            
+            output.isLoading = false
         }
     }
 }
