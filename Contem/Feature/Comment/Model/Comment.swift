@@ -15,6 +15,18 @@ struct Comment {
     private let createdAt: Date
     let user: UserDTO
     var replies: [Comment]?
+    
+    var isImage: Bool {
+        return comment.hasPrefix("/data/posts/")
+    }
+    
+    var fullImageUrl: URL? {
+        guard isImage else { return nil }
+        let fullUrl = APIConfig.baseURL + comment
+        print(fullUrl)
+        return URL(string: fullUrl)
+    }
+    
     var createCommentDate: String {
         let diff = Date().timeIntervalSince(self.createdAt)
         

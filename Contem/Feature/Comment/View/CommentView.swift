@@ -1,6 +1,7 @@
 import SwiftUI
 import Combine
 import PhotosUI
+import Kingfisher
 
 struct CommentView: View {
     @ObservedObject var viewModel: CommentViewModel
@@ -22,6 +23,7 @@ struct CommentView: View {
                 .font(.titleSmall)
                 .bold()
                 .padding(.vertical, CGFloat.spacing16)
+            
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: CGFloat.spacing16) {
                     ForEach(viewModel.output.commentList, id: \.commentId) { comment in
@@ -39,9 +41,8 @@ struct CommentView: View {
                                         .font(.captionRegular)
                                 }
                                 
-                                Text(comment.comment)
-                                    .font(.system(size: 14))
-                                    .lineLimit(nil)
+                                
+                                commentContentView(comment: comment)
                                 
                                 HStack(spacing: CGFloat.spacing4) {
                                     Button {
@@ -88,9 +89,7 @@ struct CommentView: View {
                                                 .foregroundColor(.gray)
                                         }
                                         
-                                        Text(reply.comment)
-                                            .font(.system(size: 13))
-                                            .foregroundColor(.primary.opacity(0.9))
+                                        commentContentView(comment: reply)
                                         
                                         HStack {
                                             Button("삭제") {
@@ -115,8 +114,39 @@ struct CommentView: View {
                 }
             }
             
+            
             VStack {
                 Divider()
+                
+                if let data = selectedImageData, let uiImage = UIImage(data: data) {
+                    HStack {
+                        ZStack(alignment: .topTrailing) {
+                            Image(uiImage: uiImage)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 60, height: 60)
+                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                            
+                            // 미리보기 삭제 버튼
+                            Button {
+                                withAnimation {
+                                    selectedImage = nil
+                                    selectedImageData = nil
+                                }
+                            } label: {
+                                Image(systemName: "xmark.circle.fill")
+                                    .foregroundStyle(.black, .white) // 검은 배경, 흰 X
+                                    .font(.system(size: 16))
+                            }
+                            .offset(x: 6, y: -6)
+                        }
+                        Spacer()
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.top, 12)
+                }
+                
+                
                 HStack(alignment: .center)  {
                     PhotosPicker(selection: $selectedImage, matching: .images) {
                         Image(systemName: "photo.circle.fill")
@@ -151,9 +181,10 @@ struct CommentView: View {
                             .clipShape(Capsule())
                         }
                         
-                        TextField("댓글을 입력하세요...", text: $text)
+                        TextField(selectedImage == nil ? "댓글을 입력하세요..." : "아미지 전송 시 텍스트는 입력할 수 없습니다.", text: $text)
                             .font(.bodyMedium)
                             .autocapitalization(.none)
+                            .disabled(selectedImage != nil)
                         
                         
                     }
@@ -167,22 +198,58 @@ struct CommentView: View {
                     
                     // 전송 버튼
                     Button {
-                        viewModel.input.commentSendTapped.send((text, commentId))
+                        viewModel.input.commentSendTapped.send((text, commentId, selectedImageData))
+                        
                         text = ""
                         commentId = nil
+                        selectedImage = nil
+                        selectedImageData = nil
                     } label: {
                         Image(systemName: "arrow.up.circle.fill")
                             .resizable()
                             .scaledToFit()
                             .frame(width: 28, height: 28)
                             .foregroundStyle(Color.primary100)
-                    }.disabled(text.isEmpty)
+                    }.disabled(text.isEmpty && selectedImageData == nil)
                 }
                 .padding(.horizontal, CGFloat.spacing16)
                 .padding(.vertical, CGFloat.spacing12)
             }.onAppear {
                 viewModel.input.viewOnAppear.send()
+            }.onChange(of: selectedImage) { newItem in
+                if newItem != nil {
+                    text = ""
+                }
+                
+                Task {
+                    guard let _ = newItem else { return }
+                    
+                    if let data = try? await newItem?.loadTransferable(type: Data.self) {
+                        await MainActor.run {
+                            self.selectedImageData = data
+                        }
+                    }
+                }
             }
+        }
+    }
+    
+    @ViewBuilder
+    private func commentContentView(comment: Comment) -> some View {
+        if comment.isImage {
+            if let url = comment.fullImageUrl {
+                KFImage(url)
+                    .requestModifier(MyImageDownloadRequestModifier())
+                    .resizable()
+                    .scaledToFit()
+                    .frame(maxWidth: 220, maxHeight: 220)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .padding(.vertical, 4)
+            }
+        } else {
+            Text(comment.comment)
+                .font(.bodyMedium)
+                .lineLimit(nil)
         }
     }
     

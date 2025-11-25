@@ -17,7 +17,7 @@ final class CommentViewModel: ViewModelType, CommentProtocol {
     
     struct Input {
         let viewOnAppear = PassthroughSubject<Void, Never>()
-        let commentSendTapped = PassthroughSubject<(String, String?), Never>()
+        let commentSendTapped = PassthroughSubject<(String, String?, Data?), Never>()
         let deleteCommentTapped = PassthroughSubject<String, Never>()
     }
     
@@ -43,15 +43,26 @@ final class CommentViewModel: ViewModelType, CommentProtocol {
         input.commentSendTapped
             .withUnretained(self)
             .sink { owner, commentInfo in
-                let (comment, commentId) = commentInfo
+                let (inputText, targetCommentId, imageData) = commentInfo
                             
                 Task {
-                    if let commentId = commentId {
+                    var finalContent = inputText
+            
+                    if let data = imageData {
+                        let uploadedFiles = await owner.uploadImage(data: data)
+                        if let imagePath = uploadedFiles.first {
+                            finalContent = imagePath
+                        }
+                    }
+                    
+                    if let commentId = targetCommentId {
                         // 대댓글 작성
-                        await owner.createReply(postId: owner.postId, commentId: commentId, content: comment)
+                        await owner.createReply(
+                            postId: owner.postId,
+                            commentId: commentId, content: finalContent)
                     } else {
                         // 댓글 작성
-                        await owner.createComment(postId: owner.postId, content: comment)
+                        await owner.createComment(postId: owner.postId, content: finalContent)
                     }
                     
                 }
@@ -93,7 +104,8 @@ extension CommentViewModel {
             let result = try await NetworkService.shared.callRequest(router: router, type: CommentDTO.self)
             let comment = Comment(from: result)
             await MainActor.run {
-                output.commentList.append(comment)
+                output.commentList.insert(comment, at: 0)
+//                output.commentList.append(comment)
             }
         } catch {
             
@@ -158,6 +170,18 @@ extension CommentViewModel {
             }
         } catch  {
             print("실패 \(error)")
+        }
+    }
+    
+    func uploadImage(data: Data) async -> [String] {
+        do {
+            let router = PostRequest.postFiles(files: [data])
+            let result = try await NetworkService.shared.callRequest(router: router, type: PostFilesDTO.self)
+            
+            return result.files
+        } catch {
+            print("이미지 업로드 실패: \(error)")
+            return []
         }
     }
 }
