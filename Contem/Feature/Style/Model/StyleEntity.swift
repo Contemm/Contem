@@ -44,6 +44,11 @@ struct StyleCreatorEntity {
     let userId: String
     let nick: String
     let profileImage: String?
+    
+    var profileImageUrls: URL?{
+        guard let profileImage = profileImage else { return nil }
+        return URL(string: APIConfig.baseURL + profileImage)
+    }
 }
 
 struct StyleTag: Identifiable{
