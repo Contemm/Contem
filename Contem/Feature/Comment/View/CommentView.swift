@@ -151,13 +151,8 @@ struct CommentView: View {
                     .padding(.vertical, CGFloat.spacing4)
                     .background(
                         Capsule()
-                            .fill(Color(UIColor.secondarySystemBackground)) // 캡슐 전체 배경색
+                            .fill(Color.gray50)
                     )
-                    .overlay(
-                        Capsule()
-                            .stroke(Color.gray.opacity(0.3), lineWidth: 0.5) // 캡슐 테두리 (선택사항)
-                    )
-                    
                     
                     // 전송 버튼
                     Button {
@@ -165,8 +160,11 @@ struct CommentView: View {
                         text = ""
                         commentId = nil
                     } label: {
-                        Image(systemName: "paperplane")
-                            .frame(width: 20, height: 20)
+//                        photo.circle.fill
+                        Image(systemName: text.isEmpty ? "photo.circle.fill" : "arrow.up.circle.fill")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 28, height: 28)
                             .foregroundStyle(Color.primary100)
                     }
                     .disabled(text.isEmpty)
