@@ -3,8 +3,10 @@ import Combine
 
 struct CommentView: View {
     @ObservedObject var viewModel: CommentViewModel
+    
     @State private var text: String = ""
     @State private var commentId: String?
+    @State private var replyTartgetUser: String?
     
     init(viewModel: CommentViewModel) {
         self.viewModel = viewModel
@@ -40,6 +42,7 @@ struct CommentView: View {
                                 HStack(spacing: CGFloat.spacing4) {
                                     Button {
                                         self.commentId = comment.commentId
+                                        self.replyTartgetUser = comment.user.nickname
                                     } label: {
                                         Text("답글 달기")
                                     }
@@ -57,7 +60,7 @@ struct CommentView: View {
                                     }
                                 }
                                 .font(.system(size: 12))
-                                .foregroundColor(.gray)
+                                .foregroundColor(Color.gray500)
                                 .padding(.top, 2)
                             }
                         }
@@ -68,7 +71,6 @@ struct CommentView: View {
                         VStack {
                             ForEach(comment.replies ?? [], id: \.commentId) { reply in
                                 HStack(alignment: .top) {
-                                    // 대댓글 표시 아이콘 (ㄴ 모양 등)
                                     Circle()
                                         .fill(Color.gray.opacity(0.3))
                                         .frame(width: 32, height: 32)
@@ -86,19 +88,18 @@ struct CommentView: View {
                                             .font(.system(size: 13))
                                             .foregroundColor(.primary.opacity(0.9))
                                         
-                                        // 대댓글 삭제 버튼 등 필요하다면 추가
                                         HStack {
                                             Button("삭제") {
                                                 viewModel.input.deleteCommentTapped.send(reply.commentId)
                                             }
                                             .font(.caption2)
-                                            .foregroundColor(.red)
+                                            .foregroundColor(Color.gray500)
                                             
                                             Button("수정") {
                                                 print("수정 하기")
                                             }
                                             .font(.caption2)
-                                            .foregroundColor(.red)
+                                            .foregroundColor(Color.gray500)
                                         }
                                         
                                     }
@@ -113,29 +114,69 @@ struct CommentView: View {
             VStack {
                 Divider()
                 HStack {
-                    TextField("댓글을 입력하세요...", text: $text)
-                        .textFieldStyle(.roundedBorder)
-                        .autocapitalization(.none)
+                    HStack {
+                        // 태크
+                        if let nickname = replyTartgetUser, commentId != nil {
+                            HStack(spacing: 4) {
+                                Text("@\(nickname)")
+                                    .font(.system(size: 12, weight: .bold))
+                                    .foregroundColor(Color.primary0)
+                                
+                                // 태그 취소 버튼
+                                Button {
+                                    withAnimation {
+                                        self.commentId = nil
+                                        self.replyTartgetUser = nil
+                                    }
+                                } label: {
+                                    Image(systemName: "xmark")
+                                        .font(.system(size: 10, weight: .bold))
+                                        .foregroundColor(.gray)
+                                }
+                            }
+                            .padding(.vertical, CGFloat.spacing4)
+                            .padding(.horizontal, CGFloat.spacing8)
+                            .background(Color.primary100) // 태그 배경색
+                            .clipShape(Capsule())
+                        }
+                        
+                        TextField("댓글을 입력하세요...", text: $text)
+                            .font(.bodyMedium)
+                            .autocapitalization(.none)
+                        
+                        
+                    }
+                    .frame(height: CGFloat.spacing28)
+                    .padding(.horizontal, CGFloat.spacing12)
+                    .padding(.vertical, CGFloat.spacing4)
+                    .background(
+                        Capsule()
+                            .fill(Color(UIColor.secondarySystemBackground)) // 캡슐 전체 배경색
+                    )
+                    .overlay(
+                        Capsule()
+                            .stroke(Color.gray.opacity(0.3), lineWidth: 0.5) // 캡슐 테두리 (선택사항)
+                    )
                     
+                    
+                    // 전송 버튼
                     Button {
                         viewModel.input.commentSendTapped.send((text, commentId))
                         text = ""
                         commentId = nil
                     } label: {
                         Image(systemName: "paperplane")
+                            .frame(width: 20, height: 20)
                             .foregroundStyle(Color.primary100)
-//                        Text("전송")
                     }
                     .disabled(text.isEmpty)
                 }
-                .padding(.horizontal)
-                .padding(.vertical, 8) // 입력창 위아래 여백
-                // 배경색을 지정해야 키보드가 올라올 때 뒤의 콘텐츠가 비치지 않습니다.
-                .background(Color(UIColor.systemBackground))
+                .padding(.horizontal, CGFloat.spacing16)
+                .padding(.vertical, CGFloat.spacing12)
+            }.onAppear {
+                viewModel.input.viewOnAppear.send()
             }
-        }.onAppear {
-            viewModel.input.viewOnAppear.send()
         }
     }
+    
 }
-
