@@ -1,5 +1,6 @@
 import SwiftUI
 import Combine
+import PhotosUI
 
 struct CommentView: View {
     @ObservedObject var viewModel: CommentViewModel
@@ -7,6 +8,9 @@ struct CommentView: View {
     @State private var text: String = ""
     @State private var commentId: String?
     @State private var replyTartgetUser: String?
+    
+    @State private var selectedImage: PhotosPickerItem? = nil
+    @State private var selectedImageData: Data? = nil
     
     init(viewModel: CommentViewModel) {
         self.viewModel = viewModel
@@ -113,7 +117,14 @@ struct CommentView: View {
             
             VStack {
                 Divider()
-                HStack {
+                HStack(alignment: .center)  {
+                    PhotosPicker(selection: $selectedImage, matching: .images) {
+                        Image(systemName: "photo.circle.fill")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: CGFloat.spacing28, height: CGFloat.spacing28)
+                            .foregroundStyle(Color.primary100)
+                    }
                     HStack {
                         // 태크
                         if let nickname = replyTartgetUser, commentId != nil {
@@ -160,14 +171,12 @@ struct CommentView: View {
                         text = ""
                         commentId = nil
                     } label: {
-//                        photo.circle.fill
-                        Image(systemName: text.isEmpty ? "photo.circle.fill" : "arrow.up.circle.fill")
+                        Image(systemName: "arrow.up.circle.fill")
                             .resizable()
                             .scaledToFit()
                             .frame(width: 28, height: 28)
                             .foregroundStyle(Color.primary100)
-                    }
-                    .disabled(text.isEmpty)
+                    }.disabled(text.isEmpty)
                 }
                 .padding(.horizontal, CGFloat.spacing16)
                 .padding(.vertical, CGFloat.spacing12)
