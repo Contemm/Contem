@@ -8,6 +8,7 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
         case signin
         case shopping
         case shoppingDetail(id: String)
+        case createStyle
         case style
         case styleDetail(postId: String)
     }
@@ -46,6 +47,8 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
         case .shoppingDetail(let postId):
             let vm = ShoppingDetailViewModel(coordinator: self, postId: postId)
             ShoppingDetailView(viewModel: vm)
+        case .createStyle:
+            CreateStyleView()
         case .style:
             let vm = StyleViewModel(coordinator: self)
             StyleView(viewModel: vm)
