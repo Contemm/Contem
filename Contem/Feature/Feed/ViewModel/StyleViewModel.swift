@@ -18,6 +18,7 @@ final class StyleViewModel: ViewModelType {
 
     struct Input {
         let viewOnTask = PassthroughSubject<Void, Never>()
+        let createStyleTapped = PassthroughSubject<Void, Never>()
         let refreshTrigger = PassthroughSubject<Void, Never>()
         let cardTapped = PassthroughSubject<FeedModel, Never>()
     }
@@ -42,7 +43,13 @@ final class StyleViewModel: ViewModelType {
     // MARK: - Transform
 
     func transform() {
-
+        input.createStyleTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.coordinator?.push(.createStyle)
+            }
+            .store(in: &cancellables)
+        
         // viewOnTask 이벤트 처리
         input.viewOnTask
             .withUnretained(self)

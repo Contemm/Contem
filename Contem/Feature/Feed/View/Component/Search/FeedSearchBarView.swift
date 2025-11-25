@@ -6,12 +6,14 @@
 //
 
 import SwiftUI
+import Combine
 
 struct FeedSearchBarView: View {
     
     // MARK: - Properties
     
     @State private var searchText = ""
+    @ObservedObject var viewModel: StyleViewModel
     
     // MARK: - Body
     
@@ -33,7 +35,7 @@ struct FeedSearchBarView: View {
             .padding(.horizontal(16))
             
             Button {
-                print("피드 생성")
+                viewModel.input.createStyleTapped.send(())
             } label: {
                 Image(systemName: "camera.fill")
                     .foregroundStyle(.primary100)
