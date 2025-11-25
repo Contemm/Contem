@@ -18,6 +18,7 @@ final class StyleDetailViewModel: ViewModelType{
     
     struct Input{
         let appear = PassthroughSubject<Void, Never>()
+        let profileTapped = PassthroughSubject<Void,Never>()
         let likebuttonTapped = PassthroughSubject<Void,Never>()
         let commentButtonTapped = PassthroughSubject<String, Never>()
     }
@@ -52,6 +53,12 @@ final class StyleDetailViewModel: ViewModelType{
                 Task{
                     await self.fetchStyleDetail()
                 }
+            }
+            .store(in: &cancellables)
+        
+        input.profileTapped
+            .sink { [weak self] _ in
+                self?.coordinator?.push(.profile)
             }
             .store(in: &cancellables)
         

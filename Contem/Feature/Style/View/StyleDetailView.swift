@@ -42,6 +42,9 @@ struct StyleDetailView: View {
                     }//: HSTACK
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal(.spacing16))
+                    .onTapGesture {
+                        viewModel.input.profileTapped.send(())
+                    }
                     
                     //MARK: - 상단 이미지 슬라이더
                     TabView(selection: $selectedPage) {
