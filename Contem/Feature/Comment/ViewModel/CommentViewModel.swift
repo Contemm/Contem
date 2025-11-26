@@ -19,6 +19,7 @@ final class CommentViewModel: ViewModelType, CommentProtocol {
         let viewOnAppear = PassthroughSubject<Void, Never>()
         let commentSendTapped = PassthroughSubject<(String, String?, Data?), Never>()
         let deleteCommentTapped = PassthroughSubject<String, Never>()
+        let commentUpdateTapped = PassthroughSubject<(String, String, Data?), Never>()
     }
     
     struct Output {
@@ -74,6 +75,24 @@ final class CommentViewModel: ViewModelType, CommentProtocol {
                 print("게시글 아이디 : \(owner.postId)")
                 Task {
                     await owner.deleteComment(postId: owner.postId, commentId: commentId)
+                }
+            }.store(in: &cancellables)
+        
+        input.commentUpdateTapped
+            .withUnretained(self)
+            .sink { owner, info in
+                let (commentId, text, imageData) = info
+                Task {
+                     var finalContent = text
+                    
+                    if let data = imageData {
+                        let uploadedFiles = await owner.uploadImage(data: data)
+                        if let imagePath = uploadedFiles.first {
+                            finalContent = imagePath
+                        }
+                    }
+                    
+                    await owner.updateComment(postId: owner.postId, commentId: commentId, content: finalContent)
                 }
             }.store(in: &cancellables)
     }
