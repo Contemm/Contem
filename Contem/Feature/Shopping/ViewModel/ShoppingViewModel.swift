@@ -222,7 +222,7 @@ extension ShoppingViewModel {
         Task { [weak self] in
             guard let self = self else { return }
             do {
-                let router = PostRequest.liked(isLiked: currentLike, userId: postId)
+                let router = PostRequest.like(postId: postId, isLiked: currentLike)
                 let _ = try await NetworkService.shared.callRequest(router: router, type: PostLikeDTO.self)
             } catch {
                 await MainActor.run {

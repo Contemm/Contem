@@ -17,7 +17,7 @@ struct StyleView: View {
 
     var body: some View {
         VStack(spacing: .zero) {
-            FeedSearchBarView()
+            FeedSearchBarView(viewModel: viewModel)
                 .padding(.bottom, .spacing16)
 
             Rectangle()

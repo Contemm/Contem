@@ -119,4 +119,3 @@ extension Font {
     @available(*, deprecated, renamed: "captionSmall")
     static let captionThin = Font.custom("Pretendard-Thin", size: 12)
 }
-
