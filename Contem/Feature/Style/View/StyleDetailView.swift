@@ -13,10 +13,15 @@ struct StyleDetailView: View {
     
     //MARK: - Properties
     @State private var selectedPage = 0
-    @ObservedObject private var viewModel: StyleDetailViewModel
+    @StateObject private var viewModel: StyleDetailViewModel
     
-    init(viewModel: StyleDetailViewModel) {
-        self.viewModel = viewModel
+    init(postId: String, coordinator: AppCoordinator) {
+        _viewModel = StateObject(
+            wrappedValue: StyleDetailViewModel(
+                postId: postId,
+                coordinator: coordinator
+            )
+        )
     }
     
     //MARK: - Body

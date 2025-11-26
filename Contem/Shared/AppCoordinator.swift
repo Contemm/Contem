@@ -54,8 +54,7 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
             let vm = StyleViewModel(coordinator: self)
             StyleView(viewModel: vm)
         case .styleDetail(let postId):
-            let vm = StyleDetailViewModel(postId: postId, coordinator: self)
-            StyleDetailView(viewModel: vm)
+            StyleDetailView(postId: postId, coordinator: self)
         case .profile(let userId):
             let vm = ProfileViewModel(userId: userId)
             Profileview(viewModel: vm)
