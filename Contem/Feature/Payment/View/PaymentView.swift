@@ -48,7 +48,7 @@ class PaymentViewController: UIViewController {
         
         let userCode = "imp14511373" // 가맹점 식별코드
         
-        Iamport.shared.useNavigationButton(enable: true)
+        Iamport.shared.useNavigationButton(enable: false)
         
         // 주입받은 paymentData 사용
         Iamport.shared.payment(
