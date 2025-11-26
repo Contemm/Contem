@@ -32,6 +32,13 @@ struct ProfileEntity{
         guard let profileImage else { return nil }
         return URL(string: APIConfig.baseURL + profileImage)
     }
+    
+    func isFollowing(userId: String?) -> Bool{
+        guard let userId else { return false }
+        return followers.contains { user in
+            userId == userId
+        }
+    }
 }
 
 struct ProfileCreatorEntity{
