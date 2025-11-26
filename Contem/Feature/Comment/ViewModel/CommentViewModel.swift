@@ -124,7 +124,6 @@ extension CommentViewModel {
             let comment = Comment(from: result)
             await MainActor.run {
                 output.commentList.insert(comment, at: 0)
-//                output.commentList.append(comment)
             }
         } catch {
             
@@ -139,8 +138,28 @@ extension CommentViewModel {
             let modifiedComment = Comment(from: result)
             
             await MainActor.run {
+                // Case 1: 최상위 댓글인 경우 (댓글 수정)
                 if let index = output.commentList.firstIndex(where: { $0.commentId == commentId }) {
-                    output.commentList[index] = modifiedComment
+                    var newComment = modifiedComment
+                    newComment.replies = output.commentList[index].replies
+                    output.commentList[index] = newComment
+                    return
+                }
+                
+                // Case 2: 대댓글인 경우 (대댓글 수정) -> [핵심 해결 2] 부모를 찾아서 내부 업데이트
+                for (parentIndex, parentComment) in output.commentList.enumerated() {
+                    if let replyIndex = parentComment.replies?.firstIndex(where: { $0.commentId == commentId }) {
+                        
+                        var updatedParent = parentComment
+                        var updatedReplies = parentComment.replies ?? []
+                        
+                        updatedReplies[replyIndex] = modifiedComment
+                        
+                        updatedParent.replies = updatedReplies
+                        
+                        output.commentList[parentIndex] = updatedParent
+                        return
+                    }
                 }
             }
         } catch {
