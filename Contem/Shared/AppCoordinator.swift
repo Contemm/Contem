@@ -16,10 +16,12 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
     
     enum SheetRoute: Identifiable {
         case comment(postId: String)
+        case payment
         
         var id: String {
             switch self {
             case .comment(let postId): return "comment-\(postId)"
+            case .payment: return "payment"
             }
         }
     }
@@ -45,8 +47,7 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
             let vm = ShoppingViewModel(coordinator: self)
             ShoppingView(viewModel: vm)
         case .shoppingDetail(let postId):
-            let vm = ShoppingDetailViewModel(coordinator: self, postId: postId)
-            ShoppingDetailView(viewModel: vm)
+            ShoppingDetailView(coordinator: self, postId: postId)
         case .style:
             let vm = StyleViewModel(coordinator: self)
             StyleView(viewModel: vm)
@@ -62,6 +63,8 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
         case .comment(let postId):
             let vm = CommentViewModel(coordinator: self, postId: postId)
             CommentView(viewModel: vm)
+        case .payment:
+            PaymentView(coordinator: self)
         }
     }
     

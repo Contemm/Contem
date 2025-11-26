@@ -103,8 +103,11 @@ final class ShoppingDetailViewModel: ViewModelType {
 
         // Purchase Button
         input.purchaseButtonTapped
-            .sink { [weak self] in
-                self?.output.showPurchaseAlert = true
+            .sink { [weak self]  in
+                guard let self = self else { return }
+                coordinator?.present(sheet: .payment)
+//                self?.output.showPurchaseAlert = true
+                
             }
             .store(in: &cancellables)
 

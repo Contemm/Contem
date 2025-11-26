@@ -4,11 +4,15 @@ import Kingfisher
 
 struct ShoppingDetailView: View {
 
-    @ObservedObject private var viewModel: ShoppingDetailViewModel
+    @StateObject private var viewModel: ShoppingDetailViewModel
 
 
-    init(viewModel: ShoppingDetailViewModel) {
-        self.viewModel = viewModel
+    init(coordinator: AppCoordinator, postId: String) {
+        _viewModel = StateObject(
+            wrappedValue: ShoppingDetailViewModel(
+                coordinator: coordinator,
+                postId: postId)
+        )
     }
 
     var body: some View {
