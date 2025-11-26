@@ -25,7 +25,7 @@ final class ShoppingDetailViewModel: ViewModelType {
         let shareButtonTapped = PassthroughSubject<Void, Never>()
         let sizeSelectionTapped = PassthroughSubject<Void, Never>()
         let sizeSelected = PassthroughSubject<String, Never>()
-        let purchaseButtonTapped = PassthroughSubject<Void, Never>()
+        let purchaseButtonTapped = PassthroughSubject<String, Never>()
         let followButtonTapped = PassthroughSubject<Void, Never>()
         let backButtonTapped = PassthroughSubject<Void, Never>()
     }
@@ -106,12 +106,10 @@ final class ShoppingDetailViewModel: ViewModelType {
 
         // Purchase Button
         input.purchaseButtonTapped
-            .sink { [weak self]  in
-                guard let self = self else { return }
-                let paymentData = createPaymentData()
-                coordinator?.present(sheet: .payment(paymentData: paymentData))
-//                self?.output.showPurchaseAlert = true
-                
+            .withUnretained(self)
+            .sink { owner, price in
+                let paymentData = owner.createPaymentData(price: price)
+                owner.coordinator?.present(sheet: .payment(paymentData: paymentData))
             }
             .store(in: &cancellables)
 
@@ -187,11 +185,11 @@ final class ShoppingDetailViewModel: ViewModelType {
     }
     
     // 결제 데이터 생성 로직
-    private func createPaymentData() -> IamportPayment {
+    private func createPaymentData(price: String) -> IamportPayment {
         return IamportPayment(
             pg: PG.html5_inicis.makePgRawName(pgId: "INIpayTest"),
             merchant_uid: "mid_\(Int(Date().timeIntervalSince1970*1000))",
-            amount: "100"
+            amount: price
         ).then {
             $0.pay_method = PayMethod.card.rawValue
             $0.name = "상품명 예시 옷 입니다"

@@ -173,7 +173,7 @@ struct ShoppingDetailView: View {
                     viewModel.input.sizeSelectionTapped.send()
                 },
                 onPurchaseTapped: {
-                    viewModel.input.purchaseButtonTapped.send()
+                    viewModel.input.purchaseButtonTapped.send(String(detailInfo.price))
                 }
             )
         }
