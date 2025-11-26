@@ -94,8 +94,7 @@ struct StyleDetailView: View {
                         //댓글
                         HStack(spacing: .spacing8){
                             Button {
-                                let testId = "691ee5849682593e05755005"
-                                viewModel.input.commentButtonTapped.send(testId)
+                                viewModel.input.commentButtonTapped.send(())
                             } label: {
                                 Image(systemName: "message")
                             }
