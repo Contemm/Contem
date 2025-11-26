@@ -94,15 +94,14 @@ struct StyleDetailView: View {
                         //댓글
                         HStack(spacing: .spacing8){
                             Button {
-                                viewModel.input.commentButtonTapped.send(APIConfig.testPostId)
+                                let testId = "691ee5849682593e05755005"
+                                viewModel.input.commentButtonTapped.send(testId)
                             } label: {
                                 Image(systemName: "message")
                             }
                             
                             Text("\(style.commentCount)")
                                 .foregroundStyle(.primary100)
-                                .monospaced()
-                                .font(.bodyRegular)
                         }//: HSTACK
                     }//: HSTACK
                     .foregroundStyle(.gray500)

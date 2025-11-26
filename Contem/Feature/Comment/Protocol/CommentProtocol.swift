@@ -7,4 +7,5 @@ protocol CommentProtocol {
     func updateComment(postId: String, commentId: String, content: String) async
     func createReply(postId: String, commentId: String, content: String) async
     func deleteComment(postId: String, commentId: String) async
+    func uploadImage(data: Data) async -> [String]
 }

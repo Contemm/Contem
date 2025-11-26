@@ -72,6 +72,9 @@ extension CGFloat {
     /// 24pt - 매우 큰 간격
     static let spacing24: CGFloat = 24
     
+    /// 28pt - 매우 큰 간격
+    static let spacing28: CGFloat = 28
+    
     /// 32pt - 최대 간격
     static let spacing32: CGFloat = 32
     
