@@ -109,7 +109,9 @@ final class ShoppingDetailViewModel: ViewModelType {
             .withUnretained(self)
             .sink { owner, price in
                 let paymentData = owner.createPaymentData(price: price)
-                owner.coordinator?.present(sheet: .payment(paymentData: paymentData))
+                owner.coordinator?.present(sheet: .payment(paymentData: paymentData, completion: { [weak owner] response in
+                    owner?.handlePaymentResult(response)
+                }))
             }
             .store(in: &cancellables)
 
@@ -195,6 +197,37 @@ final class ShoppingDetailViewModel: ViewModelType {
             $0.name = "상품명 예시 옷 입니다"
             $0.buyer_name = "박도원"
             $0.app_scheme = "contem"
+        }
+    }
+    
+    func handlePaymentResult(_ response: IamportResponse?) {
+        // 아임포트 결제 성공 여부 확인
+        guard let response = response, let isSuccess = response.success, isSuccess,
+              let impUid = response.imp_uid else {
+            print("결제 실패 또는 취소됨: \(String(describing: response?.error_msg))")
+            // 필요 시 에러 Alert 표시 로직 추가 (output.errorMessage 등)
+            return
+        }
+        
+        // 결제 성공 시 서버로 검증 요청
+        requestPaymentValidation(impUid: impUid)
+    }
+    
+    private func requestPaymentValidation(impUid: String) {
+        Task { [weak self] in
+            guard let self = self else { return }
+            do {
+                let router = PaymentRequest.paymentValid(uid: impUid, postId: self.postId)
+                let result = try await NetworkService.shared.callRequest(router: router, type: PaymentValidationDTO.self)
+                print("서버 검증 성공: \(result)")
+                await MainActor.run {
+                    self.output.showPurchaseAlert = true
+                }
+            } catch {
+                await MainActor.run {
+                    self.output.errorMessage = "결제 검증에 실패했습니다."
+                }
+            }
         }
     }
 }
