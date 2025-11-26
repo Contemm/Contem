@@ -1,5 +1,6 @@
 import SwiftUI
 import Combine
+import iamport_ios
 
 final class AppCoordinator: CoordinatorProtocol, ObservableObject {
 
@@ -16,7 +17,7 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
     
     enum SheetRoute: Identifiable {
         case comment(postId: String)
-        case payment
+        case payment(paymentData: IamportPayment)
         
         var id: String {
             switch self {
@@ -63,8 +64,10 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
         case .comment(let postId):
             let vm = CommentViewModel(coordinator: self, postId: postId)
             CommentView(viewModel: vm)
-        case .payment:
-            PaymentView(coordinator: self)
+        case .payment(let data):
+            PaymentBridge(paymentData: data) { [weak self] response in
+                self?.sheetRoute = nil
+            }
         }
     }
     

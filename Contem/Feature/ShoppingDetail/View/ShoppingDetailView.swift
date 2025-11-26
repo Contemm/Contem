@@ -5,8 +5,7 @@ import Kingfisher
 struct ShoppingDetailView: View {
 
     @StateObject private var viewModel: ShoppingDetailViewModel
-
-
+    
     init(coordinator: AppCoordinator, postId: String) {
         _viewModel = StateObject(
             wrappedValue: ShoppingDetailViewModel(

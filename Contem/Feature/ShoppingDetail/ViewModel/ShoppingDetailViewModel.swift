@@ -1,5 +1,8 @@
 import SwiftUI
 import Combine
+import iamport_ios
+internal import Then
+
 
 @MainActor
 final class ShoppingDetailViewModel: ViewModelType {
@@ -105,7 +108,8 @@ final class ShoppingDetailViewModel: ViewModelType {
         input.purchaseButtonTapped
             .sink { [weak self]  in
                 guard let self = self else { return }
-                coordinator?.present(sheet: .payment)
+                let paymentData = createPaymentData()
+                coordinator?.present(sheet: .payment(paymentData: paymentData))
 //                self?.output.showPurchaseAlert = true
                 
             }
@@ -180,5 +184,19 @@ final class ShoppingDetailViewModel: ViewModelType {
 
     func closeShareAlert() {
         output.showShareAlert = false
+    }
+    
+    // 결제 데이터 생성 로직
+    private func createPaymentData() -> IamportPayment {
+        return IamportPayment(
+            pg: PG.html5_inicis.makePgRawName(pgId: "INIpayTest"),
+            merchant_uid: "mid_\(Int(Date().timeIntervalSince1970*1000))",
+            amount: "100"
+        ).then {
+            $0.pay_method = PayMethod.card.rawValue
+            $0.name = "상품명 예시 옷 입니다"
+            $0.buyer_name = "박도원"
+            $0.app_scheme = "contem"
+        }
     }
 }
