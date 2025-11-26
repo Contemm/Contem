@@ -13,6 +13,7 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
     }
     
     @Published var rootRoute: Route = .signin
+    
     enum SheetRoute: Identifiable {
         case comment(postId: String)
         
