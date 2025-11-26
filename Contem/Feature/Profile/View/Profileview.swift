@@ -38,6 +38,7 @@ struct Profileview: View {
                                     .foregroundStyle(.gray900)
                                 Text(profile.followerCount)
                                     .font(.captionLarge)
+                                    .monospaced()
                                 Text("|")
                                     .font(.captionRegular)
                                     .foregroundStyle(.gray900)
@@ -46,6 +47,7 @@ struct Profileview: View {
                                     .foregroundStyle(.gray900)
                                 Text(profile.followingCount)
                                     .font(.captionLarge)
+                                    .monospaced()
                             }//: HSTACK
                         }//: VSTACK
                     }//: HSTACK
@@ -54,9 +56,9 @@ struct Profileview: View {
                     
                     HStack(spacing: .spacing16){
                         Button(action: {
-                            print("팔로우 버튼 클릭")
+                            viewModel.input.followButtonTapped.send(())
                         }, label: {
-                            Text("팔로우")
+                            Text(viewModel.output.isFollowing ? "팔로잉" : "팔로우")
                                 .padding(.vertical(.spacing8))
                                 .frame(maxWidth: .infinity)
                                 .background(.primary100)
