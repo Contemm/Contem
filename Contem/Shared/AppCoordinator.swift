@@ -12,6 +12,7 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
         case style
         case styleDetail(postId: String)
         case profile(userId: String)
+        case creatorChat(opponentId: String)
     }
     
     @Published var rootRoute: Route = .signin
@@ -56,8 +57,10 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
         case .styleDetail(let postId):
             StyleDetailView(postId: postId, coordinator: self)
         case .profile(let userId):
-            let vm = ProfileViewModel(userId: userId)
-            Profileview(viewModel: vm)
+            Profileview(userId: userId, coordinator: self)
+        case .creatorChat(let opponentId):
+            let vm = ChattingViewModel(opponentId: opponentId)
+            ChattingView(viewModel: vm)
         }
     }
     
