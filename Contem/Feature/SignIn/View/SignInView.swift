@@ -1,20 +1,17 @@
-//
-//  SignInView.swift
-//  Contem
-//
-//  Created by HyoTaek on 11/13/25.
-//
-
 import SwiftUI
 import Combine
+import AuthenticationServices
 
 struct SignInView: View {
     
-    @ObservedObject private var viewModel: SignInViewModel
+    @StateObject private var viewModel: SignInViewModel
     
-    init(viewModel: SignInViewModel) {
-        self.viewModel = viewModel
+    init(coordinator: AppCoordinator) {
+        _viewModel = StateObject(
+            wrappedValue: SignInViewModel(coordinator: coordinator)
+        )
     }
+    
     
     var body: some View {
         VStack(spacing: .spacing16) {
@@ -27,7 +24,7 @@ struct SignInView: View {
                     RoundedRectangle(cornerRadius: .spacing16)
                         .stroke(.gray300, lineWidth: 1)
                 )
-
+            
             SecureField("비밀번호를 입력해주세요", text: $viewModel.output.password)
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled(true)
@@ -36,7 +33,7 @@ struct SignInView: View {
                     RoundedRectangle(cornerRadius: .spacing16)
                         .stroke(.gray300, lineWidth: 1)
                 )
-
+            
             Button(action: {
                 viewModel.input.loginButtonTapped.send()
             }) {
@@ -47,6 +44,22 @@ struct SignInView: View {
                     .background(Color.black)
                     .cornerRadius(.spacing16)
             }
+            
+            // Apple 로그인 버튼
+            SignInWithAppleButton(
+                onRequest: { _ in },
+                onCompletion: { _ in }
+            )
+            .frame(height: 50)
+            .cornerRadius(10)
+            .padding(.horizontal)
+            .overlay {
+                // 버튼의 기본 제스처를 막고 ViewModel의 Input을 트리거
+                Color.black.opacity(0.001)
+                    .onTapGesture {
+                        viewModel.input.appleLoginButtonTapped.send(())
+                    }
+            }
         }
         .padding(.horizontal, .spacing16)
         .alert("알림", isPresented: $viewModel.output.showAlert) {
@@ -55,4 +68,5 @@ struct SignInView: View {
             Text(viewModel.output.alertMessage)
         }
     }
+    
 }
