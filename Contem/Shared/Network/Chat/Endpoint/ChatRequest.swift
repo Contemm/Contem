@@ -8,12 +8,15 @@
 import Foundation
 
 enum ChatRequest: TargetTypeProtocol{
-    case chatRoom(opponentId: String)
+    case chatRoom(opponentId: String) //채팅방 생성(조회)
+    case fetchMessage(roomId: String, cursor_date: String) //채팅 내역 조회
     
     var path: String{
         switch self {
         case .chatRoom:
             return "/chats"
+        case .fetchMessage(let roomId, _):
+            return "/chats/\(roomId)"
         }
     }
     
@@ -21,6 +24,8 @@ enum ChatRequest: TargetTypeProtocol{
         switch self {
         case .chatRoom:
                 .post
+        case .fetchMessage:
+                .get
         }
     }
     
@@ -35,13 +40,15 @@ enum ChatRequest: TargetTypeProtocol{
         switch self {
         case .chatRoom(let opponentId):
             return ["opponent_id": opponentId]
+        case .fetchMessage(_, let cursor_date):
+            return ["cursor_date": cursor_date]
         }
     }
     
     var multipartFiles: [MultipartFile]?{
         switch self {
-        case .chatRoom(let opponentId):
-            nil
+        case .chatRoom,.fetchMessage:
+            return nil
         }
     }
 }
