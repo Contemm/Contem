@@ -9,8 +9,10 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
         case signin
         case shopping
         case shoppingDetail(id: String)
+        case createStyle
         case style
-        case styleDetail
+        case styleDetail(postId: String)
+        case profile(userId: String)
     }
     
     @Published var rootRoute: Route = .signin
@@ -49,12 +51,17 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
             ShoppingView(viewModel: vm)
         case .shoppingDetail(let postId):
             ShoppingDetailView(coordinator: self, postId: postId)
+        case .createStyle:
+            CreateStyleView()
         case .style:
             let vm = StyleViewModel(coordinator: self)
             StyleView(viewModel: vm)
-        case .styleDetail:
-            let vm = StyleDetailViewModel(coordinator: self)
+        case .styleDetail(let postId):
+            let vm = StyleDetailViewModel(postId: postId, coordinator: self)
             StyleDetailView(viewModel: vm)
+        case .profile(let userId):
+            let vm = ProfileViewModel(userId: userId)
+            Profileview(viewModel: vm)
         }
     }
     

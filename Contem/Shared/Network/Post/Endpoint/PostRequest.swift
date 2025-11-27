@@ -11,8 +11,8 @@ enum PostRequest: TargetTypeProtocol {
     // MARK: - Case
     case postList(next: String? = nil, limit: String? = nil, category: String) //게시글 조회
     case postFiles(files: [Data]) //파일 업로드
-    case postItem(postId: String)
-    case liked(isLiked: Bool, userId: String)
+    case post(postId: String) //게시글 한 개 조회
+    case like(postId: String, isLiked: Bool) //게시글 좋아요
     
     // MARK: - Path
     var path: String {
@@ -21,23 +21,19 @@ enum PostRequest: TargetTypeProtocol {
             return "/posts"
         case .postFiles:
             return "/posts/files"
-        case .postItem(let postId):
+        case .post(let postId):
             return "/posts/\(postId)"
-        case .liked(_ , let userId):
-            return "/posts/\(userId)/like"
+        case .like(let postId, _):
+            return "/posts/\(postId)/like"
         }
     }
     
     // MARK: - Method
     var method: HTTPMethod {
         switch self {
-        case .postList:
+        case .postList, .post:
             return .get
-        case .postFiles:
-            return .post
-        case .postItem:
-            return .get
-        case .liked:
+        case .postFiles, .like:
             return .post
         }
     }
@@ -68,9 +64,9 @@ enum PostRequest: TargetTypeProtocol {
             return params
         case .postFiles:
             return [:]
-        case .postItem:
-            return [:]
-        case .liked(let isLiked, _):
+        case .post(let postId):
+            return ["post_id": postId]
+        case .like(_, let isLiked):
             return [
                 "like_status" : isLiked
             ]
@@ -79,9 +75,7 @@ enum PostRequest: TargetTypeProtocol {
     
     var multipartFiles: [MultipartFile]?{
         switch self {
-        case .postList:
-            return nil
-        case .postItem:
+        case .postList, .post:
             return nil
         case .postFiles(let files):
             return files.enumerated().map { index, data in
@@ -91,7 +85,7 @@ enum PostRequest: TargetTypeProtocol {
                     mimeType: "image/jpeg",
                     data: data)
             }
-        case .liked:
+        case .like:
             return nil
         }
     }

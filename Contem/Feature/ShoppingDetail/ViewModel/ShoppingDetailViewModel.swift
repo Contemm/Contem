@@ -141,7 +141,7 @@ final class ShoppingDetailViewModel: ViewModelType {
             guard let self = self else { return }
 
             do {
-                let router = PostRequest.postItem(postId: postId)
+                let router = PostRequest.post(postId: postId)
                 let result = try await NetworkService.shared.callRequest(router: router, type: PostDTO.self)
                 let detailInfo = ShoppingDetailInfo(from: result)
                 await MainActor.run {
@@ -162,7 +162,7 @@ final class ShoppingDetailViewModel: ViewModelType {
         Task { [weak self] in
             guard let self = self else { return }
             do {
-                let router = PostRequest.liked(isLiked: output.isLiked, userId: postId)
+                let router = PostRequest.like(postId: postId, isLiked: output.isLiked)
                 let _ = try await NetworkService.shared.callRequest(router: router, type: PostLikeDTO.self)
             } catch {
                 await MainActor.run {
