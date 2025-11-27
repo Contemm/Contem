@@ -4,11 +4,14 @@ import Kingfisher
 
 struct ShoppingDetailView: View {
 
-    @ObservedObject private var viewModel: ShoppingDetailViewModel
-
-
-    init(viewModel: ShoppingDetailViewModel) {
-        self.viewModel = viewModel
+    @StateObject private var viewModel: ShoppingDetailViewModel
+    
+    init(coordinator: AppCoordinator, postId: String) {
+        _viewModel = StateObject(
+            wrappedValue: ShoppingDetailViewModel(
+                coordinator: coordinator,
+                postId: postId)
+        )
     }
 
     var body: some View {
@@ -83,12 +86,12 @@ struct ShoppingDetailView: View {
         } message: {
             Text("공유 기능은 준비 중입니다")
         }
-        .alert("구매하기", isPresented: $viewModel.output.showPurchaseAlert) {
+        .alert("구매 완료", isPresented: $viewModel.output.showPurchaseAlert) {
             Button("확인", role: .cancel) {
                 viewModel.closePurchaseAlert()
             }
         } message: {
-            Text("구매하기 기능은 준비 중입니다")
+            Text("구매해 주셔서 감사합니다.")
         }
         .onAppear {
             viewModel.input.viewDidLoad.send()
@@ -170,7 +173,7 @@ struct ShoppingDetailView: View {
                     viewModel.input.sizeSelectionTapped.send()
                 },
                 onPurchaseTapped: {
-                    viewModel.input.purchaseButtonTapped.send()
+                    viewModel.input.purchaseButtonTapped.send(String(detailInfo.price))
                 }
             )
         }

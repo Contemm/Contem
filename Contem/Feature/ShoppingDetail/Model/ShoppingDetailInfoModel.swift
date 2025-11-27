@@ -23,10 +23,7 @@ struct ShoppingDetailInfo: Codable {
     }
     
     var contentImageUrls: [URL] {
-        contentImages.map {
-            let fullUrl = APIConfig.baseURL + $0
-            return URL(string: fullUrl)!
-        }
+        contentImages.map { URL(string: APIConfig.baseURL + $0)! }
     }
     
     var productImages: [URL] { // 상품 상세
@@ -35,14 +32,18 @@ struct ShoppingDetailInfo: Codable {
             return URL(string: fullUrl)!
         }
     }
-
-    var discountedPrice: Int? {
-        Int(salePrice)
+    
+    var originalPrice: Int {
+        return Int(salePrice) ?? price
+    }
+    
+    var finalPrice: Int {
+        price
     }
 
     var discountRate: Double {
-        guard let discounted = discountedPrice else { return 0 }
-        let discount = Double(price - discounted) / Double(price) * 100
+        guard originalPrice > 0 else { return 0 }
+        let discount = Double(originalPrice - finalPrice) / Double(originalPrice) * 100
         return discount
     }
 

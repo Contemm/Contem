@@ -41,6 +41,7 @@ final actor TokenStorage {
     
     func hasValidAccessToken() async -> Bool{
         guard let accessToken = try? await KeychainManager.shared.read(.accessToken) else { return false }
+        print("엑세스 토큰: \(accessToken)")
         return !accessToken.isEmpty
     }
     
