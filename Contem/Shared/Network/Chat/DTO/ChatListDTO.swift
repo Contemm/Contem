@@ -40,3 +40,17 @@ struct ChatResponseDTO: Codable {
         }
     }
 }
+
+extension ChatResponseDTO{
+    func toEntity() -> ChatMessageEntity{
+        return ChatMessageEntity(
+            chatId: chatId,
+            roomId: roomId,
+            content: content,
+            createdAt: createdAt,
+            sender: .init(userId: sender.userId,
+                          nick: sender.nick,
+                          profileImage: sender.profileImage),
+            files: files)
+    }
+}
