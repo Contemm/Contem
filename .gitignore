@@ -91,3 +91,10 @@ iOSInjectionProject/
 # API Key, URL 등의 추적을 제외
 **/Secret/*.swift
 **/Secret/*.plist
+
+### SwiftPackageManager ###
+Packages
+.build/
+xcuserdata
+DerivedData/
+*.xcodeproj
