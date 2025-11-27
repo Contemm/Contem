@@ -11,6 +11,7 @@ enum ChatRequest: TargetTypeProtocol{
     case chatRoom(opponentId: String) //채팅방 생성(조회)
     case sendMessage(roomId: String, content: String, files: [String]) //메시지 보내기
     case fetchMessage(roomId: String, cursor_date: String) //채팅 내역 조회
+    case chatFiles(roomId: String, files: [Data]) //채팅방 파일 업로드
     
     var path: String{
         switch self {
@@ -20,12 +21,14 @@ enum ChatRequest: TargetTypeProtocol{
             return "/chats/\(roomId)"
         case .fetchMessage(let roomId, _):
             return "/chats/\(roomId)"
+        case .chatFiles(let roomId, _):
+            return "/chats/\(roomId)/files"
         }
     }
     
     var method: HTTPMethod{
         switch self {
-        case .chatRoom, .sendMessage:
+        case .chatRoom, .sendMessage, .chatFiles:
                 .post
         case .fetchMessage:
                 .get
@@ -47,6 +50,8 @@ enum ChatRequest: TargetTypeProtocol{
             return ["content": content, "files": files]
         case .fetchMessage(_, let cursor_date):
             return ["cursor_date": cursor_date]
+        case .chatFiles:
+            return [:]
         }
     }
     
@@ -54,6 +59,14 @@ enum ChatRequest: TargetTypeProtocol{
         switch self {
         case .chatRoom, .sendMessage, .fetchMessage:
             return nil
+        case .chatFiles(_, let files):
+            return files.enumerated().map { index, data in
+                MultipartFile(
+                    name: "chatFiles",
+                    filename: "chat_image_\(index).jpg",
+                    mimeType: "image/jpeg",
+                    data: data)
+            }
         }
     }
 }
