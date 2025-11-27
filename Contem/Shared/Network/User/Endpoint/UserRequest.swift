@@ -15,7 +15,7 @@ enum UserRequest: TargetTypeProtocol {
     var path: String {
         switch self {
         case .login:
-            return "/v1/users/login"
+            return "/users/login"
         }
     }
     

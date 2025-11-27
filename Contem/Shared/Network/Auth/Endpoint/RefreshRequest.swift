@@ -13,7 +13,7 @@ enum RefreshRequest: TargetTypeProtocol{
     var path: String{
         switch self {
         case .refresh:
-            return "/v1/auth/refresh"
+            return "/auth/refresh"
         }
     }
     

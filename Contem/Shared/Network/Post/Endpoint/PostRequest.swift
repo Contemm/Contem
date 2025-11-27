@@ -18,13 +18,13 @@ enum PostRequest: TargetTypeProtocol {
     var path: String {
         switch self {
         case .postList:
-            return "/v1/posts"
+            return "/posts"
         case .postFiles:
-            return "/v1/posts/files"
+            return "/posts/files"
         case .post(let postId):
-            return "/v1/posts/\(postId)"
+            return "/posts/\(postId)"
         case .like(let postId, _):
-            return "/v1/posts/\(postId)/like"
+            return "/posts/\(postId)/like"
         }
     }
     

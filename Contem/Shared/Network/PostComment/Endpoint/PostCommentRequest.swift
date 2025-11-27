@@ -14,14 +14,14 @@ enum CommentPostRequest: TargetTypeProtocol {
         switch self {
         // 댓글 조회 & 댓글 작성
         case .fetch(let postId), .create(let postId, _):
-            return "/v1/posts/\(postId)/comments"
+            return "/posts/\(postId)/comments"
         // 수정 & 삭제
         case .update(let postId, let commentId, _),
                 .delete(let postId, let commentId):
-            return "/v1/posts/\(postId)/comments/\(commentId)"
+            return "/posts/\(postId)/comments/\(commentId)"
         // 대댓글 작성
         case .createReply(let postId, let commentId, _):
-            return "/v1/posts/\(postId)/comments/\(commentId)/replies"
+            return "/posts/\(postId)/comments/\(commentId)/replies"
         }
     }
     

@@ -16,13 +16,13 @@ enum ChatRequest: TargetTypeProtocol{
     var path: String{
         switch self {
         case .chatRoom:
-            return "/v1/chats"
+            return "/chats"
         case .sendMessage(let roomId, _, _):
-            return "/v1/chats/\(roomId)"
+            return "/chats/\(roomId)"
         case .fetchMessage(let roomId, _):
-            return "/v1/chats/\(roomId)"
+            return "/chats/\(roomId)"
         case .chatFiles(let roomId, _):
-            return "/v1/chats/\(roomId)/files"
+            return "/chats/\(roomId)/files"
         }
     }
     
