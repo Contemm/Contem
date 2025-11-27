@@ -83,7 +83,9 @@ final class NetworkService {
                 throw NetworkError.decodingFailed
             }
             do{
-                return try JSONDecoder().decode(type, from: data)
+                let decoder = JSONDecoder()
+                decoder.dateDecodingStrategy = .iso8601
+                return try decoder.decode(type, from: data)
             }catch{
                 throw NetworkError.decodingFailed
             }
