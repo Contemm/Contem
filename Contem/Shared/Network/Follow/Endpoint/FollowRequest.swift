@@ -13,7 +13,7 @@ enum FollowRequest: TargetTypeProtocol{
     var path: String{
         switch self {
         case .follow(let userId, _):
-            return "/follow/\(userId)"
+            return "/v1/follow/\(userId)"
         }
     }
     

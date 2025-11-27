@@ -14,9 +14,9 @@ enum UserProfileRequest: TargetTypeProtocol {
     var path: String {
         switch self {
         case .getMyProfile:
-            return "/users/me/profile"
+            return "/v1/users/me/profile"
         case .getOtherProfile(let userId):
-            return "/users/\(userId)/profile"
+            return "/v1/users/\(userId)/profile"
         }
     }
     
