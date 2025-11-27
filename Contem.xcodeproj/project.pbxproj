@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		7622DF4E2EC9A1E600D6AA7B /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 7622DF4D2EC9A1E600D6AA7B /* Kingfisher */; };
 		76C9912E2EC1E6D400B5FC11 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 76C9912D2EC1E6D400B5FC11 /* .gitignore */; };
+		79954F812ED8C91300773FD5 /* SocketIO in Frameworks */ = {isa = PBXBuildFile; productRef = 79954F802ED8C91300773FD5 /* SocketIO */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +44,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7622DF4E2EC9A1E600D6AA7B /* Kingfisher in Frameworks */,
+				79954F812ED8C91300773FD5 /* SocketIO in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -87,6 +89,7 @@
 			name = Contem;
 			packageProductDependencies = (
 				7622DF4D2EC9A1E600D6AA7B /* Kingfisher */,
+				79954F802ED8C91300773FD5 /* SocketIO */,
 			);
 			productName = Contem;
 			productReference = F8A803C22EC0C71C006006BD /* Contem.app */;
@@ -118,6 +121,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				7622DF4C2EC9A1E600D6AA7B /* XCRemoteSwiftPackageReference "Kingfisher" */,
+				79954F7F2ED8C91300773FD5 /* XCRemoteSwiftPackageReference "socket.io-client-swift" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = F8A803C32EC0C71C006006BD /* Products */;
@@ -378,6 +382,14 @@
 				minimumVersion = 8.6.1;
 			};
 		};
+		79954F7F2ED8C91300773FD5 /* XCRemoteSwiftPackageReference "socket.io-client-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/socketio/socket.io-client-swift.git";
+			requirement = {
+				kind = exactVersion;
+				version = 16.1.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -385,6 +397,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 7622DF4C2EC9A1E600D6AA7B /* XCRemoteSwiftPackageReference "Kingfisher" */;
 			productName = Kingfisher;
+		};
+		79954F802ED8C91300773FD5 /* SocketIO */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 79954F7F2ED8C91300773FD5 /* XCRemoteSwiftPackageReference "socket.io-client-swift" */;
+			productName = SocketIO;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
