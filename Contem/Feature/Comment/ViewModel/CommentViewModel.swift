@@ -24,6 +24,7 @@ final class CommentViewModel: ViewModelType, CommentProtocol {
     
     struct Output {
         var commentList: [Comment] = []
+        var userId: String = ""
     }
     
     init(coordinator: AppCoordinator, postId: String) {
@@ -38,6 +39,7 @@ final class CommentViewModel: ViewModelType, CommentProtocol {
             .sink { owner, _ in
                 Task {
                     await owner.fetchComments(postId: owner.postId)
+                    await owner.getUserId()
                 }
             }.store(in: &cancellables)
         
@@ -211,6 +213,8 @@ extension CommentViewModel {
         }
     }
     
+    
+    // 이미지 업로드
     func uploadImage(data: Data) async -> [String] {
         do {
             let router = PostRequest.postFiles(files: [data])
@@ -220,6 +224,16 @@ extension CommentViewModel {
         } catch {
             print("이미지 업로드 실패: \(error)")
             return []
+        }
+    }
+    
+    // 유저 아이디 가져오기
+    private func getUserId() async {
+        do {
+            let userId = try KeychainManager.shared.read(.userId)
+            output.userId = userId
+        } catch {
+            print("아이디 가져오기 실패: \(error)")
         }
     }
 }

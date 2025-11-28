@@ -46,43 +46,46 @@ struct CommentView: View {
                                 
                                 commentContentView(comment: comment)
                                 
-                                HStack(spacing: CGFloat.spacing4) {
-                                    Button {
-                                        self.commentId = comment.commentId
-                                        self.replyTartgetUser = comment.user.nickname
-                                    } label: {
-                                        Text("답글 달기")
-                                    }
-                                    Spacer().frame(width: CGFloat.spacing8)
-                                    Button {
-                                        viewModel.input.deleteCommentTapped.send(comment.commentId)
-                                    } label: {
-                                        Text("삭제")
-                                    }
-                                    Spacer().frame(width: 2)
-                                    Button {
-                                        // 1. 입력창 및 상태 초기화
-                                        text = ""; commentId = nil; replyTartgetUser = nil
-                                        selectedImage = nil; selectedImageData = nil
-                                        
-                                        // 2. 수정 데이터 세팅
-                                        self.editCommentId = comment.commentId
-                                        
-                                        if comment.isImage {
-                                            self.editingImageUrl = comment.fullImageUrl
-                                            self.text = ""
-                                        } else {
-                                            self.editingImageUrl = nil
-                                            self.text = comment.comment
+                                if  viewModel.output.userId == comment.user.userID {
+                                    HStack(spacing: CGFloat.spacing4) {
+                                        Button {
+                                            self.commentId = comment.commentId
+                                            self.replyTartgetUser = comment.user.nickname
+                                        } label: {
+                                            Text("답글 달기")
                                         }
-                                        
-                                    } label: {
-                                        Text("수정")
+                                        Spacer().frame(width: CGFloat.spacing8)
+                                        Button {
+                                            viewModel.input.deleteCommentTapped.send(comment.commentId)
+                                        } label: {
+                                            Text("삭제")
+                                        }
+                                        Spacer().frame(width: 2)
+                                        Button {
+                                            // 1. 입력창 및 상태 초기화
+                                            text = ""; commentId = nil; replyTartgetUser = nil
+                                            selectedImage = nil; selectedImageData = nil
+                                            
+                                            // 2. 수정 데이터 세팅
+                                            self.editCommentId = comment.commentId
+                                            
+                                            if comment.isImage {
+                                                self.editingImageUrl = comment.fullImageUrl
+                                                self.text = ""
+                                            } else {
+                                                self.editingImageUrl = nil
+                                                self.text = comment.comment
+                                            }
+                                            
+                                        } label: {
+                                            Text("수정")
+                                        }
                                     }
+                                    .font(.system(size: 12))
+                                    .foregroundColor(Color.gray500)
+                                    .padding(.top, 2)
                                 }
-                                .font(.system(size: 12))
-                                .foregroundColor(Color.gray500)
-                                .padding(.top, 2)
+                                
                             }
                         }
                         .padding(.horizontal, CGFloat.spacing16)
@@ -104,33 +107,35 @@ struct CommentView: View {
                                         }
                                         
                                         commentContentView(comment: reply)
-                                        
-                                        HStack {
-                                            Button("삭제") {
-                                                viewModel.input.deleteCommentTapped.send(reply.commentId)
-                                            }
-                                            .font(.caption2)
-                                            .foregroundColor(Color.gray500)
-                                            
-                                            Button("수정") {
-                                                // 1. 초기화
-                                                text = ""; commentId = nil; selectedImage = nil; selectedImageData = nil
-                                                
-                                                // 2. 수정 데이터 세팅
-                                                self.editCommentId = reply.commentId
-                                                self.replyTartgetUser = comment.user.nickname // 부모 닉네임 태그 표시
-                                                
-                                                if reply.isImage {
-                                                    self.editingImageUrl = reply.fullImageUrl
-                                                    self.text = ""
-                                                } else {
-                                                    self.editingImageUrl = nil
-                                                    self.text = reply.comment
+                                        if viewModel.output.userId == reply.user.userID {
+                                            HStack {
+                                                Button("삭제") {
+                                                    viewModel.input.deleteCommentTapped.send(reply.commentId)
                                                 }
+                                                .font(.caption2)
+                                                .foregroundColor(Color.gray500)
+                                                
+                                                Button("수정") {
+                                                    // 1. 초기화
+                                                    text = ""; commentId = nil; selectedImage = nil; selectedImageData = nil
+                                                    
+                                                    // 2. 수정 데이터 세팅
+                                                    self.editCommentId = reply.commentId
+                                                    self.replyTartgetUser = comment.user.nickname // 부모 닉네임 태그 표시
+                                                    
+                                                    if reply.isImage {
+                                                        self.editingImageUrl = reply.fullImageUrl
+                                                        self.text = ""
+                                                    } else {
+                                                        self.editingImageUrl = nil
+                                                        self.text = reply.comment
+                                                    }
+                                                }
+                                                .font(.caption2)
+                                                .foregroundColor(Color.gray500)
                                             }
-                                            .font(.caption2)
-                                            .foregroundColor(Color.gray500)
                                         }
+                                        
                                         
                                     }
                                 }
@@ -160,7 +165,7 @@ struct CommentView: View {
                                     .resizable().scaledToFill()
                                     .frame(width: 60, height: 60).clipShape(RoundedRectangle(cornerRadius: 8))
                             }
-                           
+                            
                             
                             // 미리보기 삭제 버튼
                             Button {
@@ -231,7 +236,7 @@ struct CommentView: View {
                             .background(Color.primary100).clipShape(Capsule())
                         }
                         let isImageAttached = (selectedImageData != nil || editingImageUrl != nil)
-
+                        
                         TextField(isImageAttached ? "이미지 전송 시 텍스트 불가" : "댓글을 입력하세요...", text: $text)
                             .font(.body)
                             .autocapitalization(.none)
@@ -253,7 +258,7 @@ struct CommentView: View {
                             var contentToSend = text
                             // 텍스트는 비어있는데, 기존 이미지는 살아있는 경우 -> 기존 이미지 경로 전송
                             if contentToSend.isEmpty, let existingUrl = editingImageUrl {
-                                contentToSend = existingUrl.path // URL에서 경로만 추출 
+                                contentToSend = existingUrl.path // URL에서 경로만 추출
                             }
                             
                             viewModel.input.commentUpdateTapped.send((editId, contentToSend, selectedImageData))
