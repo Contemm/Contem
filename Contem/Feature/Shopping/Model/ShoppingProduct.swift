@@ -16,14 +16,21 @@ struct ShoppingProduct: Identifiable {
     let price: Int
     var likes: [String]
     
+    
+    private var currentUserId: String {
+        // 실제 키체인 매니저 사용 (key는 저장할 때 사용한 키와 동일해야 함)
+        return (try? KeychainManager.shared.read(.userId)) ?? ""
+    }
     var isLiked: Bool {
-        let userId = "6917f9f2ff94927948ff319e"
+        let userId = currentUserId
+        guard !userId.isEmpty else { return false }
         return likes.contains(userId)
     }
     
     mutating func toggleLike() {
         // 추후 UserDefault에서 가져와야 함
-        let userId = "6917f9f2ff94927948ff319e"
+        let userId = currentUserId
+//        "6917f9f2ff94927948ff319e"
         if isLiked {
             likes.removeAll { $0 == userId }
         } else {
