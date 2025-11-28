@@ -16,6 +16,12 @@ final class ChatMessageObject: Object, ObjectKeyIdentifiable {
     @Persisted var sender: SenderObject?
     @Persisted var files: List<String>
     
+    var fileURLs: [URL] {
+        return files.compactMap { filePath in
+            URL(string: APIConfig.baseURL + filePath)
+        }
+    }
+    
     convenience init(chatId: String, roomId: String, content: String?, createdAt: Date, sender: SenderObject, files: [String]) {
         self.init()
         self.chatId = chatId
