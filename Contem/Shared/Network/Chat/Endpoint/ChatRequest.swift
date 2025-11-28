@@ -62,7 +62,7 @@ enum ChatRequest: TargetTypeProtocol{
         case .chatFiles(_, let files):
             return files.enumerated().map { index, data in
                 MultipartFile(
-                    name: "chatFiles",
+                    name: "files",
                     filename: "chat_image_\(index).jpg",
                     mimeType: "image/jpeg",
                     data: data)
