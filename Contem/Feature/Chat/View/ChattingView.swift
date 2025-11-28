@@ -72,7 +72,7 @@ struct ChattingView: View {
                 }
             }
         }
-        .background(Color("gray100"))
+        .background(.white)
     }
     
     private func scrollToBottom(proxy: ScrollViewProxy, id: String?) {
