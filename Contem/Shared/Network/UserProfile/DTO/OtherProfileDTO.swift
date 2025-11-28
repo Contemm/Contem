@@ -41,6 +41,11 @@ struct OtherProfileDTO: Codable{
         case following
         case posts
     }
+    
+    var profileImageURL: URL?{
+        guard let profileImage else { return nil }
+        return URL(string: APIConfig.baseURL + profileImage)
+    }
 }
 
 extension OtherProfileDTO{
