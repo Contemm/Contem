@@ -1,17 +1,22 @@
-//
-//  SignInViewModel.swift
-//  Contem
-//
-//  Created by HyoTaek on 11/13/25.
-//
-
 import SwiftUI
 import Combine
 
+extension String {
+    var isValidEmail: Bool {
+        let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
+        let emailPred = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
+        return emailPred.evaluate(with: self)
+    }
+}
+
 final class SignInViewModel: ViewModelType {
-    
+  
     private weak var coordinator: AppCoordinator?
     var cancellables = Set<AnyCancellable>()
+    
+    // MARK: - Dependencies (DI)
+    private let appleService: AppleAuthServiceType
+    private let authRepository: AuthRepositoryType
     
     var input = Input()
     
@@ -20,6 +25,7 @@ final class SignInViewModel: ViewModelType {
 
     struct Input {
         let loginButtonTapped = PassthroughSubject<Void, Never>()
+        let appleLoginButtonTapped = PassthroughSubject<Void, Never>()
     }
 
     struct Output {
@@ -27,9 +33,20 @@ final class SignInViewModel: ViewModelType {
         var password: String = ""
         var showAlert = false
         var alertMessage = ""
+        var isLoading = false
+        var isLoginEnabled: Bool {
+            return email.isValidEmail && password.count >= 6
+        }
     }
     
-    init(coordinator: AppCoordinator) {
+    
+    init(
+        coordinator: AppCoordinator,
+        appleService: AppleAuthServiceType = AppleAuthService(),
+        authRepository: AuthRepositoryType = AuthRepository()
+    ) {
+        self.appleService = appleService
+        self.authRepository = authRepository
         self.coordinator = coordinator
         transform()
     }
@@ -42,6 +59,13 @@ final class SignInViewModel: ViewModelType {
                 Task{
                     await self.signin()
                 }
+            }
+            .store(in: &cancellables)
+        
+        input.appleLoginButtonTapped
+            .throttle(for: .seconds(1), scheduler: RunLoop.main, latest: false) // 중복 탭 방지
+            .sink { [weak self] _ in
+                Task { await self?.processLogin() }
             }
             .store(in: &cancellables)
     }
@@ -60,5 +84,38 @@ final class SignInViewModel: ViewModelType {
             output.alertMessage = error.localizedDescription
             output.showAlert = true
         }
+    }
+}
+
+// MARK: - 로그인
+extension SignInViewModel {
+    @MainActor
+    private func processLogin() async {
+        output.isLoading = true
+        
+        do {
+            // 1. 애플 서버 통신 (Identity Token 획득)
+            let idToken = try await appleService.signIn()
+            print("✅ Apple Token: \(idToken.prefix(10))...")
+            
+            // 2. 백엔드 서버 통신 (NetworkService 사용)
+            let result = try await authRepository.loginWithApple(idToken: idToken)
+            print("✅ Server Login Success: \(result.accessToken)")
+            
+            try await TokenStorage.shared.storeTokens(access: result.accessToken, refresh: result.refreshToken, userId: result.userID)
+            
+            coordinator?.rootRoute = .tabView
+            
+            // 3. 토큰 저장 (TokenStorage 활용)
+            // TokenStorage.shared.save(accessToken: result.accessToken, ...)
+            
+            // 4. 화면 전환 (Coordinator Delegate 호출 등)
+            // coordinator?.didFinishLogin()
+            
+        } catch {
+            print("❌ Login Failed: \(error)")
+        }
+        
+        output.isLoading = false
     }
 }

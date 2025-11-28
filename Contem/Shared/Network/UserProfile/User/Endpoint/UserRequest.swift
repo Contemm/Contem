@@ -10,19 +10,22 @@ import Foundation
 enum UserRequest: TargetTypeProtocol {
     // MARK: - Case
     case login(email: String, password: String)
+    case appleLogin(token: String)
     
     // MARK: - Path
     var path: String {
         switch self {
         case .login:
             return "/users/login"
+        case .appleLogin:
+            return "/users/login/apple"
         }
     }
     
     // MARK: - Method
     var method: HTTPMethod {
         switch self {
-        case .login:
+        case .login, .appleLogin:
             return .post
         }
     }
@@ -40,19 +43,22 @@ enum UserRequest: TargetTypeProtocol {
         switch self {
         case .login(let email, let password):
             ["email": email, "password": password]
+        case .appleLogin(let token):
+            ["idToken":token]
+            
         }
     }
     
     var hasAuthorization: Bool{
         switch self {
-        case .login(let email, let password):
+        case .login, .appleLogin:
             return false
         }
     }
     
     var multipartFiles: [MultipartFile]?{
         switch self {
-        case .login:
+        case .login, .appleLogin:
             nil
         }
     }
