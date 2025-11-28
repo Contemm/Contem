@@ -20,6 +20,7 @@ final class CommentViewModel: ViewModelType, CommentProtocol {
         let commentSendTapped = PassthroughSubject<(String, String?, Data?), Never>()
         let deleteCommentTapped = PassthroughSubject<String, Never>()
         let commentUpdateTapped = PassthroughSubject<(String, String, Data?), Never>()
+        let pullToRefreshTrigger = PassthroughSubject<Void, Never>()
     }
     
     struct Output {
@@ -34,6 +35,15 @@ final class CommentViewModel: ViewModelType, CommentProtocol {
     }
     
     func transform() {
+        
+        input.pullToRefreshTrigger
+            .withUnretained(self)
+            .sink { owner, _ in
+                Task {
+                    await owner.refreshComments()
+                }
+            }.store(in: &cancellables)
+        
         input.viewOnAppear
             .withUnretained(self)
             .sink { owner, _ in
@@ -235,5 +245,10 @@ extension CommentViewModel {
         } catch {
             print("아이디 가져오기 실패: \(error)")
         }
+    }
+    
+    private func refreshComments() async {
+        await fetchComments(postId: postId)
+        await getUserId()
     }
 }

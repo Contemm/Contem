@@ -144,6 +144,8 @@ struct CommentView: View {
                         }.padding(.leading, 72)
                     }
                 }
+            }.refreshable {
+                viewModel.input.pullToRefreshTrigger.send(())
             }
             
             
