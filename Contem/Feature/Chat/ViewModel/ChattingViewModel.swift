@@ -20,7 +20,7 @@ final class ChattingViewModel: ViewModelType {
     
     struct Input {
         let appear = PassthroughSubject<Void, Never>()
-        let sendMessage = PassthroughSubject<String, Never>()
+        let sendMessage = PassthroughSubject<(String, [Data]?), Never>()
     }
     
     struct Output {
@@ -53,8 +53,8 @@ final class ChattingViewModel: ViewModelType {
             .store(in: &cancellables)
         
         input.sendMessage
-            .sink { [weak self] content in
-                self?.sendMessage(content: content)
+            .sink { [weak self] (content, filesData) in
+                self?.sendMessage(content: content, filesData: filesData)
             }
             .store(in: &cancellables)
     }
@@ -131,14 +131,26 @@ final class ChattingViewModel: ViewModelType {
         }
     }
     
-    private func sendMessage(content: String) {
+    private func uploadChatImages(roomId: String, imagesData: [Data]) async throws -> [String] {
+        let router = ChatRequest.chatFiles(roomId: roomId, files: imagesData)
+        let responseDTO = try await NetworkService.shared.callRequest(router: router, type: PostFilesDTO.self)
+        return responseDTO.files
+    }
+    
+    private func sendMessage(content: String, filesData: [Data]?) {
         guard let roomId = roomId else { return }
         
         Task {
             do {
-                let router = ChatRequest.sendMessage(roomId: roomId, content: content, files: [])
+                var filePaths: [String] = []
+                if let data = filesData, !data.isEmpty {
+                    filePaths = try await uploadChatImages(roomId: roomId, imagesData: data)
+                }
+                
+                let router = ChatRequest.sendMessage(roomId: roomId, content: content, files: filePaths)
                 _ = try await NetworkService.shared.callRequest(router: router, type: ChatResponseDTO.self)
             } catch {
+                print(error)
                 await MainActor.run {
                     self.output.error = error
                 }
