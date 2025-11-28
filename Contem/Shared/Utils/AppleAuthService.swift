@@ -11,7 +11,7 @@ final class AppleAuthService: NSObject, AppleAuthServiceType {
     
     @MainActor
     func signIn() async throws -> String {
-        return try await withCheckedThrowingContinuation { continuation in
+        return try await withCheckedThrowingContinuation { continuation in 
             self.continuation = continuation
             
             let provider = ASAuthorizationAppleIDProvider()
