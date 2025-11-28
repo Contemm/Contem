@@ -1,6 +1,14 @@
 import SwiftUI
 import Combine
 
+extension String {
+    var isValidEmail: Bool {
+        let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
+        let emailPred = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
+        return emailPred.evaluate(with: self)
+    }
+}
+
 final class SignInViewModel: ViewModelType {
   
     private weak var coordinator: AppCoordinator?
@@ -26,7 +34,11 @@ final class SignInViewModel: ViewModelType {
         var showAlert = false
         var alertMessage = ""
         var isLoading = false
+        var isLoginEnabled: Bool {
+            return email.isValidEmail && password.count >= 6
+        }
     }
+    
     
     init(
         coordinator: AppCoordinator,

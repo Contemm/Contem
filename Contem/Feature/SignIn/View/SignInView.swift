@@ -50,9 +50,10 @@ struct SignInView: View {
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.black)
+                    .background(viewModel.output.isLoginEnabled ? Color.primary100 : Color.gray300)
                     .cornerRadius(.spacing16)
             }
+            .disabled(!viewModel.output.isLoginEnabled)
             
             // 구분 선
             HStack {
