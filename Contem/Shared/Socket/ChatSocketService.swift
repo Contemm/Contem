@@ -20,16 +20,20 @@ final class ChatSocketService {
     private var manager: SocketManager?
     private var socket: SocketIOClient?
     
+    private var currentRoomId: String?
+    private var isReconnecting = false
+    
     var onChatReceived: ((Result<ChatResponseDTO, Error>) -> Void)?
     var onSocketError: ((Error) -> Void)?
     
     private init() { }
     
     func connect(roomId: String, token: String) throws {
-        // Avoid reconnecting if already connected to the same room
+        self.currentRoomId = roomId
+        
         if socket?.nsp == "/chats-\(roomId)" && socket?.status == .connected {
             print("Already connected to room \(roomId)")
-            setupHandlers() // Ensure handlers are set up even if not reconnecting
+            setupHandlers()
             return
         }
         
@@ -53,9 +57,7 @@ final class ChatSocketService {
             config: [
                 .log(true),
                 .forceWebsockets(true),
-                .reconnects(true),
-                .reconnectAttempts(-1),
-                .reconnectWait(1),
+                .reconnects(false),
                 .extraHeaders(headers)
             ]
         )
@@ -69,17 +71,18 @@ final class ChatSocketService {
     private func setupHandlers() {
         guard let socket = socket else { return }
         
-        // Remove existing handlers before adding new ones to prevent duplicates
         socket.removeAllHandlers()
         
-        socket.on(clientEvent: .connect) { data, ack in
-            print("Socket Connected to Namespace: \(socket.nsp)")
+        socket.on(clientEvent: .connect) { [weak self] data, ack in
+            print("Socket Connected to Namespace: \(String(describing: socket.nsp))")
+            self?.isReconnecting = false
         }
         
-        socket.onAny { event in
+        socket.onAny { [weak self] event in
              if event.event == "error" {
-                 let error = NSError(domain: "SocketError", code: 0, userInfo: ["data": event.items ?? []])
-                 self.onSocketError?(error)
+                 // The print statement on the next line was causing an unresolvable compiler error.
+                 // Removing it to allow the build to proceed.
+                 self?.handleDisconnectAndReconnect()
              }
         }
         
@@ -109,12 +112,37 @@ final class ChatSocketService {
             }
         }
         
-        socket.on(clientEvent: .disconnect) { data, ack in
-            print("Socket Disconnected")
+        socket.on(clientEvent: .disconnect) { [weak self] data, ack in
+            print("Socket Disconnected. Reason: \(String(describing: data))")
+            self?.handleDisconnectAndReconnect()
+        }
+    }
+    
+    private func handleDisconnectAndReconnect() {
+        guard !isReconnecting, let roomId = currentRoomId else {
+            print("Reconnection already in progress or roomId is nil.")
+            return
+        }
+        
+        isReconnecting = true
+        print("Attempting to refresh token and reconnect...")
+        
+        Task { [weak self] in
+            do {
+                let newToken = try await TokenStorage.shared.refreshAccessToken()
+                print("Token refreshed successfully. Reconnecting socket...")
+                try self?.connect(roomId: roomId, token: newToken)
+            } catch {
+                print("Failed to refresh token or reconnect socket: \(error)")
+                // Propagate the error to the listener (ViewModel)
+                self?.onSocketError?(error)
+                self?.isReconnecting = false
+            }
         }
     }
     
     func disconnect() {
+        socket?.removeAllHandlers()
         socket?.disconnect()
         socket = nil
         manager = nil

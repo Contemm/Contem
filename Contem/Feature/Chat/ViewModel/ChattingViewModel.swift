@@ -88,6 +88,7 @@ final class ChattingViewModel: ViewModelType {
                 
                 let latestTimestamp = RealmManager.shared.getLatestMessage(for: roomId)?.createdAt
                 
+                // 5. Set up socket handlers
                 ChatSocketService.shared.onChatReceived = { [weak self] result in
                     switch result {
                     case .success(let dto):
@@ -98,10 +99,20 @@ final class ChattingViewModel: ViewModelType {
                             print("Failed to write received chat message to Realm: \(error)")
                         }
                     case .failure(let error):
-                        print("Socket received an error: \(error)")
+                        // Optionally propagate this error to the UI as well
+                        print("Socket received a message decoding error: \(error)")
                     }
                 }
                 
+                ChatSocketService.shared.onSocketError = { [weak self] error in
+                    Task {
+                        await MainActor.run {
+                            self?.output.error = error
+                        }
+                    }
+                }
+                
+                // 6. Connect to WebSocket
                 guard let token = await TokenStorage.shared.getAccessToken() else { return }
                 try ChatSocketService.shared.connect(roomId: roomId, token: token)
                 
