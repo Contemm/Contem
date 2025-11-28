@@ -27,7 +27,7 @@ final class ChattingViewModel: ViewModelType {
         var messages: Results<ChatMessageObject>?
         var currentUserId: String?
         var opponentNickname: String?
-        var opponentProfileImage: String?
+        var opponentProfileImage: URL?
         var error: Error?
     }
     
@@ -74,7 +74,7 @@ final class ChattingViewModel: ViewModelType {
                 await MainActor.run {
                     self.output.currentUserId = userId
                     self.output.opponentNickname = opponentProfile.nick
-                    self.output.opponentProfileImage = opponentProfile.profileImage
+                    self.output.opponentProfileImage = opponentProfile.profileImageURL
                 }
                 
                 let messages = RealmManager.shared.getMessages(for: roomId)
