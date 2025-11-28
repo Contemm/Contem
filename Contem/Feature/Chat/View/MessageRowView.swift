@@ -1,0 +1,62 @@
+//
+//  MessageRowView.swift
+//  Contem
+//
+//  Created by 이상민 on 11/29/25.
+//
+
+import SwiftUI
+
+struct MessageRowView: View {
+    let message: ChatMessageObject
+    let isMyMessage: Bool
+    
+    var body: some View {
+        HStack(alignment: .bottom, spacing: 8) {
+            if !isMyMessage {
+                VStack(alignment: .leading, spacing: .spacing4) {
+                    Text(message.sender?.nick ?? "알 수 없음")
+                        .font(.captionRegular)
+                        .foregroundColor(.gray700)
+                    
+                    messageContent
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            } else {
+                VStack(alignment: .trailing, spacing: .spacing4) {
+                    Text("나")
+                        .font(.captionRegular)
+                        .foregroundColor(.gray700)
+                    messageContent
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                }
+            }
+        }
+    }
+    
+    private var messageContent: some View {
+        HStack(alignment: .bottom, spacing: .spacing8) {
+            if isMyMessage {
+                timestamp
+            }
+            
+            Text(message.content ?? "")
+                .font(.bodyRegular)
+                .padding(.horizontal(.spacing12))
+                .padding(.vertical(.spacing8))
+                .background(isMyMessage ? Color.blue : .gray50)
+                .foregroundColor(isMyMessage ? .primary0 : .primary)
+                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+            
+            if !isMyMessage {
+                timestamp
+            }
+        }
+    }
+    
+    private var timestamp: some View {
+        Text(message.createdAt, style: .time)
+            .font(.captionSmall)
+            .foregroundColor(.gray700)
+    }
+}
