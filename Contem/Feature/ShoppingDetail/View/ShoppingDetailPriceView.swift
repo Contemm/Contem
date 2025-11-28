@@ -10,7 +10,7 @@ struct ShoppingDetailPriceView: View {
                     .font(.bodyRegular)
                     .foregroundColor(.gray500)
 
-                Text("\(detailInfo.price.formatted())원")
+                Text("\(detailInfo.originalPrice.formatted())원")
                     .font(.bodyRegular)
                     .foregroundColor(.gray500)
                     .strikethrough()
@@ -25,12 +25,15 @@ struct ShoppingDetailPriceView: View {
                         .cornerRadius(.spacing4)
                 }
             }
-
-            if let discountedPrice = detailInfo.discountedPrice {
-                Text("\(discountedPrice.formatted())원")
-                    .font(.titleLarge)
-                    .foregroundColor(.primary100)
-            }
+            
+            Text("\(detailInfo.finalPrice.formatted())원")
+                .font(.titleLarge)
+                .foregroundColor(.primary100)
+//            if let discountedPrice = detailInfo.discountedPrice {
+//                Text("\(discountedPrice.formatted())원")
+//                    .font(.titleLarge)
+//                    .foregroundColor(.primary100)
+//            }
 
             VStack(alignment: .leading, spacing: CGFloat.spacing4) {
                 Text(detailInfo.brandName)

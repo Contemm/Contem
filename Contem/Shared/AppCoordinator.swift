@@ -1,5 +1,6 @@
 import SwiftUI
 import Combine
+import iamport_ios
 
 final class AppCoordinator: CoordinatorProtocol, ObservableObject {
 
@@ -16,12 +17,15 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
     }
     
     @Published var rootRoute: Route = .signin
+    
     enum SheetRoute: Identifiable {
         case comment(postId: String)
+        case payment(paymentData: IamportPayment, completion: (IamportResponse?) -> Void)
         
         var id: String {
             switch self {
             case .comment(let postId): return "comment-\(postId)"
+            case .payment: return "payment"
             }
         }
     }
@@ -41,14 +45,13 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
         case .tabView:
             MainTabView(coordinator: self)
         case .signin:
-            let vm = SignInViewModel(coordinator: self)
-            SignInView(viewModel: vm)
+//            let vm = SignInViewModel(coordinator: self)
+            SignInView(coordinator: self)
         case .shopping:
             let vm = ShoppingViewModel(coordinator: self)
             ShoppingView(viewModel: vm)
         case .shoppingDetail(let postId):
-            let vm = ShoppingDetailViewModel(coordinator: self, postId: postId)
-            ShoppingDetailView(viewModel: vm)
+            ShoppingDetailView(coordinator: self, postId: postId)
         case .createStyle:
             CreateStyleView()
         case .style:
@@ -70,6 +73,11 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
         case .comment(let postId):
             let vm = CommentViewModel(coordinator: self, postId: postId)
             CommentView(viewModel: vm)
+        case .payment(let data, let completion):
+            PaymentBridge(paymentData: data) { [weak self] response in
+                self?.sheetRoute = nil
+                completion(response)
+            }
         }
     }
     

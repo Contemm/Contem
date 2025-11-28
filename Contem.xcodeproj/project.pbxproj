@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		76003A102ED7346900FB192B /* iamport-ios in Frameworks */ = {isa = PBXBuildFile; productRef = 76003A0F2ED7346900FB192B /* iamport-ios */; };
 		7622DF4E2EC9A1E600D6AA7B /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 7622DF4D2EC9A1E600D6AA7B /* Kingfisher */; };
 		76C9912E2EC1E6D400B5FC11 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 76C9912D2EC1E6D400B5FC11 /* .gitignore */; };
 		7977706B2ED992A900137DC7 /* SocketIO in Frameworks */ = {isa = PBXBuildFile; productRef = 7977706A2ED992A900137DC7 /* SocketIO */; };
@@ -47,6 +48,7 @@
 				7977706E2ED992B700137DC7 /* RealmSwift in Frameworks */,
 				7622DF4E2EC9A1E600D6AA7B /* Kingfisher in Frameworks */,
 				7977706B2ED992A900137DC7 /* SocketIO in Frameworks */,
+				76003A102ED7346900FB192B /* iamport-ios in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -93,6 +95,7 @@
 				7622DF4D2EC9A1E600D6AA7B /* Kingfisher */,
 				7977706A2ED992A900137DC7 /* SocketIO */,
 				7977706D2ED992B700137DC7 /* RealmSwift */,
+				76003A0F2ED7346900FB192B /* iamport-ios */,
 			);
 			productName = Contem;
 			productReference = F8A803C22EC0C71C006006BD /* Contem.app */;
@@ -126,6 +129,7 @@
 				7622DF4C2EC9A1E600D6AA7B /* XCRemoteSwiftPackageReference "Kingfisher" */,
 				797770692ED992A900137DC7 /* XCRemoteSwiftPackageReference "socket.io-client-swift" */,
 				7977706C2ED992B700137DC7 /* XCRemoteSwiftPackageReference "realm-swift" */,
+				76003A0E2ED7346900FB192B /* XCRemoteSwiftPackageReference "iamport-ios" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = F8A803C32EC0C71C006006BD /* Products */;
@@ -285,9 +289,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Contem/Contem.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = VA3J8597P8;
+				DEVELOPMENT_TEAM = HVS8D6M24R;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Contem/Info.plist;
@@ -322,9 +327,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Contem/Contem.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = VA3J8597P8;
+				DEVELOPMENT_TEAM = HVS8D6M24R;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Contem/Info.plist;
@@ -378,6 +384,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		76003A0E2ED7346900FB192B /* XCRemoteSwiftPackageReference "iamport-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/iamport/iamport-ios.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.4.7;
+			};
+		};
 		7622DF4C2EC9A1E600D6AA7B /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
@@ -405,6 +419,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		76003A0F2ED7346900FB192B /* iamport-ios */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 76003A0E2ED7346900FB192B /* XCRemoteSwiftPackageReference "iamport-ios" */;
+			productName = "iamport-ios";
+		};
 		7622DF4D2EC9A1E600D6AA7B /* Kingfisher */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 7622DF4C2EC9A1E600D6AA7B /* XCRemoteSwiftPackageReference "Kingfisher" */;

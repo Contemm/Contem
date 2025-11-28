@@ -11,3 +11,4 @@ struct UserDTO: Codable {
         case profileImage
     }
 }
+

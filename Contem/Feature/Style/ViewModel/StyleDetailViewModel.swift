@@ -36,7 +36,7 @@ final class StyleDetailViewModel: ViewModelType{
     private var currentUserId: String? //캐싱된 UserID
     private let networkLikeTrigger = PassthroughSubject<Void, Never>() //디바운싱용 Subject
 
-    init(postId: String = APIConfig.testPostId, coordinator: AppCoordinator) {
+    init(postId: String, coordinator: AppCoordinator) {
         self.postId = postId
         self.coordinator = coordinator
         Task{
