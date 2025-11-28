@@ -15,6 +15,15 @@ struct SignInView: View {
     
     var body: some View {
         VStack(spacing: .spacing16) {
+            
+            Image("contem_logo")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(height: 80)
+                .padding(.bottom, 20)
+            
+            Spacer().frame(height: 32)
+            
             TextField("이메일을 입력해주세요", text: $viewModel.output.email)
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled(true)
