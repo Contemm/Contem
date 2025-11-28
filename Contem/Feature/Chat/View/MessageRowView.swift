@@ -6,10 +6,12 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct MessageRowView: View {
     let message: ChatMessageObject
     let isMyMessage: Bool
+    var onImageLoaded: (() -> Void)? = nil
     
     var body: some View {
         HStack(alignment: .bottom, spacing: 8) {
@@ -40,13 +42,34 @@ struct MessageRowView: View {
                 timestamp
             }
             
-            Text(message.content ?? "")
-                .font(.bodyRegular)
-                .padding(.horizontal(.spacing12))
-                .padding(.vertical(.spacing8))
-                .background(isMyMessage ? Color.blue : .gray50)
-                .foregroundColor(isMyMessage ? .primary0 : .primary)
-                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+            VStack(
+                alignment: isMyMessage ? .trailing : .leading,
+                spacing: .spacing8
+            ) {
+                if let content = message.content, !content.isEmpty {
+                    Text(content)
+                        .font(.bodyRegular)
+                }
+                
+            if !message.fileURLs.isEmpty {
+                ForEach(message.fileURLs, id: \.self) { url in
+                        KFImage(url)
+                            .requestModifier(MyImageDownloadRequestModifier())
+                            .onSuccess { _ in
+                                if url == message.fileURLs.last {
+                                    onImageLoaded?()
+                                }
+                            }
+                            .resizable()
+                            .scaledToFit()
+                            .frame(maxWidth: 220, maxHeight: 220)
+                            .clipShape(RoundedRectangle(cornerRadius: 12))                }
+            }            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .background(isMyMessage ? Color.blue : .gray50)
+            .foregroundColor(isMyMessage ? .primary0 : .primary)
+            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
             
             if !isMyMessage {
                 timestamp
