@@ -14,7 +14,7 @@ final class BrandInquireViewModel: ViewModelType {
     
     
     struct Input {
-        
+        let dismissButtonTapped = PassthroughSubject<Void, Never>()
     }
     
     struct Output {
@@ -32,7 +32,11 @@ final class BrandInquireViewModel: ViewModelType {
     
 
     func transform() {
-        
+        input.dismissButtonTapped
+            .sink { [weak self] _ in
+                guard let self = self else { return }
+                coordinator?.dismissFullScreen()
+            }.store(in: &cancellables)
     }
 
     
