@@ -13,7 +13,12 @@ struct Profileview: View {
     @StateObject private var viewModel: ProfileViewModel
     
     init(userId: String, coordinator: AppCoordinator) {
-        _viewModel = StateObject(wrappedValue: ProfileViewModel(userId: userId, coordinator: coordinator))
+        _viewModel = StateObject(
+            wrappedValue: ProfileViewModel(
+                userId: userId,
+                coordinator: coordinator
+            )
+        )
     }
     
     var body: some View {
@@ -54,34 +59,69 @@ struct Profileview: View {
                     Text(profile.info1)
                         .font(.bodyRegular)
                     
-                    HStack(spacing: .spacing16){
-                        Button(action: {
-                            viewModel.input.followButtonTapped.send(())
-                        }, label: {
-                            Text(viewModel.output.isFollowing ? "팔로잉" : "팔로우")
-                                .padding(.vertical(.spacing8))
-                                .frame(maxWidth: .infinity)
-                                .background(.primary100)
-                                .foregroundStyle(.primary0)
-                                .clipShape(RoundedRectangle(cornerRadius: 8))
-                        })
+                    
+                    if !viewModel.output.isMyProfile {
+                        HStack(spacing: .spacing16){
+                            Button(action: {
+                                viewModel.input.followButtonTapped.send(())
+                            }, label: {
+                                Text(viewModel.output.isFollowing ? "팔로잉" : "팔로우")
+                                    .padding(.vertical(.spacing8))
+                                    .frame(maxWidth: .infinity)
+                                    .background(.primary100)
+                                    .foregroundStyle(.primary0)
+                                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                            })
+                            
+                            Button {
+                                viewModel.input.messageButtonTapped.send(())
+                            } label: {
+                                Text("메시지")
+                                    .padding(.vertical(.spacing8))
+                                    .frame(maxWidth: .infinity)
+                                    .background(.primary0)
+                                    .foregroundStyle(.gray900)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 8)
+                                            .stroke(Color.gray900, lineWidth: 1.0)
+                                    )
+                            }
+                        }//: HSTACK
+                        .buttonStyle(.plain)
+                        .font(.captionRegular)
+                    } else {
+                        HStack(spacing: .spacing16) {
+                            
+                            Button(action: {
+                                viewModel.input.logoutTapped.send(())
+                            }, label: {
+                                Text("로그아웃")
+                                    .padding(.vertical(.spacing8))
+                                    .frame(maxWidth: .infinity)
+                                    .background(.primary100)
+                                    .foregroundStyle(.primary0)
+                                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                            })
+                            
+                            
+                            Button {
+                                
+                            } label: {
+                                Text("디엠 목록")
+                                    .padding(.vertical(.spacing8))
+                                    .frame(maxWidth: .infinity)
+                                    .background(.primary0)
+                                    .foregroundStyle(.gray900)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 8)
+                                            .stroke(Color.gray900, lineWidth: 1.0)
+                                    )
+                            }
+                        }  .buttonStyle(.plain)
+                            .font(.captionRegular)
                         
-                        Button {
-                            viewModel.input.messageButtonTapped.send(())
-                        } label: {
-                            Text("메시지")
-                                .padding(.vertical(.spacing8))
-                                .frame(maxWidth: .infinity)
-                                .background(.primary0)
-                                .foregroundStyle(.gray900)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 8)
-                                        .stroke(Color.gray900, lineWidth: 1.0)
-                                )
-                        }
-                    }//: HSTACK
-                    .buttonStyle(.plain)
-                    .font(.captionRegular)
+                    }
+                   
                 }//: VSTACK
                 .padding(.vertical(.spacing16))
                 .padding(.horizontal(.spacing16))

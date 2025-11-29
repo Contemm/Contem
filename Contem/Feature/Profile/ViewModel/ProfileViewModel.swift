@@ -20,6 +20,7 @@ final class ProfileViewModel: ViewModelType{
         let appear = PassthroughSubject<Void, Never>()
         let followButtonTapped = PassthroughSubject<Void, Never>()
         let messageButtonTapped = PassthroughSubject<Void, Never>()
+        let logoutTapped = PassthroughSubject<Void, Never>()
     }
     
     struct Output{
@@ -27,10 +28,18 @@ final class ProfileViewModel: ViewModelType{
         var isLoading: Bool = false
         var isFollowing: Bool = false
         var errorMessage: String?
+        var isMyProfile: Bool = false
     }
     
     private let userId: String
-    private var currentUserId: String?
+    private var currentUserId: String? {
+        didSet {
+            Task { @MainActor in
+                self.output.isMyProfile = (self.currentUserId == self.userId)
+                
+            }
+        }
+    }
     private let networkFollowTrigger = PassthroughSubject<Void, Never>() //디바운싱용 Subject
     weak private var coordinator: AppCoordinator?
     
@@ -79,6 +88,20 @@ final class ProfileViewModel: ViewModelType{
                 self?.coordinator?.push(.creatorChat(opponentId: opponentId))
             }
             .store(in: &cancellables)
+        
+        input.logoutTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                Task {
+                    // 1. 키체인에서 토큰 삭제
+                    await TokenStorage.shared.clear()
+                    
+                    // 2. 메인 스레드에서 코디네이터를 통해 로그인 화면으로 이동
+                    await MainActor.run {
+                        self.coordinator?.logout()
+                    }
+                }
+            }.store(in: &cancellables)
     }
     
     private func handleOptimisticFollow(){
