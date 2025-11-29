@@ -3,7 +3,11 @@ import Combine
 import iamport_ios
 
 final class AppCoordinator: CoordinatorProtocol, ObservableObject {
-
+    
+    var currentUserId: String {
+        return (try? KeychainManager.shared.read(.userId)) ?? ""
+    }
+    
     enum Route: Hashable {
         case tabView
         case signin
@@ -96,7 +100,6 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
             BrandInquireView(coordinator: self, userId: opponentId)
         }
     }
-    
     
     
     func login() {
