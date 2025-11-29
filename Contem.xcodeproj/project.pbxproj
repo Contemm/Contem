@@ -9,10 +9,25 @@
 /* Begin PBXBuildFile section */
 		76003A102ED7346900FB192B /* iamport-ios in Frameworks */ = {isa = PBXBuildFile; productRef = 76003A0F2ED7346900FB192B /* iamport-ios */; };
 		7622DF4E2EC9A1E600D6AA7B /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 7622DF4D2EC9A1E600D6AA7B /* Kingfisher */; };
+		769E17632EDAA62D00F99092 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 7977706D2ED992B700137DC7 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		76C9912E2EC1E6D400B5FC11 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 76C9912D2EC1E6D400B5FC11 /* .gitignore */; };
 		7977706B2ED992A900137DC7 /* SocketIO in Frameworks */ = {isa = PBXBuildFile; productRef = 7977706A2ED992A900137DC7 /* SocketIO */; };
 		7977706E2ED992B700137DC7 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 7977706D2ED992B700137DC7 /* RealmSwift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		769E17642EDAA62D00F99092 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				769E17632EDAA62D00F99092 /* RealmSwift in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		76C9912D2EC1E6D400B5FC11 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
@@ -82,6 +97,7 @@
 				F8A803BE2EC0C71C006006BD /* Sources */,
 				F8A803BF2EC0C71C006006BD /* Frameworks */,
 				F8A803C02EC0C71C006006BD /* Resources */,
+				769E17642EDAA62D00F99092 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);

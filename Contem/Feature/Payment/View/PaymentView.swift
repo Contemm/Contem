@@ -26,9 +26,18 @@ class PaymentViewController: UIViewController {
     
     private var isPaymentRequested = false
     
+    // 로딩 인디케이터 추가
+    private lazy var activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .large)
+        indicator.color = .gray
+        indicator.hidesWhenStopped = true
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        return indicator
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        setupUI()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -36,6 +45,10 @@ class PaymentViewController: UIViewController {
         
         if !isPaymentRequested {
             isPaymentRequested = true
+            requestPayment()
+            
+            // 결제 요청 시작 시 로딩 시작
+            startLoading()
             requestPayment()
         }
     }
@@ -57,6 +70,28 @@ class PaymentViewController: UIViewController {
             payment: paymentData
         ) { [weak self] response in
             self?.onFinish?(response)
+        }
+    }
+    
+    private func setupUI() {
+        view.backgroundColor = .white
+        view.addSubview(activityIndicator)
+        NSLayoutConstraint.activate([
+            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
+    }
+    
+    // MARK: - Logic
+    private func startLoading() {
+        DispatchQueue.main.async { [weak self] in
+            self?.activityIndicator.startAnimating()
+        }
+    }
+    
+    private func stopLoading() {
+        DispatchQueue.main.async { [weak self] in
+            self?.activityIndicator.stopAnimating()
         }
     }
 }
