@@ -68,6 +68,34 @@ struct SignInView: View {
                 VStack { Divider() }
             }
             
+            Button {
+                print("카카오 로그인")
+            } label: {
+                HStack(spacing: 0){
+                    Image(systemName: "message.fill")
+//                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+//                        .frame(width: 22, height: 22)
+                        .foregroundColor(.primary100)
+//                        .offset(y: -2)
+                    
+                    Spacer()
+                    
+                    Text("카카오 로그인")
+                        .font(.bodyLarge)
+                        .foregroundStyle(.primary100)
+                        .opacity(0.85)
+                    
+                    Spacer()
+                }//: HSTACK
+                .padding(.horizontal(.spacing16))
+                .padding(.vertical(.spacing16))
+                .background(.kakao)
+                .cornerRadiusMedium()
+            }
+            .buttonStyle(.plain)
+
+            
             Button(action: {
                 // ViewModel의 Input 트리거
                 viewModel.input.appleLoginButtonTapped.send(())
