@@ -9,6 +9,7 @@ import Foundation
 
 enum ChatRequest: TargetTypeProtocol{
     case chatRoom(opponentId: String) //채팅방 생성(조회)
+    case chatRoomList
     case sendMessage(roomId: String, content: String, files: [String]) //메시지 보내기
     case fetchMessage(roomId: String, cursor_date: String) //채팅 내역 조회
     case chatFiles(roomId: String, files: [Data]) //채팅방 파일 업로드
@@ -16,6 +17,8 @@ enum ChatRequest: TargetTypeProtocol{
     var path: String{
         switch self {
         case .chatRoom:
+            return "/chats"
+        case .chatRoomList:
             return "/chats"
         case .sendMessage(let roomId, _, _):
             return "/chats/\(roomId)"
@@ -30,7 +33,7 @@ enum ChatRequest: TargetTypeProtocol{
         switch self {
         case .chatRoom, .sendMessage, .chatFiles:
                 .post
-        case .fetchMessage:
+        case .fetchMessage, .chatRoomList:
                 .get
         }
     }
@@ -50,14 +53,14 @@ enum ChatRequest: TargetTypeProtocol{
             return ["content": content, "files": files]
         case .fetchMessage(_, let cursor_date):
             return ["cursor_date": cursor_date]
-        case .chatFiles:
+        case .chatFiles, .chatRoomList:
             return [:]
         }
     }
     
     var multipartFiles: [MultipartFile]?{
         switch self {
-        case .chatRoom, .sendMessage, .fetchMessage:
+        case .chatRoom, .sendMessage, .fetchMessage, .chatRoomList:
             return nil
         case .chatFiles(_, let files):
             return files.enumerated().map { index, data in

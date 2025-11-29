@@ -105,7 +105,7 @@ struct Profileview: View {
                             
                             
                             Button {
-                                
+                                viewModel.input.dmButtonTapped.send(())
                             } label: {
                                 Text("디엠 목록")
                                     .padding(.vertical(.spacing8))

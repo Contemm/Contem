@@ -18,6 +18,7 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
         case styleDetail(postId: String)
         case profile(userId: String)
         case creatorChat(opponentId: String)
+        case chatRoomList
     }
     
     enum SheetRoute: Identifiable {
@@ -76,6 +77,8 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
         case .creatorChat(let opponentId):
             let vm = ChattingViewModel(opponentId: opponentId)
             ChattingView(viewModel: vm)
+        case .chatRoomList:
+            ChatRoomListView(coordinator: self)
         }
     }
     

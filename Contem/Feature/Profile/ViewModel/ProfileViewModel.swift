@@ -21,6 +21,7 @@ final class ProfileViewModel: ViewModelType{
         let followButtonTapped = PassthroughSubject<Void, Never>()
         let messageButtonTapped = PassthroughSubject<Void, Never>()
         let logoutTapped = PassthroughSubject<Void, Never>()
+        let dmButtonTapped = PassthroughSubject<Void, Never>()
     }
     
     struct Output{
@@ -101,6 +102,12 @@ final class ProfileViewModel: ViewModelType{
                         self.coordinator?.logout()
                     }
                 }
+            }.store(in: &cancellables)
+        
+        input.dmButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.coordinator?.push(.chatRoomList)
             }.store(in: &cancellables)
     }
     
