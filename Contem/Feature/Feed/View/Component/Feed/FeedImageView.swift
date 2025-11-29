@@ -6,19 +6,23 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct FeedImageView: View {
     
     // MARK: - Properties
 
-    let imageName: String
-    let aspectRatio: Double
+    let imageURL: URL
 
     // MARK: - Body
 
     var body: some View {
-        Image(imageName)
+        KFImage(imageURL)
+            .placeholder {
+                Color.gray50
+            }
+            .requestModifier(MyImageDownloadRequestModifier())
             .resizable()
-            .aspectRatio(aspectRatio, contentMode: .fill)
+            .scaledToFill()
     }
 }

@@ -43,7 +43,7 @@ struct MasonryLayout: View {
             ScrollView {
                 HStack(alignment: .top, spacing: spacing) {
                     // 왼쪽 컬럼
-                    LazyVStack(spacing: .spacing24) {
+                    LazyVStack(spacing: .spacing8) {
                         ForEach(leftFeeds) { feed in
                             FeedCardView(
                                 feed: feed,
@@ -52,11 +52,16 @@ struct MasonryLayout: View {
                             .onTapGesture {
                                 viewModel.input.cardTapped.send(feed)
                             }
+                            .onAppear {
+                                if feed == feeds.last {
+                                    viewModel.input.loadMoreTrigger.send(())
+                                }
+                            }
                         }
                     }
                     
                     // 오른쪽 컬럼
-                    LazyVStack(spacing: .spacing24) {
+                    LazyVStack(spacing: .spacing8) {
                         ForEach(rightFeeds) { feed in
                             FeedCardView(
                                 feed: feed,
@@ -64,6 +69,11 @@ struct MasonryLayout: View {
                             )
                             .onTapGesture {
                                 viewModel.input.cardTapped.send(feed)
+                            }
+                            .onAppear {
+                                if feed == feeds.last {
+                                    viewModel.input.loadMoreTrigger.send(())
+                                }
                             }
                         }
                     }
@@ -87,31 +97,17 @@ extension MasonryLayout {
     private func distributeFeeds() -> ([FeedModel], [FeedModel]) {
         var leftColumn: [FeedModel] = []
         var rightColumn: [FeedModel] = []
-        var leftHeight: CGFloat = .zero
-        var rightHeight: CGFloat = .zero
 
-        for feed in feeds {
-            // 각 카드의 예상 높이 계산
-            let imageHeight = calculateImageHeight(for: feed)
-            let cardHeight = imageHeight + 100 // 이미지 + 하단 정보 영역
-            
-            // 더 짧은 컬럼에 추가
-            if leftHeight <= rightHeight {
+        let sortedFeeds = feeds.sorted { $0.content.count > $1.content.count }
+
+        for (index, feed) in sortedFeeds.enumerated() {
+            if index % 2 == 0 {
                 leftColumn.append(feed)
-                leftHeight += cardHeight + .spacing24 // spacing 포함
             } else {
                 rightColumn.append(feed)
-                rightHeight += cardHeight + .spacing24 // spacing 포함
             }
         }
 
         return (leftColumn, rightColumn)
-    }
-
-    // 이미지 높이 계산
-    private func calculateImageHeight(for feed: FeedModel) -> CGFloat {
-        let screenWidth = UIScreen.main.bounds.width
-        let columnWidth = (screenWidth - horizontalPadding * 2 - spacing) / CGFloat(columns)
-        return columnWidth / feed.imageAspectRatio
     }
 }

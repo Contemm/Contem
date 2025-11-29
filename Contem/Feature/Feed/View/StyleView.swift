@@ -32,7 +32,9 @@ struct StyleView: View {
                 if viewModel.output.isLoading {
                     ProgressView()
                 } else {
-                    MasonryLayout(feeds: viewModel.output.feeds)
+                    MasonryLayout(feeds: viewModel.output.feeds, refreshAction: {
+                        await viewModel.refreshFeeds()
+                    })
                         .environmentObject(viewModel)
                 }
             }

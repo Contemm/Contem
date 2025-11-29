@@ -45,6 +45,13 @@ struct PostDTO: Codable {
         case commentCount = "comment_count"
         case geolocation, distance
     }
+    
+    var imageURLs: [URL] {
+        files.compactMap {
+            let urlString = APIConfig.baseURL + "/" + $0
+            return URL(string: urlString)
+        }
+    }
 }
 
 struct Geolocation: Codable {

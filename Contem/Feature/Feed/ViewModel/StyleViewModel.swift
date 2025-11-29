@@ -3,24 +3,19 @@ import Combine
 
 final class StyleViewModel: ViewModelType {
 
-    
-    
-
     var cancellables = Set<AnyCancellable>()
     
     var input = Input()
     
     @Published var output = Output()
     
-    private weak var coordinator: AppCoordinator?
+    private var coordinator: AppCoordinator
     
-    
-
     struct Input {
         let viewOnTask = PassthroughSubject<Void, Never>()
         let createStyleTapped = PassthroughSubject<Void, Never>()
-        let refreshTrigger = PassthroughSubject<Void, Never>()
         let cardTapped = PassthroughSubject<FeedModel, Never>()
+        let loadMoreTrigger = PassthroughSubject<Void, Never>()
     }
 
     // MARK: - Output
@@ -30,6 +25,8 @@ final class StyleViewModel: ViewModelType {
         var hashtagItems: [HashtagModel] = []
         var isLoading: Bool = false
         var errorMessage: String? = nil
+        var nextCursor: String? = nil
+        var canLoadMore: Bool = true
     }
 
     // MARK: - Init
@@ -46,7 +43,7 @@ final class StyleViewModel: ViewModelType {
         input.createStyleTapped
             .withUnretained(self)
             .sink { owner, _ in
-                owner.coordinator?.push(.createStyle)
+                owner.coordinator.push(.createStyle)
             }
             .store(in: &cancellables)
         
@@ -54,25 +51,27 @@ final class StyleViewModel: ViewModelType {
         input.viewOnTask
             .withUnretained(self)
             .sink { owner, _ in
-                owner.loadFeeds()
-                owner.loadHashtags()
+                Task {
+                    await owner.loadFeeds()
+                }
             }
             .store(in: &cancellables)
-
-//        // 피드 새로고침
-//        input.refreshTrigger
-//            .withUnretained(self)
-//            .sink { owner, _ in
-//                owner.refreshFeeds()
-//            }
-//            .store(in: &cancellables)
 
         // CardView 탭
         input.cardTapped
             .withUnretained(self)
             .sink { owner, feed in
-                owner.coordinator?
-                    .push(.styleDetail(postId: APIConfig.testPostId)) //
+                owner.coordinator.push(.styleDetail(postId: feed.postId))
+            }
+            .store(in: &cancellables)
+            
+        // 더 많은 피드 로드
+        input.loadMoreTrigger
+            .withUnretained(self)
+            .sink { owner, _ in
+                Task {
+                    await owner.loadMoreFeeds()
+                }
             }
             .store(in: &cancellables)
     }
@@ -82,41 +81,124 @@ final class StyleViewModel: ViewModelType {
 
 extension StyleViewModel {
 
-    // 더미 데이터 로드
-    private func loadFeeds() {
+    // 피드 데이터 로드
+    @MainActor
+    private func loadFeeds() async {
         output.isLoading = true
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
-            guard let self = self else { return }
-
-            self.output.feeds = FeedModel.dummyData
-            self.output.isLoading = false
+        output.feeds = []
+        output.nextCursor = nil
+        output.canLoadMore = true
+        
+        do {
+            let response = try await NetworkService.shared.callRequest(
+                router: PostRequest
+                    .postList(limit: "20", category: ["STYLE_TEST"]),
+                type: PostListDTO.self
+            )
+            
+            output.feeds = response.data.map { post in
+                FeedModel(
+                    postId: post.postID,
+                    thumbnailImages: post.imageURLs,
+                    writer: post.creator.nickname,
+                    writerImage: post.creator.profileImage,
+                    title: post.title,
+                    content: post.content,
+                    hashTags: post.hashTags,
+                    commentCount: post.commentCount
+                )
+            }
+            output.nextCursor = response.nextCursor
+            output.canLoadMore = response.nextCursor != "0"
+            loadHashtags()
+            output.isLoading = false
+        } catch {
+            output.errorMessage = error.localizedDescription
+            output.isLoading = false
+        }
+    }
+    
+    // 더 많은 피드 데이터 로드
+    @MainActor
+    private func loadMoreFeeds() async {
+        guard output.canLoadMore, let nextCursor = output.nextCursor else { return }
+        
+        do {
+            let response = try await NetworkService.shared.callRequest(router: PostRequest.postList(next: nextCursor, limit: "20", category: ["STYLE_TEST"]), type: PostListDTO.self)
+            
+            let newFeeds = response.data.map { post in
+                FeedModel(
+                    postId: post.postID,
+                    thumbnailImages: post.imageURLs,
+                    writer: post.creator.nickname,
+                    writerImage: post.creator.profileImage,
+                    title: post.title,
+                    content: post.content,
+                    hashTags: post.hashTags,
+                    commentCount: post.commentCount
+                )
+            }
+            output.feeds.append(contentsOf: newFeeds)
+            output.nextCursor = response.nextCursor
+            output.canLoadMore = response.nextCursor != "0"
+            loadHashtags()
+        } catch {
+            output.errorMessage = error.localizedDescription
+        }
+    }
+    
+    // 피드 데이터 새로고침
+    @MainActor
+    func refreshFeeds() async {
+        output.feeds = []
+        output.nextCursor = nil
+        output.canLoadMore = true
+        
+        do {
+            let response = try await NetworkService.shared.callRequest(
+                router: PostRequest
+                    .postList(limit: "20", category: ["STYLE_TEST"]),
+                type: PostListDTO.self
+            )
+            
+            let newFeeds = response.data.map { post in
+                FeedModel(
+                    postId: post.postID,
+                    thumbnailImages: post.imageURLs,
+                    writer: post.creator.nickname,
+                    writerImage: post.creator.profileImage,
+                    title: post.title,
+                    content: post.content,
+                    hashTags: post.hashTags,
+                    commentCount: post.commentCount
+                )
+            }
+            output.feeds = newFeeds
+            output.nextCursor = response.nextCursor
+            output.canLoadMore = response.nextCursor != "0"
+            loadHashtags()
+        } catch {
+            output.errorMessage = error.localizedDescription
         }
     }
 
     // 해시태그 아이템 로드
     private func loadHashtags() {
-        let feeds = FeedModel.dummyData.prefix(8)
+        var uniqueHashtags: [String: FeedModel] = [:]
 
-        output.hashtagItems = feeds.map { feed in
+        for feed in output.feeds {
+            for hashtag in feed.hashTags {
+                if uniqueHashtags[hashtag] == nil {
+                    uniqueHashtags[hashtag] = feed
+                }
+            }
+        }
+
+        output.hashtagItems = uniqueHashtags.map { (hashtag, feed) in
             HashtagModel(
-                imageName: feed.thumbnailImages.first ?? "",
-                hashtag: feed.hashTags.first ?? "#패션"
+                imageURL: feed.thumbnailImages.first,
+                hashtag: hashtag
             )
         }
     }
-
-    // TODO: 새로고침 기능 추가
-    
-//    // 새로고침
-//    private func refreshFeeds() {
-//        output.isLoading = true
-//
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
-//            guard let self = self else { return }
-//
-//            self.output.feeds = FeedModel.dummyData
-//            self.output.isLoading = false
-//        }
-//    }
 }

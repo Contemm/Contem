@@ -197,7 +197,7 @@ extension ShoppingViewModel {
     
     private func fetchBanner(body: [String: String]) async {
         do {
-            let router = PostRequest.postList(category: "banner_outer")
+            let router = PostRequest.postList(category: ["banner_outer"])
             let result = try await NetworkService.shared.callRequest(router: router, type: PostListDTO.self)
             let bannerList = BannerList(from: result)
             output.banners = bannerList.banners
@@ -209,7 +209,7 @@ extension ShoppingViewModel {
     
     private func fetchProducts(body: [String: String]) async {
         do {
-            let router = PostRequest.postList(limit: "10", category: "product_padding")
+            let router = PostRequest.postList(limit: "10", category: ["product_padding"])
             let result = try await NetworkService.shared.callRequest(router: router, type: PostListDTO.self)
             let productList = ShoppingProductList(from: result)
             output.products = productList.products

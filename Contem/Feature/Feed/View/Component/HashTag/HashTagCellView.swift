@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct HashTagCellView: View {
     
@@ -18,7 +19,11 @@ struct HashTagCellView: View {
     var body: some View {
         VStack(spacing: .spacing8) {
             // 썸네일 이미지
-            Image(item.imageName)
+            KFImage(item.imageURL)
+                .placeholder {
+                    Color.gray50
+                }
+                .requestModifier(MyImageDownloadRequestModifier())
                 .resizable()
                 .scaledToFill()
                 .frame(width: 60, height: 60)

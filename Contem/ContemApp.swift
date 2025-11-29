@@ -1,5 +1,6 @@
 import SwiftUI
 
+@MainActor
 @main
 struct ContemApp: App {
     @StateObject private var coordinator = AppCoordinator()
