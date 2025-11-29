@@ -135,7 +135,8 @@ final class ShoppingDetailViewModel: ViewModelType {
         input.inquireButtonTapped
             .sink { [weak self] userId in
                 guard let self = self else { return }
-                coordinator?.present(fullScreen: .brandInquireChat(opponentId: userId))
+//                coordinator?.present(fullScreen: .brandInquireChat(opponentId: userId))
+                coordinator?.push(.creatorChat(opponentId: userId))
             }.store(in: &cancellables)
     }
 
