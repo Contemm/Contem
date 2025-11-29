@@ -119,6 +119,9 @@ struct ShoppingDetailView: View {
                         isFollowing: viewModel.output.isFollowing,
                         onFollowTapped: {
                             viewModel.input.followButtonTapped.send()
+                        },
+                        onInquireTapped: {
+                            viewModel.input.inquireButtonTapped.send(detailInfo.brandInfo.userID)
                         }
                     )
                     Spacer().frame(height: CGFloat.spacing48)

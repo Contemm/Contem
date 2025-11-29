@@ -7,6 +7,7 @@ struct ShoppingDetailBrandView: View {
     let brandInfo: UserDTO
     let isFollowing: Bool
     let onFollowTapped: () -> Void
+    let onInquireTapped: () -> Void
 
     // MARK: - Body
 
@@ -67,6 +68,9 @@ struct ShoppingDetailBrandView: View {
                     Button(action: {
                         withAnimation(.spring(response: 0.3)) {
 //                            onFollowTapped()
+                            onInquireTapped()
+                            print(brandInfo.userID)
+                            
                         }
                     }) {
                         HStack(spacing: .spacing4) {
