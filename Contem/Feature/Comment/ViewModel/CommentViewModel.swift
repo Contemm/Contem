@@ -20,10 +20,12 @@ final class CommentViewModel: ViewModelType, CommentProtocol {
         let commentSendTapped = PassthroughSubject<(String, String?, Data?), Never>()
         let deleteCommentTapped = PassthroughSubject<String, Never>()
         let commentUpdateTapped = PassthroughSubject<(String, String, Data?), Never>()
+        let pullToRefreshTrigger = PassthroughSubject<Void, Never>()
     }
     
     struct Output {
         var commentList: [Comment] = []
+        var userId: String = ""
     }
     
     init(coordinator: AppCoordinator, postId: String) {
@@ -33,11 +35,21 @@ final class CommentViewModel: ViewModelType, CommentProtocol {
     }
     
     func transform() {
+        
+        input.pullToRefreshTrigger
+            .withUnretained(self)
+            .sink { owner, _ in
+                Task {
+                    await owner.refreshComments()
+                }
+            }.store(in: &cancellables)
+        
         input.viewOnAppear
             .withUnretained(self)
             .sink { owner, _ in
                 Task {
                     await owner.fetchComments(postId: owner.postId)
+                    await owner.getUserId()
                 }
             }.store(in: &cancellables)
         
@@ -211,6 +223,8 @@ extension CommentViewModel {
         }
     }
     
+    
+    // 이미지 업로드
     func uploadImage(data: Data) async -> [String] {
         do {
             let router = PostRequest.postFiles(files: [data])
@@ -221,5 +235,20 @@ extension CommentViewModel {
             print("이미지 업로드 실패: \(error)")
             return []
         }
+    }
+    
+    // 유저 아이디 가져오기
+    private func getUserId() async {
+        do {
+            let userId = try KeychainManager.shared.read(.userId)
+            output.userId = userId
+        } catch {
+            print("아이디 가져오기 실패: \(error)")
+        }
+    }
+    
+    private func refreshComments() async {
+        await fetchComments(postId: postId)
+        await getUserId()
     }
 }
