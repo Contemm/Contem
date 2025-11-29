@@ -45,7 +45,6 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
         case .tabView:
             MainTabView(coordinator: self)
         case .signin:
-//            let vm = SignInViewModel(coordinator: self)
             SignInView(coordinator: self)
         case .shopping:
             let vm = ShoppingViewModel(coordinator: self)
