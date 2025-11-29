@@ -10,6 +10,8 @@
 		76003A102ED7346900FB192B /* iamport-ios in Frameworks */ = {isa = PBXBuildFile; productRef = 76003A0F2ED7346900FB192B /* iamport-ios */; };
 		7622DF4E2EC9A1E600D6AA7B /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 7622DF4D2EC9A1E600D6AA7B /* Kingfisher */; };
 		76C9912E2EC1E6D400B5FC11 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 76C9912D2EC1E6D400B5FC11 /* .gitignore */; };
+		7977706B2ED992A900137DC7 /* SocketIO in Frameworks */ = {isa = PBXBuildFile; productRef = 7977706A2ED992A900137DC7 /* SocketIO */; };
+		7977706E2ED992B700137DC7 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 7977706D2ED992B700137DC7 /* RealmSwift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,7 +45,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7977706E2ED992B700137DC7 /* RealmSwift in Frameworks */,
 				7622DF4E2EC9A1E600D6AA7B /* Kingfisher in Frameworks */,
+				7977706B2ED992A900137DC7 /* SocketIO in Frameworks */,
 				76003A102ED7346900FB192B /* iamport-ios in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -89,6 +93,8 @@
 			name = Contem;
 			packageProductDependencies = (
 				7622DF4D2EC9A1E600D6AA7B /* Kingfisher */,
+				7977706A2ED992A900137DC7 /* SocketIO */,
+				7977706D2ED992B700137DC7 /* RealmSwift */,
 				76003A0F2ED7346900FB192B /* iamport-ios */,
 			);
 			productName = Contem;
@@ -121,6 +127,8 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				7622DF4C2EC9A1E600D6AA7B /* XCRemoteSwiftPackageReference "Kingfisher" */,
+				797770692ED992A900137DC7 /* XCRemoteSwiftPackageReference "socket.io-client-swift" */,
+				7977706C2ED992B700137DC7 /* XCRemoteSwiftPackageReference "realm-swift" */,
 				76003A0E2ED7346900FB192B /* XCRemoteSwiftPackageReference "iamport-ios" */,
 			);
 			preferredProjectObjectVersion = 77;
@@ -392,6 +400,22 @@
 				minimumVersion = 8.6.1;
 			};
 		};
+		797770692ED992A900137DC7 /* XCRemoteSwiftPackageReference "socket.io-client-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/socketio/socket.io-client-swift.git";
+			requirement = {
+				kind = exactVersion;
+				version = 16.1.1;
+			};
+		};
+		7977706C2ED992B700137DC7 /* XCRemoteSwiftPackageReference "realm-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/realm/realm-swift.git";
+			requirement = {
+				kind = exactVersion;
+				version = 20.0.3;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -404,6 +428,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 7622DF4C2EC9A1E600D6AA7B /* XCRemoteSwiftPackageReference "Kingfisher" */;
 			productName = Kingfisher;
+		};
+		7977706A2ED992A900137DC7 /* SocketIO */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 797770692ED992A900137DC7 /* XCRemoteSwiftPackageReference "socket.io-client-swift" */;
+			productName = SocketIO;
+		};
+		7977706D2ED992B700137DC7 /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7977706C2ED992B700137DC7 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

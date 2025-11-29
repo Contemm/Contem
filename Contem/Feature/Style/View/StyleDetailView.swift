@@ -13,10 +13,15 @@ struct StyleDetailView: View {
     
     //MARK: - Properties
     @State private var selectedPage = 0
-    @ObservedObject private var viewModel: StyleDetailViewModel
+    @StateObject private var viewModel: StyleDetailViewModel
     
-    init(viewModel: StyleDetailViewModel) {
-        self.viewModel = viewModel
+    init(postId: String, coordinator: AppCoordinator) {
+        _viewModel = StateObject(
+            wrappedValue: StyleDetailViewModel(
+                postId: postId,
+                coordinator: coordinator
+            )
+        )
     }
     
     //MARK: - Body
@@ -94,8 +99,7 @@ struct StyleDetailView: View {
                         //댓글
                         HStack(spacing: .spacing8){
                             Button {
-                                let testId = "691ee5849682593e05755005"
-                                viewModel.input.commentButtonTapped.send(testId)
+                                viewModel.input.commentButtonTapped.send(())
                             } label: {
                                 Image(systemName: "message")
                             }

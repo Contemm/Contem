@@ -19,6 +19,7 @@ final class ProfileViewModel: ViewModelType{
     struct Input{
         let appear = PassthroughSubject<Void, Never>()
         let followButtonTapped = PassthroughSubject<Void, Never>()
+        let messageButtonTapped = PassthroughSubject<Void, Never>()
     }
     
     struct Output{
@@ -31,9 +32,11 @@ final class ProfileViewModel: ViewModelType{
     private let userId: String
     private var currentUserId: String?
     private let networkFollowTrigger = PassthroughSubject<Void, Never>() //디바운싱용 Subject
+    weak private var coordinator: AppCoordinator?
     
-    init(userId: String){
+    init(userId: String, coordinator: AppCoordinator){
         self.userId = userId
+        self.coordinator = coordinator
         
         Task{
             self.currentUserId = await TokenStorage.shared.getUserId()
@@ -66,6 +69,13 @@ final class ProfileViewModel: ViewModelType{
                     let isFollowing = self.output.isFollowing
                     await self.postFollowToServer(isFollowing: isFollowing)
                 }
+            }
+            .store(in: &cancellables)
+        
+        input.messageButtonTapped
+            .sink { [weak self] _ in
+                guard let opponentId = self?.output.profile?.userId else { return }
+                self?.coordinator?.push(.creatorChat(opponentId: opponentId))
             }
             .store(in: &cancellables)
     }

@@ -10,10 +10,10 @@ import Kingfisher
 import Combine
 
 struct Profileview: View {
-    @ObservedObject private var viewModel: ProfileViewModel
+    @StateObject private var viewModel: ProfileViewModel
     
-    init(viewModel: ProfileViewModel) {
-        self.viewModel = viewModel
+    init(userId: String, coordinator: AppCoordinator) {
+        _viewModel = StateObject(wrappedValue: ProfileViewModel(userId: userId, coordinator: coordinator))
     }
     
     var body: some View {
@@ -67,7 +67,7 @@ struct Profileview: View {
                         })
                         
                         Button {
-                            print("메시지 버튼 클릭")
+                            viewModel.input.messageButtonTapped.send(())
                         } label: {
                             Text("메시지")
                                 .padding(.vertical(.spacing8))

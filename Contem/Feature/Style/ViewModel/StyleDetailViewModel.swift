@@ -20,7 +20,7 @@ final class StyleDetailViewModel: ViewModelType{
         let appear = PassthroughSubject<Void, Never>()
         let profileTapped = PassthroughSubject<Void,Never>()
         let likebuttonTapped = PassthroughSubject<Void,Never>()
-        let commentButtonTapped = PassthroughSubject<String, Never>()
+        let commentButtonTapped = PassthroughSubject<Void, Never>()
     }
     
     struct Output{
@@ -89,10 +89,9 @@ final class StyleDetailViewModel: ViewModelType{
             .store(in: &cancellables)
         
         input.commentButtonTapped
-            .withUnretained(self)
-            .sink { owner, postId in
-                print("댓글 화면 열기 >> \(postId)")
-                owner.coordinator?.present(sheet: .comment(postId: postId))
+            .sink { [weak self] _ in
+                guard let self else { return }
+                self.coordinator?.present(sheet: .comment(postId: self.postId))
             }.store(in: &cancellables)
     }
     
