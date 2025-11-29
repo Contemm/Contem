@@ -29,11 +29,6 @@ struct ShoppingDetailPriceView: View {
             Text("\(detailInfo.finalPrice.formatted())원")
                 .font(.titleLarge)
                 .foregroundColor(.primary100)
-//            if let discountedPrice = detailInfo.discountedPrice {
-//                Text("\(discountedPrice.formatted())원")
-//                    .font(.titleLarge)
-//                    .foregroundColor(.primary100)
-//            }
 
             VStack(alignment: .leading, spacing: CGFloat.spacing4) {
                 Text(detailInfo.brandName)

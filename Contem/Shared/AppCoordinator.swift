@@ -16,8 +16,6 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
         case creatorChat(opponentId: String)
     }
     
-    @Published var rootRoute: Route = .signin
-    
     enum SheetRoute: Identifiable {
         case comment(postId: String)
         case payment(paymentData: IamportPayment, completion: (IamportResponse?) -> Void)
@@ -30,7 +28,18 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
         }
     }
     
+    enum FullScreenSheetRoute: Hashable, Identifiable {
+        case brandInquireChat(opponentId: String)
+        
+        var id: Self { self }
+        
+    }
+    
+    @Published var rootRoute: Route = .signin
+    
     @Published var sheetRoute: SheetRoute?
+    
+    @Published var fullScreenSheetRoute: FullScreenSheetRoute?
     
     @Published var navigationPath = NavigationPath()
     
@@ -45,7 +54,6 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
         case .tabView:
             MainTabView(coordinator: self)
         case .signin:
-//            let vm = SignInViewModel(coordinator: self)
             SignInView(coordinator: self)
         case .shopping:
             let vm = ShoppingViewModel(coordinator: self)
@@ -81,6 +89,16 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
         }
     }
     
+    @ViewBuilder
+    func buildFullScreen(route: FullScreenSheetRoute) -> some View {
+        switch route {
+        case .brandInquireChat(let opponentId):
+            BrandInquireView(coordinator: self, userId: opponentId)
+        }
+    }
+    
+    
+    
     func login() {
         navigationPath = NavigationPath()
         rootRoute = .tabView
@@ -110,5 +128,13 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
     
     func dismissSheet() {
         self.sheetRoute = nil
+    }
+    
+    func present(fullScreen: FullScreenSheetRoute) {
+        fullScreenSheetRoute = fullScreen
+    }
+    
+    func dismissFullScreen() {
+        fullScreenSheetRoute = nil
     }
 }

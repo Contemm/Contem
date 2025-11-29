@@ -28,6 +28,7 @@ final class ShoppingDetailViewModel: ViewModelType {
         let purchaseButtonTapped = PassthroughSubject<String, Never>()
         let followButtonTapped = PassthroughSubject<Void, Never>()
         let backButtonTapped = PassthroughSubject<Void, Never>()
+        let inquireButtonTapped = PassthroughSubject<String, Never>()
     }
 
     struct Output {
@@ -130,6 +131,13 @@ final class ShoppingDetailViewModel: ViewModelType {
                 coordinator?.pop()
             }
             .store(in: &cancellables)
+        
+        input.inquireButtonTapped
+            .sink { [weak self] userId in
+                guard let self = self else { return }
+//                coordinator?.present(fullScreen: .brandInquireChat(opponentId: userId))
+                coordinator?.push(.creatorChat(opponentId: userId))
+            }.store(in: &cancellables)
     }
 
     // 상품 상세 정보 불러오기
