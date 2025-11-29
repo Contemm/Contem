@@ -122,6 +122,7 @@ extension StyleViewModel {
     @MainActor
     private func loadMoreFeeds() async {
         guard output.canLoadMore, let nextCursor = output.nextCursor else { return }
+//        output.isLoading = true
         
         do {
             let response = try await NetworkService.shared.callRequest(router: PostRequest.postList(next: nextCursor, limit: "20", category: ["STYLE_TEST"]), type: PostListDTO.self)
@@ -142,15 +143,17 @@ extension StyleViewModel {
             output.nextCursor = response.nextCursor
             output.canLoadMore = response.nextCursor != "0"
             loadHashtags()
+//            output.isLoading = false
         } catch {
             output.errorMessage = error.localizedDescription
+            output.isLoading = false
         }
     }
     
     // 피드 데이터 새로고침
     @MainActor
     func refreshFeeds() async {
-        output.feeds = []
+        output.isLoading = true
         output.nextCursor = nil
         output.canLoadMore = true
         
@@ -173,12 +176,16 @@ extension StyleViewModel {
                     commentCount: post.commentCount
                 )
             }
+            
             output.feeds = newFeeds
+            
             output.nextCursor = response.nextCursor
             output.canLoadMore = response.nextCursor != "0"
             loadHashtags()
+            output.isLoading = false
         } catch {
             output.errorMessage = error.localizedDescription
+            output.isLoading = false
         }
     }
 

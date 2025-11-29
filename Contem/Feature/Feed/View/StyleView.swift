@@ -26,16 +26,22 @@ struct StyleView: View {
                 .padding(.bottom, .spacing8)
 
             HashtagScrollView(items: viewModel.output.hashtagItems)
+                .frame(height: 100)
                 .padding(.bottom, .spacing16)
 
             Group {
                 if viewModel.output.isLoading {
-                    ProgressView()
+                    withAnimation {
+                        ProgressView()
+                    }
                 } else {
-                    MasonryLayout(feeds: viewModel.output.feeds, refreshAction: {
-                        await viewModel.refreshFeeds()
-                    })
-                        .environmentObject(viewModel)
+                    withAnimation {
+                        MasonryLayout(feeds: viewModel.output.feeds, refreshAction: {
+                            await viewModel.refreshFeeds()
+                        })
+                            .environmentObject(viewModel)
+                    }
+                   
                 }
             }
         }
@@ -44,3 +50,4 @@ struct StyleView: View {
         }
     }
 }
+

@@ -11,10 +11,11 @@ final class NetworkService {
     static let shared = NetworkService()
     private init() { }
     
-    private let urlSession: URLSession = {
+    private static let urlSession: URLSession = {
         let config = URLSessionConfiguration.default
         config.timeoutIntervalForRequest = 30
         config.timeoutIntervalForResource = 60
+        config.requestCachePolicy = .reloadIgnoringLocalCacheData
         return URLSession(configuration: config)
     }()
     
@@ -67,7 +68,7 @@ final class NetworkService {
             }
         }
         
-        let (data, response) = try await urlSession.data(for: request)
+        let (data, response) = try await Self.urlSession.data(for: request)
         
         guard let http = response as? HTTPURLResponse else {
             throw NetworkError.invalidResponse

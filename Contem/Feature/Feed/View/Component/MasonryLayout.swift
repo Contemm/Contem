@@ -43,7 +43,7 @@ struct MasonryLayout: View {
             ScrollView {
                 HStack(alignment: .top, spacing: spacing) {
                     // 왼쪽 컬럼
-                    LazyVStack(spacing: .spacing8) {
+                    LazyVStack(spacing: .spacing16) {
                         ForEach(leftFeeds) { feed in
                             FeedCardView(
                                 feed: feed,
@@ -61,7 +61,7 @@ struct MasonryLayout: View {
                     }
                     
                     // 오른쪽 컬럼
-                    LazyVStack(spacing: .spacing8) {
+                    LazyVStack(spacing: .spacing16) {
                         ForEach(rightFeeds) { feed in
                             FeedCardView(
                                 feed: feed,
