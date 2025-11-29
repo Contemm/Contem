@@ -20,7 +20,7 @@ struct FeedModel: Identifiable, Hashable {
 }
 
 struct HashtagModel: Identifiable, Hashable {
-    let id = UUID()
+    var id: String { hashtag }
     let imageURL: URL?
     let hashtag: String
     

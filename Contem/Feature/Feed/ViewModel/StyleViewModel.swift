@@ -191,21 +191,22 @@ extension StyleViewModel {
 
     // 해시태그 아이템 로드
     private func loadHashtags() {
-        var uniqueHashtags: [String: FeedModel] = [:]
+        var encounteredHashtags: Set<String> = []
+        var orderedHashtagModels: [HashtagModel] = []
 
         for feed in output.feeds {
             for hashtag in feed.hashTags {
-                if uniqueHashtags[hashtag] == nil {
-                    uniqueHashtags[hashtag] = feed
+                if !encounteredHashtags.contains(hashtag) {
+                    encounteredHashtags.insert(hashtag)
+                    orderedHashtagModels.append(
+                        HashtagModel(
+                            imageURL: feed.thumbnailImages.first,
+                            hashtag: hashtag
+                        )
+                    )
                 }
             }
         }
-
-        output.hashtagItems = uniqueHashtags.map { (hashtag, feed) in
-            HashtagModel(
-                imageURL: feed.thumbnailImages.first,
-                hashtag: hashtag
-            )
-        }
+        output.hashtagItems = orderedHashtagModels
     }
 }
