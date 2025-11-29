@@ -13,6 +13,7 @@ enum PostRequest: TargetTypeProtocol {
     case postFiles(files: [Data]) //파일 업로드
     case post(postId: String) //게시글 한 개 조회
     case like(postId: String, isLiked: Bool) //게시글 좋아요
+    case userPostList(userId: String, next: String? = nil, limit: String? = nil, category: String = "style_feed")
     
     // MARK: - Path
     var path: String {
@@ -25,13 +26,15 @@ enum PostRequest: TargetTypeProtocol {
             return "/posts/\(postId)"
         case .like(let postId, _):
             return "/posts/\(postId)/like"
+        case .userPostList(let userId, _, _ ,_):
+            return "/posts/users/\(userId)"
         }
     }
     
     // MARK: - Method
     var method: HTTPMethod {
         switch self {
-        case .postList, .post:
+        case .postList, .post, .userPostList:
             return .get
         case .postFiles, .like:
             return .post
@@ -70,12 +73,24 @@ enum PostRequest: TargetTypeProtocol {
             return [
                 "like_status" : isLiked
             ]
+        case .userPostList(let userId, let next, let limit, let category):
+            var params: [String: String] = ["category":category]
+            
+            if let next = next {
+                params["next"] = next
+            }
+            
+            if let limit = limit {
+                params["limit"] = limit
+            }
+            
+            return params
         }
     }
     
     var multipartFiles: [MultipartFile]?{
         switch self {
-        case .postList, .post:
+        case .postList, .post, .userPostList:
             return nil
         case .postFiles(let files):
             return files.enumerated().map { index, data in

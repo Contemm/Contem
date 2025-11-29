@@ -179,4 +179,13 @@ final class ProfileViewModel: ViewModelType{
             output.isLoading = false
         }
     }
+    
+    private func fetchUserFeeds() async {
+        do {
+            let router = try await PostRequest.
+            
+        } catch {
+            print("네트워크 에러 >>> \(error.localizedDescription)")
+        }
+    }
 }
