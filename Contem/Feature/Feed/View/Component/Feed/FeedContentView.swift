@@ -11,15 +11,15 @@ struct FeedContentView: View {
     
     // MARK: - Properties
     
-    let title: String
+//    let title: String
     let content: String
 
     // MARK: - Body
     
     var body: some View {
         VStack(alignment: .leading, spacing: .spacing4) {
-            Text(title)
-                .font(.captionLarge)
+//            Text(title)
+//                .font(.captionLarge)
             Text(content)
                 .font(.captionRegular)
         }

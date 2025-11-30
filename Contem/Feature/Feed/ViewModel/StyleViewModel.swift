@@ -8,14 +8,17 @@ final class StyleViewModel: ViewModelType {
     var input = Input()
     
     @Published var output = Output()
+    @Published var currentUserId: String? //캐싱된 UserID
     
     private var coordinator: AppCoordinator
+    private let networkLikeTrigger = PassthroughSubject<(String, Bool), Never>() //디바운싱용 Subject
     
     struct Input {
         let viewOnTask = PassthroughSubject<Void, Never>()
         let createStyleTapped = PassthroughSubject<Void, Never>()
         let cardTapped = PassthroughSubject<FeedModel, Never>()
         let loadMoreTrigger = PassthroughSubject<Void, Never>()
+        let likeButtonTapped = PassthroughSubject<String, Never>()
     }
 
     // MARK: - Output
@@ -33,7 +36,9 @@ final class StyleViewModel: ViewModelType {
 
     init(coordinator: AppCoordinator) {
         self.coordinator = coordinator
-        
+        Task {
+            self.currentUserId = await TokenStorage.shared.getUserId()
+        }
         transform()
     }
 
@@ -74,12 +79,73 @@ final class StyleViewModel: ViewModelType {
                 }
             }
             .store(in: &cancellables)
+            
+        input.likeButtonTapped
+            .sink { [weak self] postId in
+                guard let self = self else { return }
+                
+                let isLiked = !(self.output.feeds.first { $0.postId == postId }?.likes.contains(self.currentUserId ?? "") ?? false)
+                self.handleOptimisticLike(postId: postId)
+                self.networkLikeTrigger.send((postId, isLiked))
+            }
+            .store(in: &cancellables)
+            
+        networkLikeTrigger
+            .debounce(for: .seconds(0.3), scheduler: RunLoop.main)
+            .sink { [weak self] (postId, isLiked) in
+                guard let self = self else { return }
+                
+                Task {
+                    await self.postLikeToServer(postId: postId, isLiked: isLiked)
+                }
+            }
+            .store(in: &cancellables)
     }
 }
 
 // MARK: - Methods
 
 extension StyleViewModel {
+    
+    //좋아요 UI 즉시 업데이트(낙관적 업데이트)
+    private func handleOptimisticLike(postId: String){
+        guard let userId = currentUserId else {
+            output.errorMessage = "로그인 후 이용 가능합니다."
+            return
+        }
+        
+        if let index = output.feeds.firstIndex(where: { $0.postId == postId }) {
+            output.feeds[index].toggleLike(userId: userId)
+        }
+    }
+
+    //롤백 함수
+    private func rollbackLikeState(postId: String){
+        guard let userId = currentUserId else { return }
+        if let index = output.feeds.firstIndex(where: { $0.postId == postId }) {
+            output.feeds[index].toggleLike(userId: userId)
+        }
+    }
+
+    //좋아요 서버 요청
+    private func postLikeToServer(postId: String, isLiked: Bool) async{
+        do{
+            _ = try await NetworkService.shared.callRequest(router: PostRequest.like(postId: postId, isLiked: isLiked), type: PostLikeDTO.self)
+        }catch let error as NetworkError{
+            self.rollbackLikeState(postId: postId)
+            
+            if case .statusCodeError(let type) = error {
+                if type == .refreshTokenExpired() || type == .forbidden() || type == .unauthorized(){
+                    currentUserId = nil
+                }
+            }
+            
+            output.errorMessage = error.errorDescription
+        }catch{
+            self.rollbackLikeState(postId: postId)
+            output.errorMessage = NetworkError.unknown(error).errorDescription
+        }
+    }
 
     // 피드 데이터 로드
     @MainActor
@@ -105,7 +171,8 @@ extension StyleViewModel {
                     title: post.title,
                     content: post.content,
                     hashTags: post.hashTags,
-                    commentCount: post.commentCount
+                    commentCount: post.commentCount,
+                    likes: post.likes
                 )
             }
             output.nextCursor = response.nextCursor
@@ -136,7 +203,8 @@ extension StyleViewModel {
                     title: post.title,
                     content: post.content,
                     hashTags: post.hashTags,
-                    commentCount: post.commentCount
+                    commentCount: post.commentCount,
+                    likes: post.likes
                 )
             }
             output.feeds.append(contentsOf: newFeeds)
@@ -173,7 +241,8 @@ extension StyleViewModel {
                     title: post.title,
                     content: post.content,
                     hashTags: post.hashTags,
-                    commentCount: post.commentCount
+                    commentCount: post.commentCount,
+                    likes: post.likes
                 )
             }
             

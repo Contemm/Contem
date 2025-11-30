@@ -1,5 +1,5 @@
 {
-  "originHash" : "61935173c836de2e7a701331eb618b942cc1c2a8a96af35147d783e663385177",
+  "originHash" : "98176fefa2c3bbc42c84a8dc5c99678281c9fa52c08ac0bb8abe870bf7ebe9a6",
   "pins" : [
     {
       "identity" : "alamofire",
@@ -20,12 +20,39 @@
       }
     },
     {
+      "identity" : "kakao-ios-sdk",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/kakao/kakao-ios-sdk",
+      "state" : {
+        "revision" : "f04b5655f3528e8c21a0ff7db047eeb138135394",
+        "version" : "2.26.0"
+      }
+    },
+    {
+      "identity" : "kakao-ios-sdk-rx",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/kakao/kakao-ios-sdk-rx",
+      "state" : {
+        "revision" : "6b1c9ec19c8ce57b89d69ac6154c7f573dba65fc",
+        "version" : "2.26.0"
+      }
+    },
+    {
       "identity" : "kingfisher",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/onevcat/Kingfisher.git",
       "state" : {
         "revision" : "4d75de347da985a70c63af4d799ed482021f6733",
         "version" : "8.6.1"
+      }
+    },
+    {
+      "identity" : "ohhttpstubs",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/AliSoftware/OHHTTPStubs.git",
+      "state" : {
+        "revision" : "12f19662426d0434d6c330c6974d53e2eb10ecd9",
+        "version" : "9.1.0"
       }
     },
     {
@@ -44,6 +71,15 @@
       "state" : {
         "revision" : "6260534683132eb981338c7c39fd5e69205876e6",
         "version" : "20.0.3"
+      }
+    },
+    {
+      "identity" : "rxalamofire",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/RxSwiftCommunity/RxAlamofire.git",
+      "state" : {
+        "revision" : "9535b58695b91fb67f56d58d6fd0c76462d7743a",
+        "version" : "6.1.2"
       }
     },
     {

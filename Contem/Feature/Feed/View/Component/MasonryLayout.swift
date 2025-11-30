@@ -45,9 +45,14 @@ struct MasonryLayout: View {
                     // 왼쪽 컬럼
                     LazyVStack(spacing: .spacing16) {
                         ForEach(leftFeeds) { feed in
+                            let isLiked = feed.likes.contains(viewModel.currentUserId ?? "")
                             FeedCardView(
                                 feed: feed,
-                                cardWidth: columnWidth
+                                cardWidth: columnWidth,
+                                isLiked: isLiked,
+                                onLikeTapped: {
+                                    viewModel.input.likeButtonTapped.send(feed.postId)
+                                }
                             )
                             .onTapGesture {
                                 viewModel.input.cardTapped.send(feed)
@@ -63,9 +68,14 @@ struct MasonryLayout: View {
                     // 오른쪽 컬럼
                     LazyVStack(spacing: .spacing16) {
                         ForEach(rightFeeds) { feed in
+                            let isLiked = feed.likes.contains(viewModel.currentUserId ?? "")
                             FeedCardView(
                                 feed: feed,
-                                cardWidth: columnWidth
+                                cardWidth: columnWidth,
+                                isLiked: isLiked,
+                                onLikeTapped: {
+                                    viewModel.input.likeButtonTapped.send(feed.postId)
+                                }
                             )
                             .onTapGesture {
                                 viewModel.input.cardTapped.send(feed)
