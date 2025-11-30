@@ -17,6 +17,19 @@ struct FeedModel: Identifiable, Hashable {
     let content: String
     let hashTags: [String]
     let commentCount: Int
+    var likes: [String]
+    
+    var likeCount: Int {
+        likes.count
+    }
+    
+    mutating func toggleLike(userId: String) {
+        if let index = likes.firstIndex(of: userId) {
+            likes.remove(at: index)
+        } else {
+            likes.append(userId)
+        }
+    }
 }
 
 struct HashtagModel: Identifiable, Hashable {
@@ -46,7 +59,8 @@ extension FeedModel {
             title: "피드 제목1",
             content: "오늘의 데일리룩",
             hashTags: ["#데일리룩", "#오늘의패션", "#OOTD"],
-            commentCount: 10
+            commentCount: 10,
+            likes: []
         ),
         FeedModel(
             postId: "2",
@@ -58,7 +72,8 @@ extension FeedModel {
             title: "피드 제목2",
             content: "스트릿 패션",
             hashTags: ["#스트릿패션", "#패션코디", "#패션스타일"],
-            commentCount: 5
+            commentCount: 5,
+            likes: []
         )
     ]
 }

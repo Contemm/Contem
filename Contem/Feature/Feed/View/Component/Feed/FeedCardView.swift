@@ -8,11 +8,12 @@
 import SwiftUI
 
 struct FeedCardView: View {
-    
     // MARK: - Properties
     
     let feed: FeedModel
     let cardWidth: CGFloat
+    let isLiked: Bool
+    let onLikeTapped: () -> Void
     
     // MARK: - Body
     
@@ -44,12 +45,29 @@ struct FeedCardView: View {
 
             // 하단 정보 영역
             VStack(alignment: .leading, spacing: .spacing4) {
-                // 작성자 정보
-                FeedAuthorView(writer: feed.writer, writerImage: feed.writerImage)
-
+                HStack{
+                    // 작성자 정보
+                    FeedAuthorView(writer: feed.writer, writerImage: feed.writerImage)
+                    HStack(spacing: .spacing4){
+                        Button {
+                            onLikeTapped()
+                        } label: {
+                            Image(systemName: isLiked ? "heart.fill" : "heart")
+                                .resizable()
+                                .frame(width: 15, height: 15)
+                                .scaledToFit()
+                                .foregroundStyle(isLiked ? .red : .gray300)
+                        }
+                        
+                        Text("\(feed.likeCount)")
+                            .monospaced()
+                            .font(.bodyRegular)
+                            .foregroundStyle(.gray300)
+                    }
+                }//: HSTACK
                 // 내용
                 FeedContentView(
-                    title: feed.title,
+//                    title: feed.title,
                     content: feed.content
                 )
             }
