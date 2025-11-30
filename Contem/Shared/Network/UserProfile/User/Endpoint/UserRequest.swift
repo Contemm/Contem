@@ -11,6 +11,7 @@ enum UserRequest: TargetTypeProtocol {
     // MARK: - Case
     case login(email: String, password: String)
     case appleLogin(token: String)
+    case kakaoLogin(token: String)
     
     // MARK: - Path
     var path: String {
@@ -19,13 +20,15 @@ enum UserRequest: TargetTypeProtocol {
             return "/users/login"
         case .appleLogin:
             return "/users/login/apple"
+        case .kakaoLogin:
+            return "/users/login/kakao"
         }
     }
     
     // MARK: - Method
     var method: HTTPMethod {
         switch self {
-        case .login, .appleLogin:
+        case .login, .appleLogin, .kakaoLogin:
             return .post
         }
     }
@@ -45,20 +48,21 @@ enum UserRequest: TargetTypeProtocol {
             ["email": email, "password": password]
         case .appleLogin(let token):
             ["idToken":token]
-            
+        case .kakaoLogin(let token):
+            ["oauthToken": token]
         }
     }
     
     var hasAuthorization: Bool{
         switch self {
-        case .login, .appleLogin:
+        case .login, .appleLogin, .kakaoLogin:
             return false
         }
     }
     
     var multipartFiles: [MultipartFile]?{
         switch self {
-        case .login, .appleLogin:
+        case .login, .appleLogin, .kakaoLogin:
             nil
         }
     }
