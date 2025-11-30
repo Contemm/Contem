@@ -144,17 +144,19 @@ struct Profileview: View {
                                 // TODO: 상세 화면 이동 로직 (Input 연결)
                                 // viewModel.input.postTapped.send(post.id)
                             } label: {
-                                KFImage(feed.thumbnailUrl)
-                                    .requestModifier(MyImageDownloadRequestModifier())
-                                    .resizable()
-                                    .placeholder {
-                                        Rectangle()
-                                            .fill(.blue)
-                                    }
-                                    .scaledToFill()
-                                    .frame(minWidth: 0, maxWidth: .infinity)
-                                    .aspectRatio(1, contentMode: .fill)
-//                                    .background(.blue)
+                                Rectangle()
+                                    .fill(.clear)
+                                    .aspectRatio(1, contentMode: .fit)
+                                    .overlay(
+                                        KFImage(feed.thumbnailUrl)
+                                            .requestModifier(MyImageDownloadRequestModifier())
+                                            .resizable()
+                                            .placeholder {
+                                                Rectangle().fill(.gray50)
+                                            }
+                                            .scaledToFill()
+                                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                    )
                                     .clipped()
                                     .contentShape(Rectangle())
                             }
