@@ -30,7 +30,7 @@ struct ProfileEntity{
     
     var imageUrls: URL?{
         guard let profileImage else { return nil }
-        return URL(string: APIConfig.baseURL + profileImage)
+        return URL(string: APIConfig.baseURL + "/" + profileImage)
     }
     
     func isFollowing(userId: String?) -> Bool{

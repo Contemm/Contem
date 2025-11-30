@@ -44,7 +44,7 @@ struct OtherProfileDTO: Codable{
     
     var profileImageURL: URL?{
         guard let profileImage else { return nil }
-        return URL(string: APIConfig.baseURL + profileImage)
+        return URL(string: APIConfig.baseURL + "/" + profileImage)
     }
 }
 

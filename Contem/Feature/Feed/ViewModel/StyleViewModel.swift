@@ -163,17 +163,24 @@ extension StyleViewModel {
             )
             
             output.feeds = response.data.map { post in
-                FeedModel(
-                    postId: post.postID,
-                    thumbnailImages: post.imageURLs,
-                    writer: post.creator.nickname,
-                    writerImage: post.creator.profileImage,
-                    title: post.title,
-                    content: post.content,
-                    hashTags: post.hashTags,
-                    commentCount: post.commentCount,
-                    likes: post.likes
-                )
+                    var fullPath: String?
+                    if let profileImage = post.creator.profileImage {
+                        fullPath = APIConfig.baseURL + "/" + profileImage
+                    } else {
+                        fullPath = nil
+                    }
+                    
+                    return FeedModel(
+                        postId: post.postID,
+                        thumbnailImages: post.imageURLs,
+                        writer: post.creator.nickname,
+                        writerImage: fullPath,
+                        title: post.title,
+                        content: post.content,
+                        hashTags: post.hashTags,
+                        commentCount: post.commentCount,
+                        likes: post.likes
+                    )
             }
             output.nextCursor = response.nextCursor
             output.canLoadMore = response.nextCursor != "0"
@@ -195,17 +202,24 @@ extension StyleViewModel {
             let response = try await NetworkService.shared.callRequest(router: PostRequest.postList(next: nextCursor, limit: "20", category: ["style_feed"]), type: PostListDTO.self)
             
             let newFeeds = response.data.map { post in
-                FeedModel(
-                    postId: post.postID,
-                    thumbnailImages: post.imageURLs,
-                    writer: post.creator.nickname,
-                    writerImage: post.creator.profileImage,
-                    title: post.title,
-                    content: post.content,
-                    hashTags: post.hashTags,
-                    commentCount: post.commentCount,
-                    likes: post.likes
-                )
+                    var fullPath: String?
+                    if let profileImage = post.creator.profileImage {
+                        fullPath = APIConfig.baseURL + "/" + profileImage
+                    } else {
+                        fullPath = nil
+                    }
+                    
+                    return FeedModel(
+                        postId: post.postID,
+                        thumbnailImages: post.imageURLs,
+                        writer: post.creator.nickname,
+                        writerImage: fullPath,
+                        title: post.title,
+                        content: post.content,
+                        hashTags: post.hashTags,
+                        commentCount: post.commentCount,
+                        likes: post.likes
+                    )
             }
             output.feeds.append(contentsOf: newFeeds)
             output.nextCursor = response.nextCursor
@@ -233,17 +247,24 @@ extension StyleViewModel {
             )
             
             let newFeeds = response.data.map { post in
-                FeedModel(
-                    postId: post.postID,
-                    thumbnailImages: post.imageURLs,
-                    writer: post.creator.nickname,
-                    writerImage: post.creator.profileImage,
-                    title: post.title,
-                    content: post.content,
-                    hashTags: post.hashTags,
-                    commentCount: post.commentCount,
-                    likes: post.likes
-                )
+                    var fullPath: String?
+                    if let profileImage = post.creator.profileImage {
+                        fullPath = APIConfig.baseURL + "/" + profileImage
+                    } else {
+                        fullPath = nil
+                    }
+                    
+                    return FeedModel(
+                        postId: post.postID,
+                        thumbnailImages: post.imageURLs,
+                        writer: post.creator.nickname,
+                        writerImage: fullPath,
+                        title: post.title,
+                        content: post.content,
+                        hashTags: post.hashTags,
+                        commentCount: post.commentCount,
+                        likes: post.likes
+                    )
             }
             
             output.feeds = newFeeds
