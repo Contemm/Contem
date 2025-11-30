@@ -58,9 +58,9 @@ struct ChatRoomRow: View {
                 KFImage(chatRoom.partnerProfileImage)
                     .requestModifier(MyImageDownloadRequestModifier())
                     .resizable()
-                    .scaledToFit()
-                    .frame(width: 50, height: 50)
-                    .foregroundStyle(.gray)
+                    .scaledToFill()
+                    .frame(width: 52, height: 52)
+                    .clipShape(Circle()) 
             }
             
             
