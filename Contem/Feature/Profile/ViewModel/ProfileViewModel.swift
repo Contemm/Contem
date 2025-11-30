@@ -56,9 +56,11 @@ final class ProfileViewModel: ViewModelType{
     
     func transform() {
         input.appear
-            .sink { [weak self] _ in
+            .withUnretained(self)
+            .sink { owner, _ in
                 Task{
-                    await self?.fetchProfile()
+                    await owner.fetchProfile()
+                    await owner.fetchUserFeeds()
                 }
             }
             .store(in: &cancellables)
@@ -182,7 +184,9 @@ final class ProfileViewModel: ViewModelType{
     
     private func fetchUserFeeds() async {
         do {
-            let router = try await PostRequest.
+            let router = PostRequest.userPostList(userId: userId, next: nil, limit: nil)
+            let result = try await NetworkService.shared.callRequest(router: router, type: PostListDTO.self)
+            print("유저 피드 >>>>>>>>>>> \(result)")
             
         } catch {
             print("네트워크 에러 >>> \(error.localizedDescription)")
