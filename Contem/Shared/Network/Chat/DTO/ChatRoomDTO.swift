@@ -7,6 +7,10 @@
 
 import Foundation
 
+struct ChatRoomResponseListDTO: Codable {
+    let data: [ChatRoomDTO]
+}
+
 struct ChatRoomDTO: Codable{
     let roomId: String
     let createdAt: String

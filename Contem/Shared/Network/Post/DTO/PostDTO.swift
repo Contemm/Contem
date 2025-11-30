@@ -12,7 +12,7 @@ struct PostDTO: Codable {
     let postID: String
     let category: String
     let title: String
-    let price: Int
+    let price: Int?
     let content: String
     let value1: String
     let value2: String
