@@ -22,7 +22,8 @@ struct FeedAuthorView: View {
         HStack(spacing: .spacing8) {
             KFImage(URL(string: writerImage ?? ""))
                 .placeholder {
-                    Color.gray50
+                    Circle()
+                        .fill(Color.gray50)
                 }
                 .requestModifier(MyImageDownloadRequestModifier())
                 .resizable()
