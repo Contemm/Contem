@@ -21,7 +21,7 @@ struct ChatRoomListView: View {
                     LazyVStack {
                         ForEach(viewModel.output.chatRoomList) { room in
                             Button {
-                                print("채팅방 터치 \(room.id)")
+                                viewModel.input.chatRoomTapped.send(room.partnerId)
                             } label: {
                                 ChatRoomRow(chatRoom: room)
                             }.buttonStyle(.plain)

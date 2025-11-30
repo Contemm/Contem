@@ -11,6 +11,7 @@ struct ChatRoomListEntity {
 
 struct ChatRoomEntity: Identifiable {
     let id: String
+    let partnerId: String
     let partnerName: String
     let partnerProfileImage: URL?
     let lastChatContent: String
@@ -24,6 +25,7 @@ struct ChatRoomEntity: Identifiable {
         let myId = try? KeychainManager.shared.read(.userId)
         if let partner = dto.participants.first(where: { $0.userId != myId }) {
             self.partnerName = partner.nick
+            self.partnerId = partner.userId
             if let urlString = partner.profileImage {
                 self.partnerProfileImage = URL(string: urlString)
             } else {
@@ -32,6 +34,7 @@ struct ChatRoomEntity: Identifiable {
         } else {
             self.partnerName = dto.participants.first?.nick ?? "알 수 없음"
             self.partnerProfileImage = nil
+            self.partnerId = ""
         }
     }
 }
