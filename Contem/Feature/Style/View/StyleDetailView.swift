@@ -36,7 +36,9 @@ struct StyleDetailView: View {
                                 Circle()
                                     .fill(.gray50)
                             }
+                            .scaledToFill() // 2. 프레임을 꽉 채우도록 설정 (비율 유지)
                             .frame(width: 40, height: 40)
+                            .clipShape(Circle()) // 3. 원형으로 자르기
                         VStack(alignment: .leading, spacing: .spacing4){
                             Text(style.creator.nick)
                                 .font(.bodyMedium)
