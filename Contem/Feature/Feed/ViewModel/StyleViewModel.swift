@@ -92,7 +92,7 @@ extension StyleViewModel {
         do {
             let response = try await NetworkService.shared.callRequest(
                 router: PostRequest
-                    .postList(limit: "20", category: ["STYLE_TEST"]),
+                    .postList(limit: "20", category: ["style_feed"]),
                 type: PostListDTO.self
             )
             
@@ -125,7 +125,7 @@ extension StyleViewModel {
 //        output.isLoading = true
         
         do {
-            let response = try await NetworkService.shared.callRequest(router: PostRequest.postList(next: nextCursor, limit: "20", category: ["STYLE_TEST"]), type: PostListDTO.self)
+            let response = try await NetworkService.shared.callRequest(router: PostRequest.postList(next: nextCursor, limit: "20", category: ["style_feed"]), type: PostListDTO.self)
             
             let newFeeds = response.data.map { post in
                 FeedModel(
@@ -160,7 +160,7 @@ extension StyleViewModel {
         do {
             let response = try await NetworkService.shared.callRequest(
                 router: PostRequest
-                    .postList(limit: "20", category: ["STYLE_TEST"]),
+                    .postList(limit: "20", category: ["style_feed"]),
                 type: PostListDTO.self
             )
             
