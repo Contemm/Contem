@@ -81,11 +81,12 @@ final class ShoppingViewModel:ViewModelType {
                     Task {
                         await self.fetchBanner(body: ["category":selectedTab.apiValue])
                     }
-                } else {
-                    let mockBanners = self.loadBanners(for: selectedTab)
-                    output.banners = mockBanners
-                    output.infiniteBanners = calculateInfiniteBanners(from: mockBanners)
                 }
+//                else {
+//                    let mockBanners = self.loadBanners(for: selectedTab)
+//                    output.banners = mockBanners
+//                    output.infiniteBanners = calculateInfiniteBanners(from: mockBanners)
+//                }
                 
                 // 상품 로드 - 첫번째 서브카테고리에 따라 분기
                 if firstSubCategory.apiValue == OuterSubCategory.padding.apiValue {
