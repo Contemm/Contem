@@ -27,7 +27,7 @@ struct ChatRoomEntity: Identifiable {
             self.partnerName = partner.nick
             self.partnerId = partner.userId
             if let urlString = partner.profileImage {
-                self.partnerProfileImage = URL(string: urlString)
+                self.partnerProfileImage = URL(string: APIConfig.baseURL + urlString)
             } else {
                 self.partnerProfileImage = nil
             }
