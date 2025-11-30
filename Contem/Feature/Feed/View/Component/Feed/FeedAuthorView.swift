@@ -6,43 +6,35 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct FeedAuthorView: View {
     
     // MARK: - Properties
     
-    let author: Author
-    let likeCount: Int
+    let writer: String
+    let writerImage: String?
     var profileSize: CGFloat = 24
 
     // MARK: - Body
     
     var body: some View {
         HStack(spacing: .spacing8) {
-            AsyncImage(url: URL(string: author.profileImage)) { image in
-                image
-                    .resizable()
-                    .scaledToFill()
-            } placeholder: {
-                Color.gray
-            }
-            .frame(width: profileSize, height: profileSize)
-            .clipShape(Circle())
+            KFImage(URL(string: writerImage ?? ""))
+                .placeholder {
+                    Color.gray50
+                }
+                .requestModifier(MyImageDownloadRequestModifier())
+                .resizable()
+                .scaledToFill()
+                .frame(width: profileSize, height: profileSize)
+                .clipShape(Circle())
 
-            Text(author.nickname)
+            Text(writer)
                 .font(.captionRegular)
                 .foregroundStyle(.gray900)
 
             Spacer()
-
-            // 좋아요 수
-            HStack(spacing: .spacing4) {
-                Image(systemName: "heart")
-                    .font(.caption2)
-                Text("\(likeCount)")
-                    .font(.caption2)
-            }
-            .foregroundColor(.gray500)
         }
     }
 }

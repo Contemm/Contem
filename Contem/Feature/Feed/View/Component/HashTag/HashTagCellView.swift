@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct HashTagCellView: View {
     
@@ -16,12 +17,17 @@ struct HashTagCellView: View {
     // MARK: - Body
     
     var body: some View {
-        VStack(spacing: .spacing8) {
+        VStack(spacing: .spacing4) {
             // 썸네일 이미지
-            Image(item.imageName)
+            KFImage(item.imageURL)
+                .placeholder {
+                    Color.gray50
+                }
+                .requestModifier(MyImageDownloadRequestModifier())
                 .resizable()
                 .scaledToFill()
                 .frame(width: 60, height: 60)
+                .background(.gray50)
                 .clipShape(Circle())
 
             // 해시태그 텍스트

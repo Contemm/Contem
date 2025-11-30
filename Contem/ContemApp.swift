@@ -1,8 +1,15 @@
 import SwiftUI
+import KakaoSDKCommon
+import KakaoSDKAuth
 
+@MainActor
 @main
 struct ContemApp: App {
     @StateObject private var coordinator = AppCoordinator()
+    
+    init(){
+        KakaoSDK.initSDK(appKey: APIConfig.kakaoKey)
+    }
     
     var body: some Scene {
         WindowGroup {

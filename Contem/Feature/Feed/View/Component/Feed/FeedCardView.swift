@@ -20,7 +20,7 @@ struct FeedCardView: View {
         VStack(alignment: .leading, spacing: .zero) {
             // 썸네일 이미지(동적 높이)
             if let firstImage = feed.thumbnailImages.first {
-                FeedImageView(imageName: firstImage, aspectRatio: feed.imageAspectRatio)
+                FeedImageView(imageURL: firstImage)
                     .frame(width: cardWidth)
                     .clipped()
                     .cornerRadius(.radiusSmall)
@@ -43,14 +43,14 @@ struct FeedCardView: View {
             }
 
             // 하단 정보 영역
-            VStack(alignment: .leading, spacing: .spacing8) {
-                // 작성자 정보 및 좋아요
-                FeedAuthorView(author: feed.author, likeCount: feed.likeCount)
+            VStack(alignment: .leading, spacing: .spacing4) {
+                // 작성자 정보
+                FeedAuthorView(writer: feed.writer, writerImage: feed.writerImage)
 
-                // 제목
-                FeedTitleView(
+                // 내용
+                FeedContentView(
                     title: feed.title,
-                    hashTags: feed.hashTags
+                    content: feed.content
                 )
             }
             .padding(.spacing8)

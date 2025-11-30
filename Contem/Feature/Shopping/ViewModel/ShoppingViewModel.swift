@@ -21,6 +21,7 @@ final class ShoppingViewModel:ViewModelType {
         let selectSubCategory = CurrentValueSubject<SubCategory, Never>(OuterSubCategory.padding)
         let onTappedProduct = PassthroughSubject<String, Never>()
         let likeButtonTapped = PassthroughSubject<String, Never>()
+        let loadMoreTrigger = PassthroughSubject<Void, Never>()
     }
     
     struct Output {
@@ -32,6 +33,8 @@ final class ShoppingViewModel:ViewModelType {
         var products: [ShoppingProduct] = []
         var currentCategory = TabCategory.outer
         var currentSubCategory: SubCategory = OuterSubCategory.padding
+        var nextCursor: String? = nil
+        var canLoadMore: Bool = true
     }
     
     init(coordinator: AppCoordinator) {
@@ -135,6 +138,14 @@ final class ShoppingViewModel:ViewModelType {
                 guard let self = self else { return }
                 postLike(currentLike: isLiked, postId: postId)
             }.store(in: &cancellables)
+            
+        input.loadMoreTrigger
+            .sink { [weak self] _ in
+                guard let self = self else { return }
+                Task {
+                    await self.loadMoreProducts()
+                }
+            }.store(in: &cancellables)
     }
     
 }
@@ -198,7 +209,7 @@ extension ShoppingViewModel {
     
     private func fetchBanner(body: [String: String]) async {
         do {
-            let router = PostRequest.postList(category: "banner_outer")
+            let router = PostRequest.postList(category: ["banner_outer"])
             let result = try await NetworkService.shared.callRequest(router: router, type: PostListDTO.self)
             let bannerList = BannerList(from: result)
             output.banners = bannerList.banners
@@ -209,11 +220,35 @@ extension ShoppingViewModel {
     }
     
     private func fetchProducts(body: [String: String]) async {
+        output.products = []
+        output.nextCursor = nil
+        output.canLoadMore = true
+        
         do {
-            let router = PostRequest.postList(limit: "10", category: "product_padding")
+            let router = PostRequest.postList(limit: "10", category: [output.currentSubCategory.apiValue])
             let result = try await NetworkService.shared.callRequest(router: router, type: PostListDTO.self)
+            
             let productList = ShoppingProductList(from: result)
             output.products = productList.products
+            output.nextCursor = result.nextCursor
+            output.canLoadMore = result.nextCursor != "0"
+        } catch {
+            print("에러 발생 \(error)")
+        }
+    }
+    
+    private func loadMoreProducts() async {
+        guard output.canLoadMore, let nextCursor = output.nextCursor else {
+            return
+        }
+        
+        do {
+            let router = PostRequest.postList(next: nextCursor, limit: "10", category: [output.currentSubCategory.apiValue])
+            let result = try await NetworkService.shared.callRequest(router: router, type: PostListDTO.self)
+            let productList = ShoppingProductList(from: result)
+            output.products.append(contentsOf: productList.products)
+            output.nextCursor = result.nextCursor
+            output.canLoadMore = result.nextCursor != "0"
         } catch {
             print("에러 발생 \(error)")
         }

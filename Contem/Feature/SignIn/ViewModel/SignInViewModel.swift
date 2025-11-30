@@ -1,4 +1,5 @@
 import SwiftUI
+import KakaoSDKAuth
 import Combine
 
 extension String {
@@ -26,6 +27,7 @@ final class SignInViewModel: ViewModelType {
     struct Input {
         let loginButtonTapped = PassthroughSubject<Void, Never>()
         let appleLoginButtonTapped = PassthroughSubject<Void, Never>()
+        let kakaoLoginButtonTapped = PassthroughSubject<String?, Never>()
     }
 
     struct Output {
@@ -68,6 +70,17 @@ final class SignInViewModel: ViewModelType {
                 Task { await self?.processLogin() }
             }
             .store(in: &cancellables)
+        
+        input.kakaoLoginButtonTapped
+            .compactMap{$0}
+            .throttle(for: .seconds(1), scheduler: RunLoop.main, latest: false) // 중복 탭 방지
+            .sink { [weak self] accessToken in
+                Task{
+                    await self?.kakaoLogin(token: accessToken)
+                }
+            }
+            .store(in: &cancellables)
+
     }
     
     private func signin() async{
@@ -83,6 +96,26 @@ final class SignInViewModel: ViewModelType {
         }catch{
             output.alertMessage = error.localizedDescription
             output.showAlert = true
+        }
+    }
+    
+    private func kakaoLogin(token: String) async{
+        do{
+            let response = try await NetworkService.shared
+                .callRequest(
+                    router: UserRequest.kakaoLogin(token: token),
+                    type: LoginDTO.self
+                )
+            
+            try await TokenStorage.shared
+                .storeTokens(
+                    access: response.accessToken,
+                    refresh: response.refreshToken,
+                    userId: response.userID
+                )
+        }catch{
+            print(error.localizedDescription)
+            output.alertMessage = error.localizedDescription
         }
     }
 }

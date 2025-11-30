@@ -9,7 +9,7 @@ import Foundation
 
 enum PostRequest: TargetTypeProtocol {
     // MARK: - Case
-    case postList(next: String? = nil, limit: String? = nil, category: String) //게시글 조회
+    case postList(next: String? = nil, limit: String? = nil, category: [String]) //게시글 조회
     case postFiles(files: [Data]) //파일 업로드
     case post(postId: String) //게시글 한 개 조회
     case like(postId: String, isLiked: Bool) //게시글 좋아요
