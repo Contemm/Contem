@@ -72,7 +72,7 @@ struct ShoppingDetailInfo: Codable {
     init(from dto: PostDTO) {
         self.id = dto.postID // 상품 아이디
         self.brandName = dto.title // 브랜드 이름
-        self.price = dto.price // 가격
+        self.price = dto.price ?? 0 // 가격
         self.productName = dto.content // 상품 이름
         self.productNameEn = dto.value4 // 상품 영어 이름
         self.contentImages = dto.files // 상품 베너 이미지

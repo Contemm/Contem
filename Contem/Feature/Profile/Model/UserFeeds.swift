@@ -11,11 +11,15 @@ struct UserFeedList {
 
 struct UserFeed: Identifiable {
     let id: String
-    let thumbnailUrl: String
+    let thumbnailUrl: URL?
     
     
     init(from dto: PostDTO) {
         self.id = dto.postID
-        self.thumbnailUrl = dto.files.first ?? ""
+        if let imageUrl = dto.files.first {
+            self.thumbnailUrl = URL(string: APIConfig.baseURL + imageUrl)
+        } else {
+            self.thumbnailUrl = nil
+        }
     }
 }

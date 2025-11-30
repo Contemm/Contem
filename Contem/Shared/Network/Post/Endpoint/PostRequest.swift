@@ -73,17 +73,18 @@ enum PostRequest: TargetTypeProtocol {
             return [
                 "like_status" : isLiked
             ]
-        case .userPostList(let userId, let next, let limit, let category):
-            var params: [String: String] = ["category":category]
+        case .userPostList(_, let next, let limit, _):
+            var params: [String: Any] = ["category":"style_feed"]
             
+            // next가 nil이 아닐 때만 추가
             if let next = next {
                 params["next"] = next
             }
             
+            // limit이 nil이 아닐 때만 추가
             if let limit = limit {
                 params["limit"] = limit
             }
-            
             return params
         }
     }

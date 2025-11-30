@@ -30,7 +30,7 @@ struct ChatRoomListView: View {
                         }
                     }
                 }.refreshable {
-                    print("안녕")
+                
                 }
             } else {
                 Text("대화중인 상대방이 없습니다.")

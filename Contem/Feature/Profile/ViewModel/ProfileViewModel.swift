@@ -185,14 +185,19 @@ final class ProfileViewModel: ViewModelType{
     
     private func fetchUserFeeds() async {
         do {
-            let router = PostRequest.userPostList(userId: userId, next: nil, limit: nil)
+            let router = PostRequest.userPostList(userId: userId, next: nil, limit: nil, category: "style_feed")
             let result = try await NetworkService.shared.callRequest(router: router, type: PostListDTO.self)
+            print("유저 피드 >>>>>>>>>>> \(result)")
             let userFeeds = UserFeedList(from: result)
+            
+            
+            
+            
             await MainActor.run {
                 output.userFeeds = userFeeds.userFeedList
             }
             
-            print("유저 피드 >>>>>>>>>>> \(result)")
+           
             
         } catch {
             print("네트워크 에러 >>> \(error.localizedDescription)")

@@ -15,6 +15,7 @@ final class ChatRoomListViewModel: ViewModelType {
         let dismissButtonTapped = PassthroughSubject<Void, Never>()
         let onAppearTrigger = PassthroughSubject<Void, Never>()
         let chatRoomTapped = PassthroughSubject<String, Never>()
+        let refreshTrivver = PassthroughSubject<Void, Never>()
     }
     
     struct Output {
@@ -40,6 +41,14 @@ final class ChatRoomListViewModel: ViewModelType {
             .withUnretained(self)
             .sink { owner, userId in
                 owner.coordinator?.push(.creatorChat(opponentId: userId))
+            }.store(in: &cancellables)
+        
+        input.refreshTrivver
+            .withUnretained(self)
+            .sink { owner, _ in
+                Task {
+                    await owner.fetchChatRooms()
+                }
             }.store(in: &cancellables)
     }
 }

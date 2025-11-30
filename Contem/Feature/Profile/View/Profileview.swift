@@ -144,7 +144,8 @@ struct Profileview: View {
                                 // TODO: 상세 화면 이동 로직 (Input 연결)
                                 // viewModel.input.postTapped.send(post.id)
                             } label: {
-                                KFImage(URL(string:feed.thumbnailUrl))
+                                KFImage(feed.thumbnailUrl)
+                                    .requestModifier(MyImageDownloadRequestModifier())
                                     .resizable()
                                     .placeholder {
                                         Rectangle()
@@ -153,7 +154,7 @@ struct Profileview: View {
                                     .scaledToFill()
                                     .frame(minWidth: 0, maxWidth: .infinity)
                                     .aspectRatio(1, contentMode: .fill)
-                                    .background(.blue)
+//                                    .background(.blue)
                                     .clipped()
                                     .contentShape(Rectangle())
                             }
