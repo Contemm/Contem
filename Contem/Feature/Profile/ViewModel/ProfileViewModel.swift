@@ -20,6 +20,8 @@ final class ProfileViewModel: ViewModelType{
         let appear = PassthroughSubject<Void, Never>()
         let followButtonTapped = PassthroughSubject<Void, Never>()
         let messageButtonTapped = PassthroughSubject<Void, Never>()
+        let logoutTapped = PassthroughSubject<Void, Never>()
+        let dmButtonTapped = PassthroughSubject<Void, Never>()
     }
     
     struct Output{
@@ -27,10 +29,19 @@ final class ProfileViewModel: ViewModelType{
         var isLoading: Bool = false
         var isFollowing: Bool = false
         var errorMessage: String?
+        var isMyProfile: Bool = false
+        var userFeeds: [UserFeed] = []
     }
     
     private let userId: String
-    private var currentUserId: String?
+    private var currentUserId: String? {
+        didSet {
+            Task { @MainActor in
+                self.output.isMyProfile = (self.currentUserId == self.userId)
+                
+            }
+        }
+    }
     private let networkFollowTrigger = PassthroughSubject<Void, Never>() //디바운싱용 Subject
     weak private var coordinator: AppCoordinator?
     
@@ -46,9 +57,11 @@ final class ProfileViewModel: ViewModelType{
     
     func transform() {
         input.appear
-            .sink { [weak self] _ in
+            .withUnretained(self)
+            .sink { owner, _ in
                 Task{
-                    await self?.fetchProfile()
+                    await owner.fetchProfile()
+                    await owner.fetchUserFeeds()
                 }
             }
             .store(in: &cancellables)
@@ -79,6 +92,26 @@ final class ProfileViewModel: ViewModelType{
                 self?.coordinator?.push(.creatorChat(opponentId: opponentId))
             }
             .store(in: &cancellables)
+        
+        input.logoutTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                Task {
+                    // 1. 키체인에서 토큰 삭제
+                    await TokenStorage.shared.clear()
+                    
+                    // 2. 메인 스레드에서 코디네이터를 통해 로그인 화면으로 이동
+                    await MainActor.run {
+                        self.coordinator?.logout()
+                    }
+                }
+            }.store(in: &cancellables)
+        
+        input.dmButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.coordinator?.push(.chatRoomList)
+            }.store(in: &cancellables)
     }
     
     private func handleOptimisticFollow(){
@@ -147,6 +180,27 @@ final class ProfileViewModel: ViewModelType{
             }
             
             output.isLoading = false
+        }
+    }
+    
+    private func fetchUserFeeds() async {
+        do {
+            let router = PostRequest.userPostList(userId: userId, next: nil, limit: "30", category: "style_feed")
+            let result = try await NetworkService.shared.callRequest(router: router, type: PostListDTO.self)
+            print("유저 피드 >>>>>>>>>>> \(result)")
+            let userFeeds = UserFeedList(from: result)
+            
+            
+            
+            
+            await MainActor.run {
+                output.userFeeds = userFeeds.userFeedList
+            }
+            
+           
+            
+        } catch {
+            print("네트워크 에러 >>> \(error.localizedDescription)")
         }
     }
 }

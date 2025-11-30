@@ -3,7 +3,11 @@ import Combine
 import iamport_ios
 
 final class AppCoordinator: CoordinatorProtocol, ObservableObject {
-
+    
+    var currentUserId: String {
+        return (try? KeychainManager.shared.read(.userId)) ?? ""
+    }
+    
     enum Route: Hashable {
         case tabView
         case signin
@@ -14,6 +18,7 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
         case styleDetail(postId: String)
         case profile(userId: String)
         case creatorChat(opponentId: String)
+        case chatRoomList
     }
     
     enum SheetRoute: Identifiable {
@@ -72,6 +77,8 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
         case .creatorChat(let opponentId):
             let vm = ChattingViewModel(opponentId: opponentId)
             ChattingView(viewModel: vm)
+        case .chatRoomList:
+            ChatRoomListView(coordinator: self)
         }
     }
     
@@ -96,7 +103,6 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
             BrandInquireView(coordinator: self, userId: opponentId)
         }
     }
-    
     
     
     func login() {

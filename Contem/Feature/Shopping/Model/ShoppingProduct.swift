@@ -45,7 +45,7 @@ struct ShoppingProduct: Identifiable, Equatable {
         self.thumbnailUrl = dto.files.first ?? ""
         self.brandName = dto.title
         self.productName = dto.content
-        self.price = dto.price
+        self.price = dto.price ?? 0
         self.likes = dto.likes
     }
     

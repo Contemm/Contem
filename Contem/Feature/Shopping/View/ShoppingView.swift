@@ -33,11 +33,6 @@ struct ShoppingView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            
-            Button ("로그아웃") {
-                print("로그아웃")
-                viewModel.input.logoutTapped.send(())
-            }.padding()
             // 메인 탭 영역
             mainTabBar
             Divider()

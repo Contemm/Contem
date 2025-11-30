@@ -21,15 +21,20 @@ struct MainTabView: View {
         TabView(selection: $selectedTab) {
             coordinator?.build(route: .shopping)
                 .tabItem {
-                    Label("쇼핑", systemImage: "cart")
+                    Label("SHOP", systemImage: "cart")
                 }
                 .tag(AppCoordinator.Route.shopping)
 
             coordinator?.build(route: .style)
                 .tabItem {
-                    Label("피드", systemImage: "plus.square")
+                    Label("STYLE", systemImage: "plus.square")
                 }
                 .tag(AppCoordinator.Route.style)
+            
+            coordinator?.build(route: .profile(userId: coordinator?.currentUserId ?? ""))
+                .tabItem {
+                    Label("MY", systemImage: "person.circle.fill")
+                }
         }
         .tint(.blue)
     }
