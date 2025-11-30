@@ -23,20 +23,24 @@ struct Profileview: View {
     
     var body: some View {
         VStack{
+//            Button("로그아웃") {
+//                viewModel.input.logoutTapped.send(())
+//            }
+            
             if let profile = viewModel.output.profile{
                 VStack(alignment: .leading, spacing: .spacing16){
                     Spacer().frame(height: 20)
                     HStack(spacing: .spacing16){
                         KFImage(profile.imageUrls)
                             .requestModifier(MyImageDownloadRequestModifier())
-                            .resizable() // 1. 이미지 크기 조절 활성화 (필수)
+                            .resizable()
                             .placeholder { _ in
                                 Circle()
                                     .fill(.gray50)
                             }
-                            .scaledToFill() // 2. 비율을 유지하며 프레임을 꽉 채움
+                            .scaledToFill()
                             .frame(width: 52, height: 52)
-                            .clipShape(Circle()) // 3. 넘치는 부분을 잘
+                            .clipShape(Circle())
                         
                         VStack(alignment: .leading, spacing: .spacing8){
                             Text(profile.nick)

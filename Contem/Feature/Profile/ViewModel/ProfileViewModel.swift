@@ -22,6 +22,7 @@ final class ProfileViewModel: ViewModelType{
         let messageButtonTapped = PassthroughSubject<Void, Never>()
         let logoutTapped = PassthroughSubject<Void, Never>()
         let dmButtonTapped = PassthroughSubject<Void, Never>()
+        let textLogoutTapped = PassthroughSubject<Void, Never>()
     }
     
     struct Output{
@@ -112,6 +113,12 @@ final class ProfileViewModel: ViewModelType{
             .sink { owner, _ in
                 owner.coordinator?.push(.chatRoomList)
             }.store(in: &cancellables)
+        
+        input.textLogoutTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.coordinator?.logout()
+            }.store(in: &cancellables)
     }
     
     private func handleOptimisticFollow(){
@@ -177,6 +184,7 @@ final class ProfileViewModel: ViewModelType{
                 output.isFollowing = entity.isFollowing(userId: currentUserId)
             }catch let error as NetworkError{
                 output.errorMessage = error.errorDescription
+                print("프로필 에러\(error.localizedDescription)")
             }
             
             output.isLoading = false

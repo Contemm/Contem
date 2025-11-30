@@ -36,6 +36,12 @@ struct ShoppingProduct: Identifiable, Equatable {
     }
     
     var imageUrl: URL? {
+        if thumbnailUrl.isEmpty { return nil }
+        
+        if !thumbnailUrl.contains("/") && !thumbnailUrl.hasPrefix("http") {
+            return nil
+        }
+        
         let fullUrl = APIConfig.baseURL + thumbnailUrl
         return URL(string: fullUrl)
     }
