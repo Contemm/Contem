@@ -25,14 +25,18 @@ struct Profileview: View {
         VStack{
             if let profile = viewModel.output.profile{
                 VStack(alignment: .leading, spacing: .spacing16){
+                    Spacer().frame(height: 20)
                     HStack(spacing: .spacing16){
                         KFImage(profile.imageUrls)
                             .requestModifier(MyImageDownloadRequestModifier())
+                            .resizable() // 1. 이미지 크기 조절 활성화 (필수)
                             .placeholder { _ in
                                 Circle()
                                     .fill(.gray50)
                             }
-                            .frame(width: 80, height: 80)
+                            .scaledToFill() // 2. 비율을 유지하며 프레임을 꽉 채움
+                            .frame(width: 52, height: 52)
+                            .clipShape(Circle()) // 3. 넘치는 부분을 잘
                         
                         VStack(alignment: .leading, spacing: .spacing8){
                             Text(profile.nick)
