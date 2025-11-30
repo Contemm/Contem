@@ -7,13 +7,14 @@ struct ShoppingDetailBrandView: View {
     let brandInfo: UserDTO
     let isFollowing: Bool
     let onFollowTapped: () -> Void
+    let onInquireTapped: () -> Void
 
     // MARK: - Body
 
     var body: some View {
         VStack(alignment: .leading, spacing: .spacing16) {
             HStack(spacing: .spacing12) {
-                Image("Person.fill")
+                Image(systemName: "person.circle.fill")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 60, height: 60)
@@ -35,30 +36,61 @@ struct ShoppingDetailBrandView: View {
                 }
 
                 Spacer()
+                
+                VStack {
+                    
+                    // 팔로워
+                    Button(action: {
+                        withAnimation(.spring(response: 0.3)) {
+                            onFollowTapped()
+                        }
+                    }) {
+                        HStack(spacing: .spacing4) {
+                            Image(systemName: isFollowing ? "checkmark" : "plus")
+                                .font(.captionLarge)
 
-                Button(action: {
-                    withAnimation(.spring(response: 0.3)) {
-                        onFollowTapped()
+                            Text(isFollowing ? "팔로잉" : "팔로우")
+                                .font(.captionLarge)
+                        }
+                        .foregroundColor(isFollowing ? .primary100 : .primary0)
+                        .padding(.horizontal, .spacing16)
+                        .padding(.vertical, .spacing8)
+                        .background(isFollowing ? .primary0 : .primary100)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: .radiusXLarge)
+                                .stroke(.primary100, lineWidth: isFollowing ? 1 : 0)
+                        )
+                        .cornerRadius(.radiusXLarge)
                     }
-                }) {
-                    HStack(spacing: .spacing4) {
-                        Image(systemName: isFollowing ? "checkmark" : "plus")
-                            .font(.captionLarge)
-
-                        Text(isFollowing ? "팔로잉" : "팔로우")
-                            .font(.captionLarge)
+                    .scaleEffect(isFollowing ? 1.05 : 1.0)
+                    
+                    // 문의하기)
+                    Button(action: {
+                        withAnimation(.spring(response: 0.3)) {
+//                            onFollowTapped()
+                            onInquireTapped()
+                            print(brandInfo.userID)
+                            
+                        }
+                    }) {
+                        HStack(spacing: .spacing4) {
+                            Text("문의하기")
+                                .font(.captionLarge)
+                        }
+                        .foregroundColor(.primary0)
+                        .padding(.horizontal, .spacing16)
+                        .padding(.vertical, .spacing8)
+                        .background(.primary100)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: .radiusXLarge)
+                                .stroke(.primary100)
+                        )
+                        .cornerRadius(.radiusXLarge)
                     }
-                    .foregroundColor(isFollowing ? .primary100 : .primary0)
-                    .padding(.horizontal, .spacing16)
-                    .padding(.vertical, .spacing8)
-                    .background(isFollowing ? .primary0 : .primary100)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: .radiusXLarge)
-                            .stroke(.primary100, lineWidth: isFollowing ? 1 : 0)
-                    )
-                    .cornerRadius(.radiusXLarge)
+                    .scaleEffect(1.0)
                 }
-                .scaleEffect(isFollowing ? 1.05 : 1.0)
+
+               
             }
             .padding(.horizontal, .spacing20)
         }

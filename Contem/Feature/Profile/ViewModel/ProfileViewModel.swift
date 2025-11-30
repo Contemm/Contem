@@ -75,6 +75,7 @@ final class ProfileViewModel: ViewModelType{
         input.messageButtonTapped
             .sink { [weak self] _ in
                 guard let opponentId = self?.output.profile?.userId else { return }
+                print("유저 아이디 \(opponentId)")
                 self?.coordinator?.push(.creatorChat(opponentId: opponentId))
             }
             .store(in: &cancellables)

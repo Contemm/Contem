@@ -22,6 +22,9 @@ final class ShoppingViewModel:ViewModelType {
         let onTappedProduct = PassthroughSubject<String, Never>()
         let likeButtonTapped = PassthroughSubject<String, Never>()
         let loadMoreTrigger = PassthroughSubject<Void, Never>()
+        
+        
+        let logoutTapped = PassthroughSubject<Void, Never>()
     }
     
     struct Output {
@@ -43,6 +46,20 @@ final class ShoppingViewModel:ViewModelType {
     }
     
     func transform() {
+        input.logoutTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                Task {
+                    // 1. 키체인에서 토큰 삭제
+                    await TokenStorage.shared.clear()
+                    
+                    // 2. 메인 스레드에서 코디네이터를 통해 로그인 화면으로 이동
+                    await MainActor.run {
+                        self.coordinator?.logout()
+                    }
+                }
+            }.store(in: &cancellables)
+        
         input.onAppear
             .sink { [weak self] owner in
                 guard let self = self else { return }

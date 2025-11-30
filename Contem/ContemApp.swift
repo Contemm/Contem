@@ -18,8 +18,12 @@ struct ContemApp: App {
                     .navigationDestination(for: AppCoordinator.Route.self) { route in
                         coordinator.build(route: route)
                     }
-            }.sheet(item: $coordinator.sheetRoute) { route in
+            }
+            .sheet(item: $coordinator.sheetRoute) { route in
                 coordinator.buildSheet(route: route)
+            }
+            .fullScreenCover(item: $coordinator.fullScreenSheetRoute) { route in
+                coordinator.buildFullScreen(route: route)
             }
             .task {
                 await coordinator.checkToken()

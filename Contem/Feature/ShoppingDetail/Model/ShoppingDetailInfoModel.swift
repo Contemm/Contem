@@ -15,11 +15,14 @@ struct ShoppingDetailInfo: Codable {
     let sizeInfo: String // 사이즈 정보j
     let likes: [String]
     
-    // 내가 좋아요 했는지 상태 확인
+    private var currentUserId: String {
+        return (try? KeychainManager.shared.read(.userId)) ?? ""
+    }
+    
     var isLiked: Bool {
-        let userId = "6917f9f2ff94927948ff319e"
-        // 로그인시 UserID UserDeftault에 저장 후 사용
-        return likes.contains(userId) // 임시 id 값임
+        let userId = currentUserId
+        guard !userId.isEmpty else { return false }
+        return likes.contains(userId)
     }
     
     var contentImageUrls: [URL] {
