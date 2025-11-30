@@ -1,6 +1,9 @@
 import SwiftUI
+import KakaoSDKUser
 import Combine
 import AuthenticationServices
+import KakaoSDKCommon
+import KakaoSDKAuth
 
 struct SignInView: View {
     
@@ -69,7 +72,23 @@ struct SignInView: View {
             }
             
             Button {
-                print("카카오 로그인")
+                if UserApi.isKakaoTalkLoginAvailable() {
+                    UserApi.shared.loginWithKakaoTalk { (oauthToken, error) in
+                        if let error = error {
+                            print(error)
+                        } else {
+                            viewModel.input.kakaoLoginButtonTapped.send(oauthToken?.accessToken)
+                        }
+                    }
+                } else {
+                    UserApi.shared.loginWithKakaoAccount { (oauthToken, error) in
+                        if let error = error {
+                            print(error)
+                        } else {
+                            viewModel.input.kakaoLoginButtonTapped.send(oauthToken?.accessToken)
+                        }
+                    }
+                }
             } label: {
                 HStack(spacing: 0){
                     Image(systemName: "message.fill")
@@ -120,6 +139,11 @@ struct SignInView: View {
             Button("확인", role: .cancel) { }
         } message: {
             Text(viewModel.output.alertMessage)
+        }
+        .onOpenURL { url in
+            if (AuthApi.isKakaoTalkLoginUrl(url)){
+                _ = AuthController.handleOpenUrl(url: url)
+            }
         }
             
             

@@ -2,6 +2,29 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>payment.portone</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>contem</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>kakaiAuth</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>kakao5ff0cbb5295dca3ffb1cda66957930b9</string>
+			</array>
+		</dict>
+	</array>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>newsmartpib</string>
@@ -45,22 +68,13 @@
 		<string>chaipayment</string>
 		<string>hyundaicardappcardid</string>
 		<string>com.wooricard.wcard</string>
-	</array>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLName</key>
-			<string>payment.portone</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>contem</string>
-			</array>
-		</dict>
+		<string>kakaokompassauth</string>
+		<string>kakaotalk</string>
 	</array>
 	<key>NSAppTransportSecurity</key>
 	<dict>
+		<key>NSAllowsArbitraryLoadsInWebContent</key>
+		<true/>
 		<key>NSExceptionDomains</key>
 		<dict>
 			<key>lslp.sesac.co.kr</key>
@@ -69,8 +83,6 @@
 				<true/>
 			</dict>
 		</dict>
-		<key>NSAllowsArbitraryLoadsInWebContent</key>
-		<true/>
 	</dict>
 	<key>UIAppFonts</key>
 	<array>
