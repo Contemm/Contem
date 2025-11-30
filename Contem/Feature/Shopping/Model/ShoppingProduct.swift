@@ -8,7 +8,7 @@ struct ShoppingProductList {
     }
 }
 
-struct ShoppingProduct: Identifiable {
+struct ShoppingProduct: Identifiable, Equatable {
     let id: String
     let thumbnailUrl: String
     let brandName: String

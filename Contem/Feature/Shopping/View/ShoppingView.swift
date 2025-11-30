@@ -94,6 +94,11 @@ struct ShoppingView: View {
                         .onTapGesture {
                             viewModel.input.onTappedProduct.send(product.id)
                         }
+                        .onAppear {
+                            if product == viewModel.output.products.last {
+                                viewModel.input.loadMoreTrigger.send(())
+                            }
+                        }
                     }
                 }
                 .padding(.horizontal, 16)
