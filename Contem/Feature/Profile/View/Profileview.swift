@@ -59,7 +59,7 @@ struct Profileview: View {
                     Text(profile.info1)
                         .font(.bodyRegular)
                     
-                    
+                    // 버튼
                     if !viewModel.output.isMyProfile {
                         HStack(spacing: .spacing16){
                             Button(action: {
@@ -121,7 +121,7 @@ struct Profileview: View {
                             .font(.captionRegular)
                         
                     }
-                   
+                    
                 }//: VSTACK
                 .padding(.vertical(.spacing16))
                 .padding(.horizontal(.spacing16))
@@ -134,15 +134,43 @@ struct Profileview: View {
                 }
             }
             
-            Spacer()
+            
+            // 3x3 이미지 스크롤
+            if !viewModel.output.userFeeds.isEmpty {
+                ScrollView(showsIndicators: false) {
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 1), count: 3), spacing: 1) {
+                        ForEach(viewModel.output.userFeeds, id: \.id) { feed in
+                            Button {
+                                // TODO: 상세 화면 이동 로직 (Input 연결)
+                                // viewModel.input.postTapped.send(post.id)
+                            } label: {
+                                KFImage(URL(string:feed.thumbnailUrl))
+                                    .resizable()
+                                    .placeholder {
+                                        Rectangle()
+                                            .fill(.blue)
+                                    }
+                                    .scaledToFill()
+                                    .frame(minWidth: 0, maxWidth: .infinity)
+                                    .aspectRatio(1, contentMode: .fill)
+                                    .background(.blue)
+                                    .clipped()
+                                    .contentShape(Rectangle())
+                            }
+                        }
+                    }
+                }
+                .padding(.top, 1) // 헤더와 그리드 사이 간격
+            } else {
+                Spacer()
+                Text("작성하신 스타일이 없습니다")
+                Spacer()
+            }
         }//: VSTACK
-        .background(.gray50)
+        .background(.primary0)
         .onAppear {
             viewModel.input.appear.send(())
         }
     }
 }
-//
-//#Preview {
-//    Profileview()
-//}
+

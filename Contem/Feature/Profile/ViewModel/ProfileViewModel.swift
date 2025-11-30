@@ -30,6 +30,7 @@ final class ProfileViewModel: ViewModelType{
         var isFollowing: Bool = false
         var errorMessage: String?
         var isMyProfile: Bool = false
+        var userFeeds: [UserFeed] = []
     }
     
     private let userId: String
@@ -186,6 +187,11 @@ final class ProfileViewModel: ViewModelType{
         do {
             let router = PostRequest.userPostList(userId: userId, next: nil, limit: nil)
             let result = try await NetworkService.shared.callRequest(router: router, type: PostListDTO.self)
+            let userFeeds = UserFeedList(from: result)
+            await MainActor.run {
+                output.userFeeds = userFeeds.userFeedList
+            }
+            
             print("유저 피드 >>>>>>>>>>> \(result)")
             
         } catch {
