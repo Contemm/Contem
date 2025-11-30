@@ -65,6 +65,7 @@ extension PostDTO{
             postId: postID,
             category: category,
             title: title,
+            price: price,
             content: content,
             value1: value1,
             value2: value2,

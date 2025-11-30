@@ -63,7 +63,7 @@ struct StyleDetailView: View {
                                         .frame(width: geometry.size.width, height: geometry.size.height)
                                     let tags = viewModel.output.tags[index] ?? []
                                     ForEach(tags, id: \.id){ tag in
-                                        StyleTagLabel(text: "item")
+                                        StyleTagLabel(tag: tag)
                                             .position(x: geometry.size.width * tag.relX,
                                                       y: geometry.size.height * tag.relY)
                                     }
