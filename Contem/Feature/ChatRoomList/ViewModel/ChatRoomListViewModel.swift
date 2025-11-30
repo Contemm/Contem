@@ -50,6 +50,12 @@ final class ChatRoomListViewModel: ViewModelType {
                     await owner.fetchChatRooms()
                 }
             }.store(in: &cancellables)
+        
+        input.dismissButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.coordinator?.pop()
+            }.store(in: &cancellables)
     }
 }
 

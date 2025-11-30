@@ -75,7 +75,7 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
         case .profile(let userId):
             Profileview(userId: userId, coordinator: self)
         case .creatorChat(let opponentId):
-            let vm = ChattingViewModel(opponentId: opponentId)
+            let vm = ChattingViewModel(opponentId: opponentId, coordinator: self)
             ChattingView(viewModel: vm)
         case .chatRoomList:
             ChatRoomListView(coordinator: self)

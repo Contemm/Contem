@@ -157,14 +157,29 @@ struct StyleDetailView: View {
         .onAppear(perform: {
             viewModel.input.appear.send(())
         })
+        .navigationBarBackButtonHidden(true)
         .navigationTitle("LookBook")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button {
+                     viewModel.input.dismissButtonTapped.send(())
+                } label: {
+                    Image(systemName: "chevron.left") // 화살표 이미지
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 12, height: 20) // 적절한 크기 조절
+                        .foregroundStyle(.black)      // 검정색 설정
+                }
+            }
+        }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
                     print("공유하기")
                 } label: {
                     Image(systemName: "square.and.arrow.up")
+                        .foregroundStyle(.black)
                 }
             }
         }//: TOOLBAR

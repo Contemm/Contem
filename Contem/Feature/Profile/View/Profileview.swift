@@ -29,7 +29,6 @@ struct Profileview: View {
             
             if let profile = viewModel.output.profile{
                 VStack(alignment: .leading, spacing: .spacing16){
-                    Spacer().frame(height: 20)
                     HStack(spacing: .spacing16){
                         KFImage(profile.imageUrls)
                             .requestModifier(MyImageDownloadRequestModifier())
@@ -149,8 +148,7 @@ struct Profileview: View {
                     LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 1), count: 3), spacing: 1) {
                         ForEach(viewModel.output.userFeeds, id: \.id) { feed in
                             Button {
-                                // TODO: 상세 화면 이동 로직 (Input 연결)
-                                // viewModel.input.postTapped.send(post.id)
+                                viewModel.input.postTapped.send(feed.id)
                             } label: {
                                 Rectangle()
                                     .fill(.clear)
@@ -168,6 +166,7 @@ struct Profileview: View {
                                     .clipped()
                                     .contentShape(Rectangle())
                             }
+                            .buttonStyle(.plain)
                         }
                     }
                 }
@@ -181,7 +180,22 @@ struct Profileview: View {
         .background(.primary0)
         .onAppear {
             viewModel.input.appear.send(())
-        }
+        }.navigationBarBackButtonHidden(true)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                        // 뒤로가기 액션
+                        // 만약 Coordinator로 pop 처리를 한다면:
+                         viewModel.input.dismissButtonTapped.send(())
+                    } label: {
+                        Image(systemName: "chevron.left") // 화살표 이미지
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 12, height: 20) // 적절한 크기 조절
+                            .foregroundStyle(.black)      // 검정색 설정
+                    }
+                }
+            }
     }
 }
 

@@ -42,6 +42,22 @@ struct ChattingView: View {
         .onAppear {
             viewModel.input.appear.send(())
         }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button {
+                    // 뒤로가기 액션
+                    // 만약 Coordinator로 pop 처리를 한다면:
+                    viewModel.input.dismissButtonTapped.send(())
+                } label: {
+                    Image(systemName: "chevron.left") // 화살표 이미지
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 12, height: 20) // 적절한 크기 조절
+                        .foregroundStyle(.black)      // 검정색 설정
+                }
+            }
+        }
         .alert(isPresented: .constant(viewModel.output.error != nil)) {
             Alert(
                 title: Text("Error"),

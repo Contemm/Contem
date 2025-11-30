@@ -11,6 +11,7 @@ import Realm
 import RealmSwift
 
 final class ChattingViewModel: ViewModelType {
+    private var coordinator: AppCoordinator
     
     //MARK: -  Properties
     var cancellables = Set<AnyCancellable>()
@@ -21,6 +22,7 @@ final class ChattingViewModel: ViewModelType {
     struct Input {
         let appear = PassthroughSubject<Void, Never>()
         let sendMessage = PassthroughSubject<(String, [Data]?), Never>()
+        let dismissButtonTapped = PassthroughSubject<Void, Never>()
     }
     
     struct Output {
@@ -35,7 +37,8 @@ final class ChattingViewModel: ViewModelType {
     private var roomId: String?
     private var notificationToken: NotificationToken?
 
-    init(opponentId: String) {
+    init(opponentId: String, coordinator: AppCoordinator) {
+        self.coordinator = coordinator
         self.opponentId = opponentId
         transform()
     }
@@ -57,6 +60,12 @@ final class ChattingViewModel: ViewModelType {
                 self?.sendMessage(content: content, filesData: filesData)
             }
             .store(in: &cancellables)
+        
+        input.dismissButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.coordinator.pop()
+            }.store(in: &cancellables)
     }
     
     private func initializeChatSession() {

@@ -23,6 +23,8 @@ final class ProfileViewModel: ViewModelType{
         let logoutTapped = PassthroughSubject<Void, Never>()
         let dmButtonTapped = PassthroughSubject<Void, Never>()
         let textLogoutTapped = PassthroughSubject<Void, Never>()
+        let dismissButtonTapped = PassthroughSubject<Void, Never>()
+        let postTapped = PassthroughSubject<String, Never>()
     }
     
     struct Output{
@@ -119,6 +121,18 @@ final class ProfileViewModel: ViewModelType{
             .sink { owner, _ in
                 owner.coordinator?.logout()
             }.store(in: &cancellables)
+        
+        input.dismissButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.coordinator?.pop()
+            }.store(in: &cancellables)
+        
+        input.postTapped
+            .sink { [weak self] postId in
+                self?.coordinator?.push(.styleDetail(postId: postId))
+            }
+            .store(in: &cancellables)
     }
     
     private func handleOptimisticFollow(){
@@ -181,7 +195,7 @@ final class ProfileViewModel: ViewModelType{
                 
                 let entity = response.toEntity()
                 output.profile = entity
-                output.isFollowing = entity.isFollowing(userId: currentUserId)
+//                output.isFollowing = entity.isFollowing(userId: currentUserId)
             }catch let error as NetworkError{
                 output.errorMessage = error.errorDescription
                 print("프로필 에러\(error.localizedDescription)")

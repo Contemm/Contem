@@ -22,6 +22,7 @@ final class StyleDetailViewModel: ViewModelType{
         let likebuttonTapped = PassthroughSubject<Void,Never>()
         let commentButtonTapped = PassthroughSubject<Void, Never>()
         let shopTheLookTapped = PassthroughSubject<String, Never>()
+        let dismissButtonTapped = PassthroughSubject<Void, Never>()
     }
     
     struct Output{
@@ -102,6 +103,12 @@ final class StyleDetailViewModel: ViewModelType{
                 self.coordinator?.push(.shoppingDetail(id: postId))
             }
             .store(in: &cancellables)
+        
+        input.dismissButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.coordinator?.pop()
+            }.store(in: &cancellables)
     }
     
     //MARK: - Functions
