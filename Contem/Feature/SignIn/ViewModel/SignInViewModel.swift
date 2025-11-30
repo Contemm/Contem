@@ -37,7 +37,7 @@ final class SignInViewModel: ViewModelType {
         var alertMessage = ""
         var isLoading = false
         var isLoginEnabled: Bool {
-            return email.isValidEmail && password.count >= 6
+            return email.isValidEmail && password.count >= 4
         }
     }
     

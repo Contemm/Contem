@@ -45,22 +45,28 @@ struct CommentView: View {
                                 
                                 
                                 commentContentView(comment: comment)
-                                
-                                if  viewModel.output.userId == comment.user.userID {
-                                    HStack(spacing: CGFloat.spacing4) {
-                                        Button {
-                                            self.commentId = comment.commentId
-                                            self.replyTartgetUser = comment.user.nickname
-                                        } label: {
-                                            Text("답글 달기")
-                                        }
+                                HStack(spacing: CGFloat.spacing4) {
+                                    
+                                    // 1. 답글 달기 (누구에게나 보임)
+                                    Button {
+                                        self.commentId = comment.commentId
+                                        self.replyTartgetUser = comment.user.nickname
+                                    } label: {
+                                        Text("답글 달기")
+                                    }
+                                    
+                                    // 2. 삭제 및 수정 (내 댓글일 때만 보임)
+                                    if viewModel.output.userId == comment.user.userID {
                                         Spacer().frame(width: CGFloat.spacing8)
+                                        
                                         Button {
                                             viewModel.input.deleteCommentTapped.send(comment.commentId)
                                         } label: {
                                             Text("삭제")
                                         }
+                                        
                                         Spacer().frame(width: 2)
+                                        
                                         Button {
                                             // 1. 입력창 및 상태 초기화
                                             text = ""; commentId = nil; replyTartgetUser = nil
@@ -81,10 +87,50 @@ struct CommentView: View {
                                             Text("수정")
                                         }
                                     }
-                                    .font(.system(size: 12))
-                                    .foregroundColor(Color.gray500)
-                                    .padding(.top, 2)
                                 }
+                                .font(.system(size: 12))
+                                .foregroundColor(Color.gray500)
+                                .padding(.top, 2)
+                                
+//                                if  viewModel.output.userId == comment.user.userID {
+//                                    HStack(spacing: CGFloat.spacing4) {
+//                                        Button {
+//                                            self.commentId = comment.commentId
+//                                            self.replyTartgetUser = comment.user.nickname
+//                                        } label: {
+//                                            Text("답글 달기")
+//                                        }
+//                                        Spacer().frame(width: CGFloat.spacing8)
+//                                        Button {
+//                                            viewModel.input.deleteCommentTapped.send(comment.commentId)
+//                                        } label: {
+//                                            Text("삭제")
+//                                        }
+//                                        Spacer().frame(width: 2)
+//                                        Button {
+//                                            // 1. 입력창 및 상태 초기화
+//                                            text = ""; commentId = nil; replyTartgetUser = nil
+//                                            selectedImage = nil; selectedImageData = nil
+//                                            
+//                                            // 2. 수정 데이터 세팅
+//                                            self.editCommentId = comment.commentId
+//                                            
+//                                            if comment.isImage {
+//                                                self.editingImageUrl = comment.fullImageUrl
+//                                                self.text = ""
+//                                            } else {
+//                                                self.editingImageUrl = nil
+//                                                self.text = comment.comment
+//                                            }
+//                                            
+//                                        } label: {
+//                                            Text("수정")
+//                                        }
+//                                    }
+//                                    .font(.system(size: 12))
+//                                    .foregroundColor(Color.gray500)
+//                                    .padding(.top, 2)
+//                                }
                                 
                             }
                         }
