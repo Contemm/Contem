@@ -21,6 +21,7 @@ final class StyleDetailViewModel: ViewModelType{
         let profileTapped = PassthroughSubject<Void,Never>()
         let likebuttonTapped = PassthroughSubject<Void,Never>()
         let commentButtonTapped = PassthroughSubject<Void, Never>()
+        let shopTheLookTapped = PassthroughSubject<String, Never>()
     }
     
     struct Output{
@@ -29,6 +30,7 @@ final class StyleDetailViewModel: ViewModelType{
         var isLoading: Bool = false
         var errorMessage: String?
         var tags: [Int: [StyleTag]] = [:]
+        var shopTheLookProducts: [StyleTag] = []
     }
     
     private let postId: String
@@ -93,6 +95,13 @@ final class StyleDetailViewModel: ViewModelType{
                 guard let self else { return }
                 self.coordinator?.present(sheet: .comment(postId: self.postId))
             }.store(in: &cancellables)
+        
+        input.shopTheLookTapped
+            .sink { [weak self] postId in
+                guard let self else { return }
+                self.coordinator?.push(.shoppingDetail(id: postId))
+            }
+            .store(in: &cancellables)
     }
     
     //MARK: - Functions
@@ -153,7 +162,7 @@ final class StyleDetailViewModel: ViewModelType{
         var dict: [Int: [StyleTag]] = [:]
 
         for (idx, raw) in values.enumerated(){
-            guard let raw else { return }
+            guard let raw, !raw.isEmpty else { continue }
             dict[idx] = parseTagString(raw)
         }
 
@@ -162,23 +171,84 @@ final class StyleDetailViewModel: ViewModelType{
 
     // Tag Parser
     func parseTagString(_ raw: String) -> [StyleTag] {
-        let parts = raw.split(separator: ":")
+        let components = raw.split(separator: ":")
         var result: [StyleTag] = []
         
-        for part in parts {
-            guard let xRange = part.range(of: "x"),
-                  let yRange = part.range(of: "y") else { continue }
+        for component in components {
+            guard !component.isEmpty else { continue }
             
-            let xStr = part[xRange.upperBound..<yRange.lowerBound]
-            let yStr = part[yRange.upperBound...]
+            var part = Substring(component)
+            
+            // "x" 제거
+            if part.hasPrefix("x") {
+                part = part.dropFirst()
+            }
+            
+            guard let yRange = part.range(of: "y"),
+                  let postIdRange = part.range(of: "postId") else {
+                continue
+            }
+            
+            let xStr = part[..<yRange.lowerBound]
+            let yStr = part[yRange.upperBound..<postIdRange.lowerBound]
+            let postId = String(part[postIdRange.upperBound...])
             
             guard let x = Double(xStr),
-                  let y = Double(yStr) else { continue }
+                  let y = Double(yStr) else {
+                continue
+            }
             
-            result.append(StyleTag(relX: CGFloat(x), relY: CGFloat(y)))
+            let newTag = StyleTag(relX: CGFloat(x), relY: CGFloat(y), postId: postId)
+            result.append(newTag)
         }
         
         return result
+    }
+    
+    private func fetchProductDetailsForTags() async {
+        print("Starting to fetch product details for tags...")
+        await withTaskGroup(of: (Int, Int, Result<PostDTO, Error>).self) { group in
+            for (pageIndex, tags) in output.tags {
+                for (tagIndex, tag) in tags.enumerated() {
+                    group.addTask {
+                        do {
+                            let response = try await NetworkService.shared.callRequest(
+                                router: PostRequest.post(postId: tag.postId),
+                                type: PostDTO.self
+                            )
+                            return (pageIndex, tagIndex, .success(response))
+                        } catch {
+                            return (pageIndex, tagIndex, .failure(error))
+                        }
+                    }
+                }
+            }
+            
+            var newTags = self.output.tags
+            for await (pageIndex, tagIndex, result) in group {
+                switch result {
+                case .success(let response):
+                    print("Successfully fetched details for postId \(response.postID)")
+                    let updatedTag = StyleTag(
+                        relX: newTags[pageIndex]![tagIndex].relX,
+                        relY: newTags[pageIndex]![tagIndex].relY,
+                        postId: newTags[pageIndex]![tagIndex].postId,
+                        title: response.title,
+                        price: response.price?.description,
+                        imageURL: response.imageURLs.first
+                    )
+                    newTags[pageIndex]?[tagIndex] = updatedTag
+                case .failure(let error):
+                    print("Error fetching product detail for tag at page \(pageIndex), index \(tagIndex): \(error)")
+                }
+            }
+            
+            await MainActor.run {
+                self.output.tags = newTags
+                self.output.shopTheLookProducts = newTags.values.flatMap { $0 }
+                print("Finished fetching product details. Final tags: \(self.output.tags)")
+            }
+        }
     }
     
     //MARK: - Network
@@ -195,6 +265,7 @@ final class StyleDetailViewModel: ViewModelType{
                 let entity = response.toEntity()
                 output.style = entity
                 preParseAllTags(entity: entity)
+                await fetchProductDetailsForTags()
                 
                 let isLiked: Bool
                 if let userId = currentUserId{

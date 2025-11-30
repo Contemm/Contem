@@ -12,6 +12,7 @@ struct MockStyle{
         postId: "TEST_001",
         category: "look",
         title: "The Bold and The Simple",
+        price: 19000,
         content: "Weave them together or wear them separately, it’s your call. Day or night, this is your look.",
         value1: "x0.52y0.88:x0.23y0.20",
         value2: "x0.68y0.40",

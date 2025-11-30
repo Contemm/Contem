@@ -11,6 +11,7 @@ struct StyleEntity{
     let postId: String
     let category: String?
     let title: String?
+    let price: Int?
     let content: String?
     let value1: String?
     let value2: String?
@@ -55,4 +56,9 @@ struct StyleTag: Identifiable{
     let id = UUID()
     let relX: CGFloat //0~1 비율
     let relY: CGFloat
+    let postId: String
+    
+    var title: String?
+    var price: String?
+    var imageURL: URL?
 }
