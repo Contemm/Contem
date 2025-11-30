@@ -17,7 +17,7 @@ final class ChatRoomListViewModel: ViewModelType {
     }
     
     struct Output {
-        let chatRoomList: [ChatRoomDTO] = []
+        var chatRoomList: [ChatRoomEntity] = []
     }
     
     init(coordinator: AppCoordinator) {
@@ -44,12 +44,12 @@ extension ChatRoomListViewModel {
         do {
             let router = ChatRequest.chatRoomList
             let result = try await NetworkService.shared.callRequest(router: router, type: ChatRoomResponseListDTO.self)
+            let chatRoomList = ChatRoomListEntity(from: result)
             await MainActor.run {
+                output.chatRoomList = chatRoomList.roomList
             }
-            
-            print("통신 결과 \(result)")
         } catch {
-            print("에러났나..? \(error.localizedDescription)")
+            print("에러 \(error.localizedDescription)")
         }
     }
 }
