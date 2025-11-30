@@ -270,13 +270,27 @@ struct ProductCard: View {
         VStack(alignment: .leading, spacing: 2) {
             ZStack(alignment: .bottomTrailing) {
                 GeometryReader { geometry in
-                    
-                    KFImage(product.imageUrl)
-                        .requestModifier(MyImageDownloadRequestModifier())
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: geometry.size.width, height: geometry.size.width)
-                        .clipped()
+                    if let url = product.imageUrl,
+                       let scheme = url.scheme,
+                       ["http", "https"].contains(scheme.lowercased()) {
+                        KFImage(url)
+                            .requestModifier(MyImageDownloadRequestModifier())
+                            .resizable()
+                            .placeholder {
+                                Color.gray.opacity(0.15)
+                            }
+                            .scaledToFill()
+                            .frame(width: geometry.size.width, height: geometry.size.width)
+                            .clipped()
+                        
+                    } else {
+                        Image(product.thumbnailUrl)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: geometry.size.width, height: geometry.size.width)
+                            .clipped()
+                            .background(Color.gray.opacity(0.1))
+                    }
                     
                 }
                 .aspectRatio(1, contentMode: .fit)
