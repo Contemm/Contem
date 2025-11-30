@@ -21,6 +21,7 @@ final class StyleDetailViewModel: ViewModelType{
         let profileTapped = PassthroughSubject<Void,Never>()
         let likebuttonTapped = PassthroughSubject<Void,Never>()
         let commentButtonTapped = PassthroughSubject<Void, Never>()
+        let shopTheLookTapped = PassthroughSubject<String, Never>()
     }
     
     struct Output{
@@ -29,6 +30,7 @@ final class StyleDetailViewModel: ViewModelType{
         var isLoading: Bool = false
         var errorMessage: String?
         var tags: [Int: [StyleTag]] = [:]
+        var shopTheLookProducts: [StyleTag] = []
     }
     
     private let postId: String
@@ -93,6 +95,13 @@ final class StyleDetailViewModel: ViewModelType{
                 guard let self else { return }
                 self.coordinator?.present(sheet: .comment(postId: self.postId))
             }.store(in: &cancellables)
+        
+        input.shopTheLookTapped
+            .sink { [weak self] postId in
+                guard let self else { return }
+                self.coordinator?.push(.shoppingDetail(id: postId))
+            }
+            .store(in: &cancellables)
     }
     
     //MARK: - Functions
@@ -236,6 +245,7 @@ final class StyleDetailViewModel: ViewModelType{
             
             await MainActor.run {
                 self.output.tags = newTags
+                self.output.shopTheLookProducts = newTags.values.flatMap { $0 }
                 print("Finished fetching product details. Final tags: \(self.output.tags)")
             }
         }

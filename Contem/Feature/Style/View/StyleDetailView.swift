@@ -54,23 +54,8 @@ struct StyleDetailView: View {
                     //MARK: - 상단 이미지 슬라이더
                     TabView(selection: $selectedPage) {
                         ForEach(style.imageUrls.indices, id: \.self) { index in
-                            GeometryReader { geometry in
-                                ZStack{
-                                    KFImage(style.imageUrls[index])
-                                        .requestModifier(MyImageDownloadRequestModifier())
-                                        .resizable()
-                                        .scaledToFill()
-                                        .frame(width: geometry.size.width, height: geometry.size.height)
-                                    let tags = viewModel.output.tags[index] ?? []
-                                    ForEach(tags, id: \.id){ tag in
-                                        StyleTagLabel(tag: tag)
-                                            .position(x: geometry.size.width * tag.relX,
-                                                      y: geometry.size.height * tag.relY)
-                                    }
-                                }//: ZSTACK
-                                .clipped()
-                            }//: GeometryReader
-                            .tag(index)
+                            StyleImageCell(viewModel: viewModel, url: style.imageUrls[index], index: index)
+                                .tag(index)
                         }//: LOOP
                     }//: TABVIEW
                     .tabViewStyle(.page)
@@ -139,14 +124,18 @@ struct StyleDetailView: View {
                         
                         ScrollView(.horizontal, showsIndicators: false) {
                             LazyHStack(spacing: .spacing16) {
-                                ForEach(1...4, id: \.self){ index in
-                                    Image("shop\(index)")
+                                ForEach(viewModel.output.shopTheLookProducts) { tag in
+                                    KFImage(tag.imageURL)
                                         .resizable()
                                         .scaledToFill()
                                         .background(.gray50)
                                         .frame(width: 100, height: 100)
                                         .cornerRadiusMedium()
                                         .clipped()
+                                        .onTapGesture {
+                                            viewModel.input.shopTheLookTapped
+                                                .send(tag.postId)
+                                        }
                                 }//: LOOP
                             }//: LazyHStack
                             .padding(.horizontal(.spacing16))
@@ -177,5 +166,33 @@ struct StyleDetailView: View {
                 }
             }
         }//: TOOLBAR
+    }
+}
+
+private struct StyleImageCell: View {
+    @ObservedObject var viewModel: StyleDetailViewModel
+    let url: URL?
+    let index: Int
+    
+    var body: some View {
+        GeometryReader { geometry in
+            ZStack{
+                KFImage(url)
+                    .requestModifier(MyImageDownloadRequestModifier())
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: geometry.size.width, height: geometry.size.height)
+                let tags = viewModel.output.tags[index] ?? []
+                ForEach(tags, id: \.id){ tag in
+                    StyleTagLabel(tag: tag)
+                        .position(x: geometry.size.width * tag.relX,
+                                  y: geometry.size.height * tag.relY)
+                        .onTapGesture {
+                            viewModel.input.shopTheLookTapped.send(tag.postId)
+                        }
+                }
+            }//: ZSTACK
+            .clipped()
+        }//: GeometryReader
     }
 }
