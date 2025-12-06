@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 final class NetworkService {
     static let shared = NetworkService()
@@ -18,6 +19,8 @@ final class NetworkService {
         config.requestCachePolicy = .reloadIgnoringLocalCacheData
         return URLSession(configuration: config)
     }()
+    
+    let sessionExpiredSubject = PassthroughSubject<Void, Never>()
     
     @discardableResult
     func callRequest<T: Decodable>(router: TargetTypeProtocol, type: T.Type) async throws -> T {
@@ -33,8 +36,13 @@ final class NetworkService {
                         throw error
                     }
                     
-                    let newToken = try await TokenStorage.shared.refreshAccessToken()
-                    return try await send(router: router, type: type, overrideToken: newToken)
+                    do {
+                        let newToken = try await TokenStorage.shared.refreshAccessToken()
+                        return try await send(router: router, type: type, overrideToken: newToken)
+                    } catch {
+                        sessionExpiredSubject.send(())
+                        throw error
+                    }
                     
                 default:
                     break // 갱신 대상 아님

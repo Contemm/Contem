@@ -4,6 +4,8 @@ import iamport_ios
 
 final class AppCoordinator: CoordinatorProtocol, ObservableObject {
     
+    private var cancellables = Set<AnyCancellable>()
+    
     var currentUserId: String {
         return (try? KeychainManager.shared.read(.userId)) ?? ""
     }
@@ -47,6 +49,24 @@ final class AppCoordinator: CoordinatorProtocol, ObservableObject {
     @Published var fullScreenSheetRoute: FullScreenSheetRoute?
     
     @Published var navigationPath = NavigationPath()
+    
+    init () {
+        bind()
+    }
+    
+    private func bind() {
+//        Task { @MainActor in
+//            for await _ in NetworkService.shared.sessionExpiredSubject.values {
+//                self.logout()
+//            }
+//        }
+        NetworkService.shared.sessionExpiredSubject
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                guard let self = self else { return }
+                logout()
+            }.store(in: &cancellables)
+    }
     
     func checkToken() async {
         let hasToken = await TokenStorage.shared.hasValidAccessToken()
