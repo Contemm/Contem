@@ -145,11 +145,12 @@
 				};
 			};
 			buildConfigurationList = F8A803BD2EC0C71C006006BD /* Build configuration list for PBXProject "Contem" */;
-			developmentRegion = en;
+			developmentRegion = ko;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
+				ko,
 			);
 			mainGroup = F8A803B92EC0C71C006006BD;
 			minimizedProjectReferenceProxies = 1;

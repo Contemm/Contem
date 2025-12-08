@@ -90,23 +90,20 @@ struct SignInView: View {
                     }
                 }
             } label: {
-                HStack(spacing: 0){
+                HStack(alignment: .center, spacing: .spacing8){
                     Image(systemName: "message.fill")
-//                        .resizable()
+                        .font(.bodyLarge)
                         .aspectRatio(contentMode: .fit)
-//                        .frame(width: 22, height: 22)
                         .foregroundColor(.primary100)
-//                        .offset(y: -2)
                     
-                    Spacer()
                     
                     Text("카카오 로그인")
                         .font(.bodyLarge)
                         .foregroundStyle(.primary100)
                         .opacity(0.85)
                     
-                    Spacer()
                 }//: HSTACK
+                .frame(maxWidth: .infinity)
                 .padding(.horizontal(.spacing16))
                 .padding(.vertical(.spacing16))
                 .background(.kakao)
@@ -119,19 +116,33 @@ struct SignInView: View {
                 // ViewModel의 Input 트리거
                 viewModel.input.appleLoginButtonTapped.send(())
             }) {
-                ZStack {
-                    Circle()
-                        .fill(Color.black)
-                        .frame(width: 50, height: 50)
-                        .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
-                    
-                    Image(systemName: "apple.logo")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 22, height: 22)
-                        .foregroundColor(.white)
-                        .offset(y: -2)
+                SignInWithAppleButton(
+                    onRequest: { _ in },
+                    onCompletion: { _ in }
+                )
+                .frame(height: 52)
+                .cornerRadius(.spacing12)
+                .signInWithAppleButtonStyle(.black)
+                .overlay {
+                    // 버튼의 기본 제스처를 막고 ViewModel의 Input을 트리거
+                    Color.black.opacity(0.001)
+                        .onTapGesture {
+                            viewModel.input.appleLoginButtonTapped.send(())
+                        }
                 }
+//                ZStack {
+//                    Circle()
+//                        .fill(Color.black)
+//                        .frame(width: 50, height: 50)
+//                        .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
+//                    
+//                    Image(systemName: "apple.logo")
+//                        .resizable()
+//                        .aspectRatio(contentMode: .fit)
+//                        .frame(width: 22, height: 22)
+//                        .foregroundColor(.white)
+//                        .offset(y: -2)
+//                }
             }
         }
         .padding(.horizontal, .spacing16)
