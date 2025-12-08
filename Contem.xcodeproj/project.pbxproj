@@ -17,6 +17,7 @@
 		7909D4EA2EDCB0E300A0C544 /* RxKakaoSDKUser in Frameworks */ = {isa = PBXBuildFile; productRef = 7909D4E92EDCB0E300A0C544 /* RxKakaoSDKUser */; };
 		7977706B2ED992A900137DC7 /* SocketIO in Frameworks */ = {isa = PBXBuildFile; productRef = 7977706A2ED992A900137DC7 /* SocketIO */; };
 		7977706E2ED992B700137DC7 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 7977706D2ED992B700137DC7 /* RealmSwift */; };
+		79FC5BE92EE6C27F0091B07A /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 79FC5BE82EE6C27F0091B07A /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -35,6 +36,7 @@
 
 /* Begin PBXFileReference section */
 		76C9912D2EC1E6D400B5FC11 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		79FC5BE82EE6C27F0091B07A /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		F8A803C22EC0C71C006006BD /* Contem.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Contem.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -81,6 +83,7 @@
 		F8A803B92EC0C71C006006BD = {
 			isa = PBXGroup;
 			children = (
+				79FC5BE82EE6C27F0091B07A /* README.md */,
 				76C9912D2EC1E6D400B5FC11 /* .gitignore */,
 				F8A803C42EC0C71C006006BD /* Contem */,
 				F8A803C32EC0C71C006006BD /* Products */,
@@ -176,6 +179,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				79FC5BE92EE6C27F0091B07A /* README.md in Resources */,
 				76C9912E2EC1E6D400B5FC11 /* .gitignore in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
