@@ -1,7 +1,7 @@
 <img width="50" height="50" alt="image" src="https://github.com/user-attachments/assets/4a174160-fbbc-4de4-a082-32badcec9002" />
 
 ## 앱 이름
-### Contem(Collect Online New Trends Every Moment)
+### CONTEM(Collect Online New Trends Every Moment)
 
 ## 앱 소개
 ### 매 순간 새로운 트랜드를 모으는 온라인 쇼핑 커머스 앱
@@ -18,14 +18,15 @@
 ![](https://img.shields.io/badge/Realm-39477F?style=flat&logo=realm&logoColor=white) ![](https://img.shields.io/badge/Kingfisher-1DA1F2?style=flat)
 
 ## 스크린 샷
-| 로그인 화면 | 상품 화면 | 상품 상세 화면 |
-|--------------|--------------|--------------|
-| <img width="2005" height="2400" alt="image" src="https://github.com/user-attachments/assets/f4f51e26-047f-4e50-82fd-14394cf03819" /> | ![ss2](https://via.placeholder.com/250x540) | <img width="2005" height="2400" alt="image" src="https://github.com/user-attachments/assets/7915871c-76db-4f16-ac5b-d8e7e1efd188" />
+## 전체 스크린샷
 
-| 스타일 화면 | 스타일 상세 화면 | 스타일 댓글 화면 | 
-|--------------|--------------|--------------|
-| ![ss4](https://via.placeholder.com/250x540) | <img width="2005" height="2400" alt="image" src="https://github.com/user-attachments/assets/722fe5f1-7ca8-4a8b-b0b8-f81d40593866" /> | <img width="2005" height="2400" alt="image" src="https://github.com/user-attachments/assets/f1c8193f-63a4-421c-a9db-f9370f70d608" />
- |
+| 로그인 화면 | 상품 화면 | 상품 상세 화면 | 프로필 화면 |
+|------------|------------|----------------|-------------|
+| <img width="280" alt="image" src="https://github.com/user-attachments/assets/41c2a486-52e1-481a-a8a7-2250a1fa0a93" /> | <img width="280" src="https://github.com/user-attachments/assets/02ef3a81-49c9-46c6-876b-5ec80044bdc9" /> |<img width="280"  alt="image" src="https://github.com/user-attachments/assets/c8019fb5-a691-41df-b625-e164a186d6d5" /> | <img width="280" src="https://github.com/user-attachments/assets/5d350df8-c15d-430b-bca3-564f6557f124" /> |
+
+| 스타일 화면 | 스타일 상세 화면 | 스타일 댓글 화면 |
+|------------|------------------|------------------|
+| <img width="280" src="https://github.com/user-attachments/assets/f0f49905-9971-45d3-8ddb-f58ca49815b2" /> | <img width="280" alt="image" src="https://github.com/user-attachments/assets/44e92ff4-be0a-40ab-b836-3430f6ee93f7" /> | <img width="280" alt="image" src="https://github.com/user-attachments/assets/173fff2d-ccaf-46ef-80f7-ddbf78fcba1f" /> |
 
 ## 주요 기능
 ### 로그인
